@@ -39,17 +39,18 @@ services:
       - verim_network
     restart: on-failure
 
-  api_gateway:
-    container_name: ${CONTAINER_PREFIX}-api-gateway
+  auth:
+    container_name: ${CONTAINER_PREFIX}-auth
     build:
-      context: ./api-gateway/
+      context: ./auth/
       dockerfile: ./Dockerfile
     command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     working_dir: ${DEFAULT_SERVICE_DIR}
     env_file:
       - .env
     volumes:
-      - ./api-gateway/:${DEFAULT_SERVICE_DIR}
+      - ./auth/:${DEFAULT_SERVICE_DIR}
+      - ./communicator.py:${DEFAULT_SERVICE_DIR}/communicator.py
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
@@ -61,42 +62,21 @@ services:
       - verim_network
     restart: always
 
-  auth:
-    container_name: ${CONTAINER_PREFIX}-auth
-    build:
-      context: ./auth/
-      dockerfile: ./Dockerfile
-    # command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
-    working_dir: ${DEFAULT_SERVICE_DIR}
-    env_file:
-      - .env
-    volumes:
-      - ./auth/:${DEFAULT_SERVICE_DIR}
-      - ${STATIC_PATH}:/static
-      - ${MEDIA_PATH}:/media
-      - ${LOG_PATH}:/logs
-    depends_on:
-      - db
-      - rabbitmq
-    networks:
-      - verim_network
-    restart: always
-
   celery_worker:
     container_name: ${CONTAINER_PREFIX}-celery-worker
     build:
-      context: ./api-gateway/  # TODO: вынести в отдельный докерфайл
+      context: ./auth/  # TODO: вынести в отдельный докерфайл
       dockerfile: ./Dockerfile
-    command: sh -c "celery -A main.celery worker -l debug"
+    command: sh -c "celery -A config.celery_app worker -l debug"
     depends_on:
-      - api_gateway
+      - auth
       - db
       - redis
       - rabbitmq
     env_file:
       - .env
     volumes:
-      - ./api-gateway/:${DEFAULT_SERVICE_DIR}
+      - ./auth/:${DEFAULT_SERVICE_DIR}
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
@@ -107,18 +87,18 @@ services:
   celery_beat:
     container_name: ${CONTAINER_PREFIX}-celery-beat
     build:
-      context: ./api-gateway/  # TODO: вынести в отдельный докерфайл
+      context: ./auth/  # TODO: вынести в отдельный докерфайл
       dockerfile: ./Dockerfile
-    command: sh -c "celery -A main.celery beat -l debug"
+    command: sh -c "celery -A config.celery_app beat -l debug"
     depends_on:
-      - api_gateway
+      - auth
       - db
       - redis
       - rabbitmq
     env_file:
       - .env
     volumes:
-      - ./api-gateway/:${DEFAULT_SERVICE_DIR}
+      - ./auth/:${DEFAULT_SERVICE_DIR}
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs

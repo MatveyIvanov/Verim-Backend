@@ -1,3 +1,7 @@
+# Mounted files/dirs for DRY reasons
+*/communicator.py
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
