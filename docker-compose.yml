@@ -1,0 +1,151 @@
+version: "3.10"
+
+networks:
+  verim_network:
+    name: verim_network
+
+services:
+  db:
+    image: postgres:15.4
+    container_name: ${CONTAINER_PREFIX}-db
+    volumes:
+      - ${DB_DATA_PATH}:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    networks:
+      - verim_network
+    ports:
+      - "127.0.0.1:7433:5432"
+
+  redis:
+    image: redis:7.2.0
+    container_name: ${CONTAINER_PREFIX}-redis
+    networks:
+      - verim_network
+    ports:
+      - "13379:6379"
+    volumes:
+      - verim_redis_data:/var/lib/redis/data/
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: ${CONTAINER_PREFIX}-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - verim_network
+    restart: on-failure
+
+  api_gateway:
+    container_name: ${CONTAINER_PREFIX}-api-gateway
+    build:
+      context: ./api-gateway/
+      dockerfile: ./Dockerfile
+    command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    working_dir: ${DEFAULT_SERVICE_DIR}
+    env_file:
+      - .env
+    volumes:
+      - ./api-gateway/:${DEFAULT_SERVICE_DIR}
+      - ${STATIC_PATH}:/static
+      - ${MEDIA_PATH}:/media
+      - ${LOG_PATH}:/logs
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    networks:
+      - verim_network
+    restart: always
+
+  auth:
+    container_name: ${CONTAINER_PREFIX}-auth
+    build:
+      context: ./auth/
+      dockerfile: ./Dockerfile
+    # command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    working_dir: ${DEFAULT_SERVICE_DIR}
+    env_file:
+      - .env
+    volumes:
+      - ./auth/:${DEFAULT_SERVICE_DIR}
+      - ${STATIC_PATH}:/static
+      - ${MEDIA_PATH}:/media
+      - ${LOG_PATH}:/logs
+    depends_on:
+      - db
+      - rabbitmq
+    networks:
+      - verim_network
+    restart: always
+
+  celery_worker:
+    container_name: ${CONTAINER_PREFIX}-celery-worker
+    build:
+      context: ./api-gateway/  # TODO: вынести в отдельный докерфайл
+      dockerfile: ./Dockerfile
+    command: sh -c "celery -A main.celery worker -l debug"
+    depends_on:
+      - api_gateway
+      - db
+      - redis
+      - rabbitmq
+    env_file:
+      - .env
+    volumes:
+      - ./api-gateway/:${DEFAULT_SERVICE_DIR}
+      - ${STATIC_PATH}:/static
+      - ${MEDIA_PATH}:/media
+      - ${LOG_PATH}:/logs
+    networks:
+      - verim_network
+    restart: always
+
+  celery_beat:
+    container_name: ${CONTAINER_PREFIX}-celery-beat
+    build:
+      context: ./api-gateway/  # TODO: вынести в отдельный докерфайл
+      dockerfile: ./Dockerfile
+    command: sh -c "celery -A main.celery beat -l debug"
+    depends_on:
+      - api_gateway
+      - db
+      - redis
+      - rabbitmq
+    env_file:
+      - .env
+    volumes:
+      - ./api-gateway/:${DEFAULT_SERVICE_DIR}
+      - ${STATIC_PATH}:/static
+      - ${MEDIA_PATH}:/media
+      - ${LOG_PATH}:/logs
+    networks:
+      - verim_network
+    restart: always
+
+  celery_flower:
+    image: mher/flower:2.0
+    container_name: ${CONTAINER_PREFIX}-celery-flower
+    environment:
+      CELERY_BROKER_URL: ${FLOWER_CELERY_BROKER_URL}
+      FLOWER_PORT: ${FLOWER_PORT}
+      FLOWER_BASIC_AUTH: ${FLOWER_LOGIN}:${FLOWER_PASSWORD}
+      FLOWER_URL_PREFIX: ${FLOWER_URL_PREFIX}
+    depends_on:
+      - celery_worker
+    env_file:
+      - .env
+    ports:
+      - "5555:5555"
+    networks:
+      - verim_network
+    restart: always
+
+volumes:
+  verim_db_data:
+    name: verim_db_data
+  verim_redis_data:
+    name: verim_redis_data
