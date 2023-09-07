@@ -19,7 +19,7 @@ user_table = Table(
     Column('id', Integer, primary_key=True, unique=True, autoincrement=True, nullable=False),
     Column('email', String(50), unique=True, nullable=False),
     Column('username', String(35), unique=True, nullable=False),
-    Column('password', String(128), nullable=False),
+    Column('password', String(128), nullable=True),
     Column('first_name', String(50), nullable=True),
     Column('last_name', String(50), nullable=True),
     Column('is_active', Boolean, default=True, nullable=False),

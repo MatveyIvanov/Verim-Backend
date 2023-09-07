@@ -1,25 +1,11 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from dependency_injector.wiring import Provide, inject
+from typing import List
 
-from config.di import Container
-from models.users import User
+from fastapi import APIRouter
 
-
-router = APIRouter()
+from .registration import router as registration_router
 
 
-def get_db():
-    from config.db import SessionLocal
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-@router.get('/')
-@inject
-async def test(db: Session = Depends(get_db)):
-    print(db.query(User).all())
-    return {'message': 'Testing application'}
+def get_routers() -> List[APIRouter]:
+    return (
+        registration_router,
+    )

@@ -1,7 +1,8 @@
 import os
+from abc import ABC, abstractmethod
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
+from sqlalchemy.orm import sessionmaker, Session
 
 from config.app import get_fastapi_app
 
@@ -19,7 +20,3 @@ DATABASE_URL = os.environ.get('DATABASE_URL')
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
-
-
-class Base(DeclarativeBase):
-    pass
