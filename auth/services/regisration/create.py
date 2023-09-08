@@ -11,7 +11,7 @@ from ..validators import (
 from ..jwt import (
     ICreateJWTTokens,
 )
-from ..password import ISetPassword
+from ..password import IHashPassword
 from ..repo import IUserRepo
 from utils.typing import UserType
 
@@ -29,21 +29,21 @@ class RegisterUser(IRegisterUser):
         create_jwt_tokens: ICreateJWTTokens,
         username_validator: IUsernameValidator,
         password_validator: IPasswordValidator,
-        set_password: ISetPassword,
+        hash_password: IHashPassword,
         repo: IUserRepo
     ) -> None:
         self.create_jwt_tokens = create_jwt_tokens
         self.username_validator = username_validator
         self.password_validator = password_validator
-        self.set_password = set_password
+        self.hash_password = hash_password
         self.repo = repo
 
     def __call__(self, entry: RegistrationSchema) -> JWTTokensSchema:
         self._validate_email(entry)
         self._validate_username(entry)
         self._validate_password(entry)
+        entry.password = self._hash_password(entry)
         user = self._create_user(entry)
-        user = self._set_password(user, entry)
         return self._make_tokens(user)
 
     def _validate_email(self, entry: RegistrationSchema) -> None:
@@ -58,8 +58,8 @@ class RegisterUser(IRegisterUser):
     def _create_user(self, entry: RegistrationSchema) -> UserType:
         return self.repo.create(entry)
 
-    def _set_password(self, user: UserType, entry: RegistrationSchema) -> None:
-        return self.set_password(user, entry.password)
+    def _hash_password(self, entry: RegistrationSchema) -> None:
+        return self.hash_password(entry.password)
 
     def _make_tokens(self, user: UserType) -> JWTTokensSchema:
         return self.create_jwt_tokens(user)

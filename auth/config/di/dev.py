@@ -5,7 +5,7 @@ from config.db import Database
 from repo import UserRepo
 from services.regisration import RegisterUser
 from services.validators import UsernameValidator, PasswordValidator
-from services.password import SetPassword
+from services.password import HashPassword
 from services.jwt import CreateJWTTokens
 
 
@@ -26,16 +26,13 @@ class Container(containers.DeclarativeContainer):
 
     username_validator = providers.Singleton(UsernameValidator)
     password_validator = providers.Singleton(PasswordValidator)
-    set_password = providers.Singleton(
-        SetPassword,
-        repo=_user_repo
-    )
+    hash_password = providers.Singleton(HashPassword)
 
     register_user = providers.Singleton(
         RegisterUser,
         create_jwt_tokens=create_jwt_tokens,
         username_validator=username_validator,
         password_validator=password_validator,
-        set_password=set_password,
+        hash_password=hash_password,
         repo=_user_repo
     )

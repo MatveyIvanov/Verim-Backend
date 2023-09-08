@@ -12,7 +12,8 @@ class UserRepo(IUserRepo):
     def create(self, entry: RegistrationSchema) -> UserType:
         user = self.model(
             email=entry.email,
-            username=entry.username
+            username=entry.username,
+            password=entry.password
         )
         with self.session_factory() as session:
             session.add(user)
