@@ -3,6 +3,7 @@ import hashlib
 
 from .repo import IUserRepo
 from config import settings
+from models.users import User
 from utils.typing import UserType
 from utils.random import get_random_string
 
@@ -19,8 +20,10 @@ class SetPassword(ISetPassword):
         self.repo = repo
 
     def __call__(self, user: UserType, password: str) -> UserType:
-        user.password = self._hash_password(password)
-        return self.repo.update(user)
+        return self.repo.update(
+            user=user,
+            values={'password': self._hash_password(password)}
+        )
 
     def _hash_password(self, password: str) -> str:
         return hashlib.pbkdf2_hmac(

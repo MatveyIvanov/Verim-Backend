@@ -1,28 +1,11 @@
-from abc import ABC, abstractmethod
+from abc import ABC
+from contextlib import AbstractContextManager
+from typing import Callable
 
 from sqlalchemy.orm import Session
 
 
-class IMakeSession(ABC):
-
-    @abstractmethod
-    def __call__(self) -> Session: ...
-
-
-class MakeSession(IMakeSession):
-
-    def __call__(self) -> Session:
-        from config.db import SessionLocal
-        db = SessionLocal()
-        try:
-            yield db
-        finally:
-            db.close()
-
-
 class IRepo(ABC):
-    db: Session
 
-    def __init__(self, make_session: IMakeSession) -> None:
-        self.db = next(make_session())
-        super().__init__()
+    def __init__(self, session_factory: Callable[..., AbstractContextManager[Session]]) -> None:
+        self.session_factory = session_factory

@@ -1,20 +1,25 @@
 from dependency_injector import containers, providers
 
+from config.settings import DATABASE_URL
+from config.db import Database
 from repo import UserRepo
 from services.regisration import RegisterUser
 from services.validators import UsernameValidator, PasswordValidator
 from services.password import SetPassword
 from services.jwt import CreateJWTTokens
-from utils.repo import MakeSession
 
 
 class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(packages=['endpoints'])
 
-    _make_session = providers.Singleton(MakeSession)
-    _user_repo = providers.Singleton(
+    db = providers.Singleton(
+        Database,
+        db_url=DATABASE_URL
+    )
+
+    _user_repo = providers.Factory(
         UserRepo,
-        make_session=_make_session
+        session_factory=db.provided.session
     )
 
     create_jwt_tokens = providers.Singleton(CreateJWTTokens)

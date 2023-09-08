@@ -5,14 +5,21 @@ from config.di import get_di_container
 import endpoints
 
 
+container = get_di_container()
+
+
+db = container.db()
+db.create_database()
+
+
 __app = FastAPI()
-__app.container = get_di_container()
+__app.container = container
 for router in endpoints.get_routers():
     __app.include_router(router)
 __app = VersionedFastAPI(
     app=__app,
     version_format='{major}',
-    prefix_format='/v{major}',
+    prefix_format='/api/v{major}',
     default_version=(1, 0),
     enable_latest=True
 )

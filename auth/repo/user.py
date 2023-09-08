@@ -1,4 +1,4 @@
-from dataclasses import asdict
+from typing import Dict
 
 from schemas.register import RegistrationSchema
 from services.repo import IUserRepo
@@ -14,12 +14,14 @@ class UserRepo(IUserRepo):
             email=entry.email,
             username=entry.username
         )
-        self.db.add(user)
-        self.db.commit()
-        self.db.refresh(user)
+        with self.session_factory() as session:
+            session.add(user)
+            session.commit()
+            session.refresh(user)
         return user
 
-    def update(self, user: UserType) -> UserType:
-        self.db.commit()
-        self.db.refresh(user)
+    def update(self, user: UserType, values: Dict) -> UserType:
+        with self.session_factory() as session:
+            session.query(User).filter(User.id == user.id).update(values)
+            session.commit()
         return user

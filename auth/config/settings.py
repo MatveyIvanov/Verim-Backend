@@ -10,3 +10,10 @@ TIMEZONE = 'Europe/Moscow'
 
 PASSWORD_SALT_LENGTH = 20
 PASSWORD_HASH_ITERATIONS = 100_100
+
+DB_USER = os.environ.get('DB_USER')
+DB_PASSWORD = os.environ.get('DB_PASSWORD')
+DB_NAME = os.environ.get('DB_NAME')
+DB_HOST = os.environ.get('DB_HOST')
+DB_PORT = os.environ.get('DB_PORT')
+DATABASE_URL = os.environ.get('DATABASE_URL')

@@ -12,14 +12,13 @@ from schemas.register import (
 )
 
 
-router = APIRouter(prefix='/api/auth')
+router = APIRouter(prefix='/auth')
 
 
 @router.post('/register/', response_model=JWTTokensSchema, status_code=201)
 @version(1)
 @inject
 async def register(schema: RegistrationSchema, service: IRegisterUser = Depends(Provide[Container.register_user])):
-    print(schema.username, schema.email, schema.password)
     tokens = service(schema)
 
     return asdict(tokens)

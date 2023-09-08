@@ -1,22 +1,43 @@
-import os
-from abc import ABC, abstractmethod
+import logging
+from contextlib import contextmanager, AbstractContextManager
+from typing import Callable
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-
-from config.app import get_fastapi_app
-
-
-app = get_fastapi_app()
-
-
-DB_USER = os.environ.get('DB_USER')
-DB_PASSWORD = os.environ.get('DB_PASSWORD')
-DB_NAME = os.environ.get('DB_NAME')
-DB_HOST = os.environ.get('DB_HOST')
-DB_PORT = os.environ.get('DB_PORT')
-DATABASE_URL = os.environ.get('DATABASE_URL')
+from sqlalchemy.orm import (
+    sessionmaker,
+    Session,
+    declarative_base,
+    scoped_session,
+)
 
 
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+logger = logging.getLogger(__name__)
+Base = declarative_base()
+
+
+class Database:
+
+    def __init__(self, db_url: str) -> None:
+        self._engine = create_engine(db_url, echo=True)
+        self._session_factory = scoped_session(
+            sessionmaker(
+                autocommit=False,
+                autoflush=False,
+                bind=self._engine,
+            ),
+        )
+
+    def create_database(self) -> None:
+        Base.metadata.create_all(self._engine)
+
+    @contextmanager
+    def session(self) -> Callable[..., AbstractContextManager[Session]]:
+        session: Session = self._session_factory()
+        try:
+            yield session
+        except Exception:
+            logger.exception("Session rollback because of exception")
+            session.rollback()
+            raise
+        finally:
+            session.close()
