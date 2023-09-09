@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
-import hashlib
 
-from config import settings
-from utils.random import get_random_string
+import bcrypt
+
+
+ENCODING = "utf-8"
 
 
 class IHashPassword(ABC):
@@ -11,11 +12,17 @@ class IHashPassword(ABC):
         ...
 
 
+class ICheckPassword(ABC):
+    @abstractmethod
+    def __call__(self, plain_pwd: str, hashed_pwd: str) -> bool: ...
+
+
 class HashPassword(IHashPassword):
     def __call__(self, password: str) -> str:
-        return hashlib.pbkdf2_hmac(
-            hash_name="sha256",
-            password=password.encode(),
-            salt=get_random_string(settings.PASSWORD_SALT_LENGTH).encode(),
-            iterations=settings.PASSWORD_HASH_ITERATIONS,
-        ).hex()
+        return bcrypt.hashpw(password.encode(ENCODING), bcrypt.gensalt()).decode(ENCODING)
+
+
+class CheckPassword(ICheckPassword):
+
+    def __call__(self, plain_pwd: str, hashed_pwd: str) -> bool:
+        return bcrypt.checkpw(plain_pwd.encode(ENCODING), hashed_pwd.encode(ENCODING))

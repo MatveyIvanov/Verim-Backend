@@ -3,7 +3,7 @@ from dependency_injector import containers, providers
 from config import settings
 from config.db import Database
 from repo import UserRepo
-from services.regisration import RegisterUser
+from services.registration import RegisterUser
 from services.validators import (
     Validate,
     UsernameLengthValidator,
@@ -13,8 +13,9 @@ from services.validators import (
     PasswordRequiredCharactersValidator,
 )
 from services.validators.password import get_password_required_groups
-from services.password import HashPassword
+from services.password import HashPassword, CheckPassword
 from services.jwt import CreateJWTTokens
+from services.login import LoginUser
 
 
 class Container(containers.DeclarativeContainer):
@@ -61,6 +62,7 @@ class Container(containers.DeclarativeContainer):
     )
 
     hash_password = providers.Singleton(HashPassword)
+    check_password = providers.Singleton(CheckPassword)
 
     register_user = providers.Singleton(
         RegisterUser,
@@ -68,5 +70,12 @@ class Container(containers.DeclarativeContainer):
         validate_username=validate_username,
         validate_password=validate_password,
         hash_password=hash_password,
+        repo=_user_repo,
+    )
+
+    login_user = providers.Singleton(
+        LoginUser,
+        create_jwt_tokens=create_jwt_tokens,
+        check_password=check_password,
         repo=_user_repo,
     )

@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from schemas.register import RegistrationSchema
+from schemas import RegistrationSchema
 from utils.typing import UserType
 from utils.repo import IRepo
 
@@ -20,4 +20,8 @@ class IUserRepo(IRepo):
 
     @abstractmethod
     def username_exists(self, username: str) -> bool:
+        ...
+
+    @abstractmethod
+    def get_by_login(self, login: str) -> UserType | None:
         ...

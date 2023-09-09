@@ -1,8 +1,8 @@
-from typing import Dict
+from typing import Dict, Optional
 
-from sqlalchemy import func
+from sqlalchemy import func, or_
 
-from schemas.register import RegistrationSchema
+from schemas import RegistrationSchema
 from services.repo import IUserRepo
 from models.users import User
 from utils.typing import UserType
@@ -13,7 +13,7 @@ class UserRepo(IUserRepo):
 
     def create(self, entry: RegistrationSchema) -> UserType:
         user = self.model(
-            email=entry.email, username=entry.username, password=entry.password
+            email=entry.email.lower(), username=entry.username, password=entry.password
         )
         with self.session_factory() as session:
             session.add(user)
@@ -23,22 +23,35 @@ class UserRepo(IUserRepo):
 
     def update(self, user: UserType, values: Dict) -> UserType:
         with self.session_factory() as session:
-            session.query(User).filter(User.id == user.id).update(values)
+            session.query(self.model).filter(self.model.id == user.id).update(values)
             session.commit()
         return user
 
     def email_exists(self, email: str) -> bool:
         with self.session_factory() as session:
             return session.query(
-                session.query(User)
+                session.query(self.model)
                 .exists()
-                .where(func.lower(User.email) == func.lower(email))
+                .where(func.lower(self.model.email) == func.lower(email))
             ).scalar()
 
     def username_exists(self, username: str) -> bool:
         with self.session_factory() as session:
             return session.query(
-                session.query(User)
+                session.query(self.model)
                 .exists()
-                .where(func.lower(User.username) == func.lower(username))
+                .where(func.lower(self.model.username) == func.lower(username))
             ).scalar()
+
+    def get_by_login(self, login: str) -> UserType | None:
+        with self.session_factory() as session:
+            return (
+                session.query(self.model)
+                .filter(
+                    or_(
+                        func.lower(self.model.username) == func.lower(login),
+                        func.lower(self.model.email) == func.lower(login),
+                    )
+                )
+                .first()
+            )

@@ -1,12 +1,13 @@
 from dataclasses import asdict
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
+from fastapi.responses import JSONResponse
 from fastapi_versioning import version
 from dependency_injector.wiring import Provide, inject
 
 from config.di import Container
-from services.regisration import IRegisterUser
-from schemas.register import RegistrationSchema, JWTTokensSchema
+from services.registration import IRegisterUser
+from schemas import RegistrationSchema, JWTTokensSchema
 
 
 router = APIRouter(prefix="/auth")
@@ -19,6 +20,4 @@ async def register(
     schema: RegistrationSchema,
     service: IRegisterUser = Depends(Provide[Container.register_user]),
 ):
-    tokens = service(schema)
-
-    return asdict(tokens)
+    return JSONResponse(asdict(service(schema)), status_code=status.HTTP_201_CREATED)

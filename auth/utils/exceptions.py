@@ -15,6 +15,13 @@ class Custom400Exception(CustomException):
         super().__init__(status.HTTP_400_BAD_REQUEST, detail, headers)
 
 
+class Custom401Exception(CustomException):
+    def __init__(
+        self, detail: Any = None, headers: Dict[str, str] | None = None
+    ) -> None:
+        super().__init__(status.HTTP_401_UNAUTHORIZED, detail, headers)
+
+
 class Custom404Exception(CustomException):
     def __init__(
         self, detail: Any = None, headers: Dict[str, str] | None = None

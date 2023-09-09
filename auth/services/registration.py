@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 
-from schemas.register import RegistrationSchema, JWTTokensSchema
-from ..validators import IValidate
-from ..jwt import (
+from .validators import IValidate
+from .jwt import (
     ICreateJWTTokens,
 )
-from ..password import IHashPassword
-from ..repo import IUserRepo
+from .password import IHashPassword
+from .repo import IUserRepo
+from schemas import RegistrationSchema, JWTTokensSchema
 from utils.typing import UserType
 from utils.exceptions import Custom400Exception
 
