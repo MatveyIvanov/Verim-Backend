@@ -6,9 +6,18 @@ from utils.repo import IRepo
 
 
 class IUserRepo(IRepo):
+    @abstractmethod
+    def create(self, entry: RegistrationSchema) -> UserType:
+        ...
 
     @abstractmethod
-    def create(self, entry: RegistrationSchema) -> UserType: ...
+    def update(self, user: UserType) -> None:
+        ...
 
     @abstractmethod
-    def update(self, user: UserType) -> None: ...
+    def email_exists(self, email: str) -> bool:
+        ...
+
+    @abstractmethod
+    def username_exists(self, username: str) -> bool:
+        ...

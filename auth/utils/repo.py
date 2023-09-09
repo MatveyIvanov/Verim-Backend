@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 
 class IRepo(ABC):
-
-    def __init__(self, session_factory: Callable[..., AbstractContextManager[Session]]) -> None:
+    def __init__(
+        self, session_factory: Callable[..., AbstractContextManager[Session]]
+    ) -> None:
         self.session_factory = session_factory

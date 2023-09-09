@@ -6,6 +6,4 @@ from .registration import router as registration_router
 
 
 def get_routers() -> List[APIRouter]:
-    return (
-        registration_router,
-    )
+    return (registration_router,)

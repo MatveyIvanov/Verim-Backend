@@ -1,40 +1,34 @@
 from abc import ABC, abstractmethod
 
-from schemas.register import (
-    RegistrationSchema,
-    JWTTokensSchema
-)
-from ..validators import (
-    IPasswordValidator,
-    IUsernameValidator,
-)
+from schemas.register import RegistrationSchema, JWTTokensSchema
+from ..validators import IValidate
 from ..jwt import (
     ICreateJWTTokens,
 )
 from ..password import IHashPassword
 from ..repo import IUserRepo
 from utils.typing import UserType
+from utils.exceptions import Custom400Exception
 
 
 class IRegisterUser(ABC):
-
     @abstractmethod
-    def __call__(self, entry: RegistrationSchema) -> JWTTokensSchema: ...
+    def __call__(self, entry: RegistrationSchema) -> JWTTokensSchema:
+        ...
 
 
 class RegisterUser(IRegisterUser):
-
     def __init__(
         self,
         create_jwt_tokens: ICreateJWTTokens,
-        username_validator: IUsernameValidator,
-        password_validator: IPasswordValidator,
+        validate_username: IValidate,
+        validate_password: IValidate,
         hash_password: IHashPassword,
-        repo: IUserRepo
+        repo: IUserRepo,
     ) -> None:
         self.create_jwt_tokens = create_jwt_tokens
-        self.username_validator = username_validator
-        self.password_validator = password_validator
+        self.validate_username = validate_username
+        self.validate_password = validate_password
         self.hash_password = hash_password
         self.repo = repo
 
@@ -47,13 +41,18 @@ class RegisterUser(IRegisterUser):
         return self._make_tokens(user)
 
     def _validate_email(self, entry: RegistrationSchema) -> None:
-        pass
+        if self.repo.email_exists(entry.email):
+            raise Custom400Exception("Email is already taken.")
 
     def _validate_username(self, entry: RegistrationSchema) -> None:
-        self.username_validator(entry.username)
+        self.validate_username(entry.username, raise_exception=True)
+        if self.repo.username_exists(entry.username):
+            raise Custom400Exception("Username is already taken.")
 
     def _validate_password(self, entry: RegistrationSchema) -> None:
-        self.password_validator(entry.password)
+        if entry.password != entry.re_password:
+            raise Custom400Exception("Password mismatch.")
+        self.validate_password(entry.password, raise_exception=True)
 
     def _create_user(self, entry: RegistrationSchema) -> UserType:
         return self.repo.create(entry)

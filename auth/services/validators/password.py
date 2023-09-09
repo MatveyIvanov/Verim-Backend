@@ -1,13 +1,68 @@
-from abc import ABC, abstractmethod
+from typing import List
+import string
+
+from .base import LengthValidator, CharactersValidator, IValidator
+from ..entries import PasswordRequiredCharactersGroup
+from utils.exceptions import Custom400Exception
 
 
-class IPasswordValidator(ABC):
+class PasswordLengthValidator(LengthValidator):
+    error_messages = {
+        "min_length": lambda min_length: "Make sure that password length is not less than %(min_length)s."
+        % {"min_length": min_length},
+        "max_length": lambda max_length: "Make sure that password length is not greater than %(max_length)s."
+        % {"max_length": max_length},
+    }
 
-    @abstractmethod
-    def __call__(self, password: str) -> None: ...
+
+class PasswordCharactersValidator(CharactersValidator):
+    error_messages = {
+        "invalid_characters": lambda invalid_characters: "Invalid characters in password: %(invalid_characters)s."
+        % {"invalid_characters": ", ".join(invalid_characters)}
+    }
 
 
-class PasswordValidator(IPasswordValidator):
+class PasswordRequiredCharactersValidator(IValidator):
+    def __init__(self, *characters_groups: PasswordRequiredCharactersGroup) -> None:
+        self.groups = characters_groups
 
-    def __call__(self, password: str) -> None:
-        return
+    def is_valid(self, data: str, raise_exception: bool) -> bool:
+        present_in_password = {group.name: False for group in self.groups}
+        for letter in data:
+            for group in self.groups:
+                if present_in_password.get(group.name):
+                    continue
+                if letter in group.characters:
+                    present_in_password[group.name] = True
+                    continue
+
+        not_present_in_password = [
+            group
+            for group, is_present in present_in_password.items()
+            if is_present == False
+        ]
+        if raise_exception and not_present_in_password:
+            raise Custom400Exception(
+                "Password must contain at least one character from each of the following groups:\n"
+                + "\n".join([group.description for group in self.groups])
+            )
+
+        return False if not_present_in_password else True
+
+
+def get_password_required_groups() -> List[PasswordRequiredCharactersGroup]:
+    return [
+        PasswordRequiredCharactersGroup(
+            name="lowercase",
+            characters=string.ascii_lowercase,
+            description="- Lowercase letters",
+        ),
+        PasswordRequiredCharactersGroup(
+            name="uppercase",
+            characters=string.ascii_uppercase,
+            description="- Uppercase letters",
+        ),
+        PasswordRequiredCharactersGroup(
+            name="digits", characters=string.digits, description="- Digits"
+        ),
+    ]

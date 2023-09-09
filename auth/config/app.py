@@ -18,10 +18,10 @@ for router in endpoints.get_routers():
     __app.include_router(router)
 __app = VersionedFastAPI(
     app=__app,
-    version_format='{major}',
-    prefix_format='/api/v{major}',
+    version_format="{major}",
+    prefix_format="/api/v{major}",
     default_version=(1, 0),
-    enable_latest=True
+    enable_latest=True,
 )
 
 
