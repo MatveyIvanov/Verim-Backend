@@ -19,7 +19,6 @@ __app = CustomFastAPI()
 __app.container = container
 for router in endpoints.get_routers():
     __app.include_router(router)
-__app.router
 __app = VersionedFastAPI(
     app=__app,
     version_format="{major}",
