@@ -27,6 +27,7 @@ user_table = Table(
         onupdate=func.now(),
         nullable=False,
     ),
+    Column("tokens_revoked_at", DateTime(timezone=True), default=None, nullable=True),
 )
 
 

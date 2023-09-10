@@ -1,29 +1,38 @@
+from typing import Dict
+from datetime import datetime
+
 from dependency_injector.wiring import inject, Provide
 from starlette.types import Scope, Receive, Send
 from fastapi import status
 from fastapi.responses import JSONResponse
 import jwt
+import pytz
 
 from config import settings
 from config.di import Container
 from services.repo import IUserRepo
+from utils.typing import UserType
 from utils.exceptions import Custom401Exception, Custom403Exception
-from utils.time import get_current_time
 
 
 @inject
 def authenticate_by_token(token, repo: IUserRepo = Provide[Container.user_repo]):
     try:
-        payload = jwt.decode(
+        payload: Dict = jwt.decode(
             token, settings.ACCESS_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
         )
     except jwt.exceptions.PyJWTError:
         raise Custom401Exception("Token is not correct.")
 
-    user = repo.get_by_id(payload.get("user", None))
+    user: UserType = repo.get_by_id(payload.get("user", None))
     if not user:
         raise Custom401Exception("Token is not correct.")
-    # TODO: check for last tokens revokation time
+
+    token_created_at = datetime.fromtimestamp(
+        payload.get("created_at"), tz=pytz.timezone(settings.TIMEZONE)
+    )
+    if user.tokens_revoked_at and user.tokens_revoked_at > token_created_at:
+        raise Custom401Exception("Token is not correct.")
 
     if not user.is_active:
         raise Custom403Exception("User is not active.")

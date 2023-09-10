@@ -15,3 +15,4 @@ class UserType:
     is_active: bool
     created_at: datetime
     updated_at: datetime
+    tokens_revoked_at: datetime | None
