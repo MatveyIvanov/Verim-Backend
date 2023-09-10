@@ -14,7 +14,7 @@ from services.validators import (
 )
 from services.validators.password import get_password_required_groups
 from services.password import HashPassword, CheckPassword
-from services.jwt import CreateJWTTokens
+from services.jwt import CreateJWTTokens, RefreshJWTTokens
 from services.login import LoginUser
 
 
@@ -28,6 +28,9 @@ class Container(containers.DeclarativeContainer):
     user_repo = providers.Factory(UserRepo, session_factory=db.provided.session)
 
     create_jwt_tokens = providers.Singleton(CreateJWTTokens)
+    refresh_jwt_tokens = providers.Singleton(
+        RefreshJWTTokens, create_jwt_tokens=create_jwt_tokens
+    )
 
     username_length_validator = providers.Singleton(
         UsernameLengthValidator,
