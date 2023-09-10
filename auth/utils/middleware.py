@@ -32,15 +32,9 @@ def authenticate_by_token(token, repo: IUserRepo = Provide[Container.user_repo])
 
 
 class AuthenticationMiddleware:
-    # TODO: would be great to integrate this via DI, because
-    # `authenticate_by_token` really needs UserRepo
-    # TODO: extra attribute such as `raise_exception` might be needed
-    # for initialization, to be able to specify whether we should
-    # pass anonymous users or not. Alternatively, it would be even better to design
-    # permissions system.
-
-    def __init__(self, app):
+    def __init__(self, app, raise_exception: bool = True):
         self._app = app
+        self.raise_exception = raise_exception
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send):
         if not scope["type"] == "http":
@@ -50,33 +44,46 @@ class AuthenticationMiddleware:
 
         auth_header = self._get_authorization_header(scope).split()
         if auth_header is None:
-            response = JSONResponse(
-                {"detail": "Credentials not provided."}, status.HTTP_401_UNAUTHORIZED
-            )
-            await response(scope, receive, send)
+            if self.raise_exception:
+                response = JSONResponse(
+                    {"detail": "Credentials not provided."},
+                    status.HTTP_401_UNAUTHORIZED,
+                )
+                await response(scope, receive, send)
+            else:
+                await self._app(scope, receive, send)
             return
 
         if len(auth_header) != 2:
-            response = JSONResponse(
-                {"detail": "Authentication failed."}, status.HTTP_401_UNAUTHORIZED
-            )
-            await response(scope, receive, send)
+            if self.raise_exception:
+                response = JSONResponse(
+                    {"detail": "Authentication failed."}, status.HTTP_401_UNAUTHORIZED
+                )
+                await response(scope, receive, send)
+            else:
+                await self._app(scope, receive, send)
             return
 
         prefix, token = auth_header
 
         if prefix.lower() != settings.AUTHENTICATION_HEADER_PREFIX.lower():
-            response = JSONResponse(
-                {"detail": "Authentication failed."}, status.HTTP_401_UNAUTHORIZED
-            )
-            await response(scope, receive, send)
+            if self.raise_exception:
+                response = JSONResponse(
+                    {"detail": "Authentication failed."}, status.HTTP_401_UNAUTHORIZED
+                )
+                await response(scope, receive, send)
+            else:
+                await self._app(scope, receive, send)
             return
 
         try:
             scope["user"] = authenticate_by_token(token)
         except (Custom401Exception, Custom403Exception) as e:
-            response = JSONResponse({"detail": str(e)}, status.HTTP_403_FORBIDDEN)
-            await response(scope, receive, send)
+            if self.raise_exception:
+                response = JSONResponse({"detail": str(e)}, status.HTTP_403_FORBIDDEN)
+                await response(scope, receive, send)
+            else:
+                await self._app(scope, receive, send)
             return
 
         await self._app(scope, receive, send)
