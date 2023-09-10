@@ -19,11 +19,13 @@ from services.login import LoginUser
 
 
 class Container(containers.DeclarativeContainer):
-    wiring_config = containers.WiringConfiguration(packages=["endpoints"])
+    wiring_config = containers.WiringConfiguration(
+        packages=["endpoints"], modules=["utils.middleware"]
+    )
 
     db = providers.Singleton(Database, db_url=settings.DATABASE_URL)
 
-    _user_repo = providers.Factory(UserRepo, session_factory=db.provided.session)
+    user_repo = providers.Factory(UserRepo, session_factory=db.provided.session)
 
     create_jwt_tokens = providers.Singleton(CreateJWTTokens)
 
@@ -70,12 +72,12 @@ class Container(containers.DeclarativeContainer):
         validate_username=validate_username,
         validate_password=validate_password,
         hash_password=hash_password,
-        repo=_user_repo,
+        repo=user_repo,
     )
 
     login_user = providers.Singleton(
         LoginUser,
         create_jwt_tokens=create_jwt_tokens,
         check_password=check_password,
-        repo=_user_repo,
+        repo=user_repo,
     )

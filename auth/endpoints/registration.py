@@ -1,6 +1,6 @@
 from dataclasses import asdict
 
-from fastapi import APIRouter, Depends, status
+from fastapi import Depends, status
 from fastapi.responses import JSONResponse
 from fastapi_versioning import version
 from dependency_injector.wiring import Provide, inject
@@ -8,9 +8,10 @@ from dependency_injector.wiring import Provide, inject
 from config.di import Container
 from services.registration import IRegisterUser
 from schemas import RegistrationSchema, JWTTokensSchema
+from utils.routing import CustomAPIRouter
 
 
-router = APIRouter(prefix="/auth")
+router = CustomAPIRouter(prefix="/auth")
 
 
 @router.post("/register/", response_model=JWTTokensSchema, status_code=201)

@@ -25,3 +25,7 @@ class IUserRepo(IRepo):
     @abstractmethod
     def get_by_login(self, login: str) -> UserType | None:
         ...
+
+    @abstractmethod
+    def get_by_id(self, id: int) -> UserType | None:
+        ...

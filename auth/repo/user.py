@@ -55,3 +55,7 @@ class UserRepo(IUserRepo):
                 )
                 .first()
             )
+
+    def get_by_id(self, id: int) -> UserType | None:
+        with self.session_factory() as session:
+            return session.query(self.model).filter(self.model.id == id).first()

@@ -22,6 +22,13 @@ class Custom401Exception(CustomException):
         super().__init__(status.HTTP_401_UNAUTHORIZED, detail, headers)
 
 
+class Custom403Exception(CustomException):
+    def __init__(
+        self, detail: Any = None, headers: Dict[str, str] | None = None
+    ) -> None:
+        super().__init__(status.HTTP_403_FORBIDDEN, detail, headers)
+
+
 class Custom404Exception(CustomException):
     def __init__(
         self, detail: Any = None, headers: Dict[str, str] | None = None
