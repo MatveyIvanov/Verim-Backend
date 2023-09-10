@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 import jwt
 
-from schemas.register import JWTTokensSchema
+from schemas import JWTTokensSchema
 from config import settings
 from utils.typing import UserType
 from utils.time import get_current_time
@@ -31,7 +31,9 @@ class CreateJWTTokens(ICreateJWTTokens):
             "created_at": current_time.timestamp(),
         }
         encoded = jwt.encode(
-            payload=payload, key=settings.ACCESS_SECRET_KEY, algorithm="HS256"
+            payload=payload,
+            key=settings.ACCESS_SECRET_KEY,
+            algorithm=settings.JWT_ALGORITHM,
         )
         return encoded
 
@@ -45,6 +47,8 @@ class CreateJWTTokens(ICreateJWTTokens):
             "created_at": current_time.timestamp(),
         }
         encoded = jwt.encode(
-            payload=payload, key=settings.REFRESH_SECRET_KEY, algorithm="HS256"
+            payload=payload,
+            key=settings.REFRESH_SECRET_KEY,
+            algorithm=settings.JWT_ALGORITHM,
         )
         return encoded

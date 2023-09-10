@@ -5,8 +5,6 @@ from pydantic.dataclasses import dataclass
 
 
 @dataclass
-class RegistrationSchema:
-    email: EmailStr
-    username: str
+class LoginSchema:
+    login: str | EmailStr
     password: str
-    re_password: str
