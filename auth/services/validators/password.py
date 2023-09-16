@@ -3,6 +3,7 @@ import string
 
 from .base import LengthValidator, CharactersValidator, IValidator
 from ..entries import PasswordRequiredCharactersGroup
+from config.i18n import _
 from utils.exceptions import Custom400Exception
 
 
@@ -43,7 +44,9 @@ class PasswordRequiredCharactersValidator(IValidator):
         ]
         if raise_exception and not_present_in_password:
             raise Custom400Exception(
-                "Password must contain at least one character from each of the following groups:\n"
+                _(
+                    "Password must contain at least one character from each of the following groups:\n"
+                )
                 + "\n".join([group.description for group in self.groups])
             )
 

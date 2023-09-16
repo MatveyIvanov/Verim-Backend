@@ -1,0 +1,58 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2023-09-16 17:12+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+#: /microservice/services/login.py:37
+msgid "User not found."
+msgstr "Пользователь не найден."
+
+#: /microservice/services/login.py:42
+msgid "Wrong password."
+msgstr "Неверный пароль."
+
+#: /microservice/services/registration.py:46
+msgid "Email is already taken."
+msgstr "Почта уже занята."
+
+#: /microservice/services/registration.py:51
+msgid "Username is already taken."
+msgstr "Имя пользователя уже занято."
+
+#: /microservice/services/registration.py:55
+msgid "Password mismatch."
+msgstr "Пароли не совпадают."
+
+#: /microservice/services/validators/base.py:34
+msgid "Make sure that length is not less than %(min_length)s."
+msgstr "Убедитесь, что длина пароля не меньше %(min_length)s."
+
+#: /microservice/services/validators/base.py:38
+msgid "Make sure that length is not greater than %(max_length)s."
+msgstr "Убедитесь, что длина пароля не больше %(max_length)s."
+
+#: /microservice/services/validators/base.py:67
+msgid "Invalid characters: %(invalid_characters)s."
+msgstr "Некорректные символы: %(invalid_characters)s."
+
+#: /microservice/services/validators/password.py:47
+msgid ""
+"Password must contain at least one character from each of the following "
+"groups:\n"
+msgstr "Пароль должен содержать минимум по 1 символу каждой из следующих групп:\n"
+
+#: /microservice/utils/middleware.py:37 /microservice/utils/middleware.py:42
+#: /microservice/utils/middleware.py:46 /microservice/utils/middleware.py:51
+msgid "Token is not correct."
+msgstr "Некорректный токен."
+
+#: /microservice/utils/middleware.py:54
+msgid "User is not active."
+msgstr "Пользователь неактивен."

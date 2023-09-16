@@ -6,6 +6,7 @@ from .jwt import (
 )
 from .password import IHashPassword
 from .repo import IUserRepo
+from config.i18n import _
 from schemas import RegistrationSchema, JWTTokensSchema
 from utils.typing import UserType
 from utils.exceptions import Custom400Exception
@@ -42,16 +43,16 @@ class RegisterUser(IRegisterUser):
 
     def _validate_email(self, entry: RegistrationSchema) -> None:
         if self.repo.email_exists(entry.email):
-            raise Custom400Exception("Email is already taken.")
+            raise Custom400Exception(_("Email is already taken."))
 
     def _validate_username(self, entry: RegistrationSchema) -> None:
         self.validate_username(entry.username, raise_exception=True)
         if self.repo.username_exists(entry.username):
-            raise Custom400Exception("Username is already taken.")
+            raise Custom400Exception(_("Username is already taken."))
 
     def _validate_password(self, entry: RegistrationSchema) -> None:
         if entry.password != entry.re_password:
-            raise Custom400Exception("Password mismatch.")
+            raise Custom400Exception(_("Password mismatch."))
         self.validate_password(entry.password, raise_exception=True)
 
     def _create_user(self, entry: RegistrationSchema) -> UserType:
