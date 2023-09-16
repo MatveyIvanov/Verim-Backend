@@ -16,7 +16,6 @@ from fastapi.params import Depends
 from fastapi.exceptions import (
     RequestValidationError,
     WebSocketRequestValidationError,
-    HTTPException,
 )
 from fastapi.utils import generate_unique_id
 from fastapi.routing import APIRoute, APIRouter
@@ -30,6 +29,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 from starlette.routing import BaseRoute
 from starlette.types import Lifespan, ASGIApp
+from starlette.exceptions import HTTPException
 
 from utils.routing import CustomAPIRouter
 
