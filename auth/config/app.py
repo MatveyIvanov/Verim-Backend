@@ -1,11 +1,16 @@
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.exceptions import RequestValidationError
 from fastapi_versioning import VersionedFastAPI
 
 from config.di import get_di_container
 import endpoints
-from utils.middleware import AuthenticationMiddleware
 from utils.app import CustomFastAPI
+from utils.exceptions import (
+    CustomException,
+    custom_exception_handler,
+    request_validation_exception_handler,
+)
 
 
 container = get_di_container()
@@ -14,11 +19,24 @@ container = get_di_container()
 db = container.db()
 db.create_database()
 
-
-__app = CustomFastAPI()
+__app = CustomFastAPI(
+    debug=True,
+    exception_handlers={
+        CustomException: custom_exception_handler,
+        RequestValidationError: request_validation_exception_handler,
+    },
+)
 __app.container = container
 for router in endpoints.get_routers():
     __app.include_router(router)
+
+
+# custom exception handlers do not work w/o this
+# because of versioned fastapi
+handlers_to_apply = {}
+for exception, handler in __app.exception_handlers.items():
+    handlers_to_apply[exception] = handler
+
 __app = VersionedFastAPI(
     app=__app,
     version_format="{major}",
@@ -28,6 +46,13 @@ __app = VersionedFastAPI(
 )
 # __app.add_middleware(HTTPSRedirectMiddleware)  # FIXME for production
 __app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])  # FIXME for production
+
+# custom exception handlers do not work w/o this
+# because of versioned fastapi
+for sub_app in __app.routes:
+    if hasattr(sub_app.app, "add_exception_handler"):
+        for exception, handler in handlers_to_apply.items():
+            sub_app.app.add_exception_handler(exception, handler)
 
 
 def get_fastapi_app() -> CustomFastAPI:
