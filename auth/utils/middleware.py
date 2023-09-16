@@ -65,8 +65,9 @@ class AuthenticationMiddleware:
             await self._app(scope, receive, send)
 
         scope["user"] = None
+        headers = headers_from_scope(scope)
 
-        auth_header = self._get_authorization_header(scope).split()
+        auth_header = self._get_authorization_header(headers).split()
         if auth_header is None:
             if self.raise_exception:
                 response = JSONResponse(
@@ -112,8 +113,7 @@ class AuthenticationMiddleware:
 
         await self._app(scope, receive, send)
 
-    def _get_authorization_header(self, scope: Scope) -> str | None:
-        headers = headers_from_scope(scope)
+    def _get_authorization_header(self, headers: Dict) -> str | None:
         try:
             return headers[settings.AUTHENTICATION_HEADER.lower()]
         except KeyError:
@@ -127,7 +127,7 @@ class TranslationMiddleware:
     async def __call__(self, scope: Scope, receive: Receive, send: Send):
         if not scope["type"] == "http":
             await self._app(scope, receive, send)
-        print("asdad")
+
         headers = self._get_headers(scope)
         self._activate_translation(headers)
 
@@ -137,5 +137,4 @@ class TranslationMiddleware:
         return headers_from_scope(scope)
 
     def _activate_translation(self, headers: Dict) -> None:
-        print(headers)
         activate_translation(headers.get("accept-language", None))
