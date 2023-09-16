@@ -1,22 +1,22 @@
 import gettext
 
 
-_default_lang = None
 DEFAULT_LANGUAGE = "en"
 SUPPORTED_LANGUAGES = ["en", "ru"]
+_lang = DEFAULT_LANGUAGE
 
 
 def activate_translation(lang: str):
-    global _default_lang
-    _default_lang = DEFAULT_LANGUAGE if lang not in SUPPORTED_LANGUAGES else lang
+    global _lang
+    _lang = DEFAULT_LANGUAGE if lang not in SUPPORTED_LANGUAGES else lang
 
 
 def _(message: str) -> str:
-    if _default_lang == DEFAULT_LANGUAGE:
+    if _lang == DEFAULT_LANGUAGE:
         return message
-    return gettext.translation(
-        "base", localedir="locale", languages=[_default_lang]
-    ).gettext(message)
+    return gettext.translation("base", localedir="locale", languages=[_lang]).gettext(
+        message
+    )
 
 
 """
