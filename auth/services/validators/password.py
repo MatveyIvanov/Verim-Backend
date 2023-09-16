@@ -3,21 +3,28 @@ import string
 
 from .base import LengthValidator, CharactersValidator, IValidator
 from ..entries import PasswordRequiredCharactersGroup
+from config.i18n import _
 from utils.exceptions import Custom400Exception
 
 
 class PasswordLengthValidator(LengthValidator):
     error_messages = {
-        "min_length": lambda min_length: "Make sure that password length is not less than %(min_length)s."
+        "min_length": lambda min_length: _(
+            "Make sure that password length is not less than %(min_length)s."
+        )
         % {"min_length": min_length},
-        "max_length": lambda max_length: "Make sure that password length is not greater than %(max_length)s."
+        "max_length": lambda max_length: _(
+            "Make sure that password length is not greater than %(max_length)s."
+        )
         % {"max_length": max_length},
     }
 
 
 class PasswordCharactersValidator(CharactersValidator):
     error_messages = {
-        "invalid_characters": lambda invalid_characters: "Invalid characters in password: %(invalid_characters)s."
+        "invalid_characters": lambda invalid_characters: _(
+            "Invalid characters in password: %(invalid_characters)s."
+        )
         % {"invalid_characters": ", ".join(invalid_characters)}
     }
 
@@ -43,7 +50,9 @@ class PasswordRequiredCharactersValidator(IValidator):
         ]
         if raise_exception and not_present_in_password:
             raise Custom400Exception(
-                "Password must contain at least one character from each of the following groups:\n"
+                _(
+                    "Password must contain at least one character from each of the following groups:\n"
+                )
                 + "\n".join([group.description for group in self.groups])
             )
 
@@ -55,14 +64,14 @@ def get_password_required_groups() -> List[PasswordRequiredCharactersGroup]:
         PasswordRequiredCharactersGroup(
             name="lowercase",
             characters=string.ascii_lowercase,
-            description="- Lowercase letters",
+            description=_("- Lowercase letters"),
         ),
         PasswordRequiredCharactersGroup(
             name="uppercase",
             characters=string.ascii_uppercase,
-            description="- Uppercase letters",
+            description=_("- Uppercase letters"),
         ),
         PasswordRequiredCharactersGroup(
-            name="digits", characters=string.digits, description="- Digits"
+            name="digits", characters=string.digits, description=_("- Digits")
         ),
     ]

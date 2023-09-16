@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from config.i18n import _
 from schemas import LoginSchema, JWTTokensSchema
 from .jwt import CreateJWTTokens
 from .repo import IUserRepo
@@ -33,12 +34,12 @@ class LoginUser(ILoginUser):
     def _get_user_by_login(self, login: str) -> UserType:
         user = self.repo.get_by_login(login)
         if user is None:
-            raise Custom404Exception("User not found.")
+            raise Custom404Exception(_("User not found."))
         return user
 
     def _check_password(self, user: UserType, password: str) -> None:
         if not self.check_password(password, user.password):
-            raise Custom401Exception("Wrong password.")
+            raise Custom401Exception(_("Wrong password."))
 
     def _make_tokens(self, user: UserType) -> JWTTokensSchema:
         return self.create_jwt_tokens(user)

@@ -11,6 +11,7 @@ from utils.exceptions import (
     custom_exception_handler,
     request_validation_exception_handler,
 )
+from utils.middleware import TranslationMiddleware
 
 
 container = get_di_container()
@@ -46,6 +47,7 @@ __app = VersionedFastAPI(
 )
 # __app.add_middleware(HTTPSRedirectMiddleware)  # FIXME for production
 __app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])  # FIXME for production
+__app.add_middleware(TranslationMiddleware)
 
 # custom exception handlers do not work w/o this
 # because of versioned fastapi
