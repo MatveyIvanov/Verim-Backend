@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from .codes.types import CodeType
+from .codes.types import CodeTypeEnum
 
 
 @dataclass
@@ -22,11 +22,11 @@ class JWTPayload:
 class CreateCodeEntry:
     user_id: int
     code: str
-    type: CodeType
+    type: CodeTypeEnum
 
 
 @dataclass
 class SendCodeEntry:
     email: str
     code: str
-    type: CodeType
+    type: CodeTypeEnum

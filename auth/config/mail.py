@@ -44,8 +44,12 @@ class SendEmail(ISendEmail):
     def __call__(self, entry: SendEmailEntry) -> None:
         self._add_task(entry)
 
-    def _add_task(self, entry: SendEmailEntry) -> None:
-        BackgroundTasks().add_task(self.send_email, entry=entry)
+    def _add_task(
+        self, entry: SendEmailEntry, background_tasks: BackgroundTasks
+    ) -> None:
+        background_tasks.add_task(
+            self.send_email, entry=entry
+        )  # FIXME: не работает, переходим на celery
 
 
 class _SendEmail(ISendEmail):

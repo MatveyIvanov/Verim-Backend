@@ -14,9 +14,13 @@ class ISendCode(ABC):
 
 
 class SendCode(ISendCode):
-    subject_map = {CodeTypeEnum.EMAIL_CONFIRM: _("Email confirmation")}
-    message_map = {CodeTypeEnum.EMAIL_CONFIRM: _("Your confirmation code: %(code)s")}
-    result_map = {CodeTypeEnum.EMAIL_CONFIRM: _("Code successfully sent to %(email)s.")}
+    subject_map = {CodeTypeEnum.EMAIL_CONFIRM.value: _("Email confirmation")}
+    message_map = {
+        CodeTypeEnum.EMAIL_CONFIRM.value: _("Your confirmation code: %(code)s")
+    }
+    result_map = {
+        CodeTypeEnum.EMAIL_CONFIRM.value: _("Code successfully sent to %(email)s.")
+    }
 
     def __init__(self, send_email: ISendEmail) -> None:
         self.send_email = send_email
@@ -37,5 +41,5 @@ class SendCode(ISendCode):
     def _result(self, entry: SendCodeEntry) -> CodeSentSchema:
         return CodeSentSchema(
             email=entry.email,
-            message=self.message_map.get(entry.type) % {"email": entry.email},
+            message=self.result_map[entry.type] % {"email": entry.email},
         )
