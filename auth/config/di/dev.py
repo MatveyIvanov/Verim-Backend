@@ -13,8 +13,8 @@ from services.validators import (
     PasswordRequiredCharactersValidator,
 )
 from services.validators.password import get_password_required_groups
-from services.password import HashPassword, CheckPassword
-from services.jwt import CreateJWTTokens, RefreshJWTTokens
+from services.password import HashPassword, CheckPassword, ChangePassword
+from services.jwt import CreateJWTTokens, RefreshJWTTokens, RevokeJWTTokens
 from services.login import LoginUser
 
 
@@ -31,6 +31,7 @@ class Container(containers.DeclarativeContainer):
     refresh_jwt_tokens = providers.Singleton(
         RefreshJWTTokens, create_jwt_tokens=create_jwt_tokens
     )
+    revoke_jwt_tokens = providers.Singleton(RevokeJWTTokens, repo=user_repo)
 
     username_length_validator = providers.Singleton(
         UsernameLengthValidator,
@@ -82,5 +83,14 @@ class Container(containers.DeclarativeContainer):
         LoginUser,
         create_jwt_tokens=create_jwt_tokens,
         check_password=check_password,
+        repo=user_repo,
+    )
+
+    change_password = providers.Singleton(
+        ChangePassword,
+        check_password=check_password,
+        hash_password=hash_password,
+        validate_password=validate_password,
+        revoke_jwt_tokens=revoke_jwt_tokens,
         repo=user_repo,
     )

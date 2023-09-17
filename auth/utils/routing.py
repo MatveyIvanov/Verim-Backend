@@ -8,7 +8,7 @@ from typing import (
     Set,
 )
 
-from fastapi import Depends, params
+from fastapi import Depends, params, status
 from fastapi.exceptions import FastAPIError
 from fastapi.datastructures import Default, DefaultPlaceholder
 from fastapi.routing import APIRoute, APIRouter, APIWebSocketRoute
@@ -19,6 +19,8 @@ from starlette.responses import JSONResponse, Response
 from starlette.routing import BaseRoute, Route, WebSocketRoute
 from starlette.middleware import Middleware
 from starlette.types import ASGIApp, Lifespan
+
+from utils.schemas import default_responses
 
 
 class CustomAPIRoute(APIRoute):
@@ -56,6 +58,11 @@ class CustomAPIRoute(APIRoute):
         | DefaultPlaceholder = Default(generate_unique_id),
         middleware: Sequence[Middleware] | None = None,
     ) -> None:
+        if responses is None:
+            responses = default_responses
+        else:
+            for status, response in default_responses.items():
+                responses.setdefault(status, response)
         super().__init__(
             path,
             endpoint,
@@ -118,6 +125,11 @@ class CustomAPIRouter(APIRouter):
         assert issubclass(
             route_class, CustomAPIRoute
         ), "Custom APIRoute must subclass CustomAPIRoute"
+        if responses is None:
+            responses = default_responses
+        else:
+            for status, response in default_responses.items():
+                responses.setdefault(status, response)
         super().__init__(
             prefix=prefix,
             tags=tags,
