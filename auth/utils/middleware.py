@@ -67,7 +67,7 @@ class AuthenticationMiddleware:
         scope["user"] = None
         headers = headers_from_scope(scope)
 
-        auth_header = self._get_authorization_header(headers).split()
+        auth_header = self._get_authorization_header(headers)
         if auth_header is None:
             if self.raise_exception:
                 response = JSONResponse(
@@ -78,6 +78,8 @@ class AuthenticationMiddleware:
             else:
                 await self._app(scope, receive, send)
             return
+
+        auth_header = auth_header.split()
 
         if len(auth_header) != 2:
             if self.raise_exception:

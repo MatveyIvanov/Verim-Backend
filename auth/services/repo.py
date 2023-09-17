@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from typing import Dict
 
 from schemas import RegistrationSchema
 from utils.typing import UserType
@@ -11,7 +12,7 @@ class IUserRepo(IRepo):
         ...
 
     @abstractmethod
-    def update(self, user: UserType) -> None:
+    def update(self, user: UserType, values: Dict) -> None:
         ...
 
     @abstractmethod
