@@ -2,6 +2,7 @@ from dependency_injector import containers, providers
 
 from config import settings
 from config.db import Database
+from config.mail import SendEmail
 from repo import UserRepo
 from services.registration import RegisterUser
 from services.validators import (
@@ -20,10 +21,12 @@ from services.login import LoginUser
 
 class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
-        packages=["endpoints"], modules=["utils.middleware"]
+        packages=["endpoints"], modules=["utils.middleware", "config.mail"]
     )
 
     db = providers.Singleton(Database, db_url=settings.DATABASE_URL)
+
+    send_email = providers.Singleton(SendEmail)
 
     user_repo = providers.Factory(UserRepo, session_factory=db.provided.session)
 
