@@ -40,3 +40,5 @@ MAIL_FROM = os.environ.get("MAIL_FROM")
 MAIL_PORT = int(os.environ.get("MAIL_PORT"))
 MAIL_SERVER = os.environ.get("MAIL_SERVER")
 MAIL_FROM_NAME = os.environ.get("MAIL_FROM_NAME")
+
+CONFIRM_EMAIL_CODE_DURATION = 60  # seconds

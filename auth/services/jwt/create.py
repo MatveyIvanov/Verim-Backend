@@ -5,7 +5,7 @@ import jwt
 
 from schemas import JWTTokensSchema
 from config import settings
-from utils.typing import UserType
+from utils.types import UserType
 from utils.time import get_current_time
 
 

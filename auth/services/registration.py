@@ -8,7 +8,7 @@ from .password import IHashPassword
 from .repo import IUserRepo
 from config.i18n import _
 from schemas import RegistrationSchema, JWTTokensSchema
-from utils.typing import UserType
+from utils.types import UserType
 from utils.exceptions import Custom400Exception
 
 

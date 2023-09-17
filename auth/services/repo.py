@@ -2,7 +2,7 @@ from abc import abstractmethod
 from typing import Dict
 
 from schemas import RegistrationSchema
-from utils.typing import UserType
+from utils.types import UserType
 from utils.repo import IRepo
 
 

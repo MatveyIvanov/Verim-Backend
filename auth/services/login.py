@@ -5,7 +5,7 @@ from schemas import LoginSchema, JWTTokensSchema
 from .jwt import CreateJWTTokens
 from .repo import IUserRepo
 from .password import ICheckPassword
-from utils.typing import UserType
+from utils.types import UserType
 from utils.exceptions import Custom401Exception, Custom404Exception
 
 

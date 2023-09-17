@@ -3,7 +3,7 @@ from dependency_injector import containers, providers
 from config import settings
 from config.db import Database
 from config.mail import SendEmail
-from repo import UserRepo
+from repo import UserRepo, CodeRepo
 from services.registration import RegisterUser
 from services.validators import (
     Validate,
@@ -17,6 +17,7 @@ from services.validators.password import get_password_required_groups
 from services.password import HashPassword, CheckPassword, ChangePassword
 from services.jwt import CreateJWTTokens, RefreshJWTTokens, RevokeJWTTokens
 from services.login import LoginUser
+from services.codes import CheckCode, CreateCode
 
 
 class Container(containers.DeclarativeContainer):
@@ -29,6 +30,7 @@ class Container(containers.DeclarativeContainer):
     send_email = providers.Singleton(SendEmail)
 
     user_repo = providers.Factory(UserRepo, session_factory=db.provided.session)
+    _code_repo = providers.Factory(CodeRepo, session_factory=db.provided.session)
 
     create_jwt_tokens = providers.Singleton(CreateJWTTokens)
     refresh_jwt_tokens = providers.Singleton(
@@ -72,6 +74,9 @@ class Container(containers.DeclarativeContainer):
 
     hash_password = providers.Singleton(HashPassword)
     check_password = providers.Singleton(CheckPassword)
+
+    create_code = providers.Singleton(CreateCode, repo=_code_repo)
+    check_code = providers.Singleton(CheckCode, repo=_code_repo)
 
     register_user = providers.Singleton(
         RegisterUser,

@@ -12,7 +12,7 @@ from config.i18n import activate_translation, _
 from services.repo import IUserRepo
 from services.entries import JWTPayload
 from utils.time import timestamp_to_datetime
-from utils.typing import UserType
+from utils.types import UserType
 from utils.exceptions import Custom401Exception, Custom403Exception
 
 

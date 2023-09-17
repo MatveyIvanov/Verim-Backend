@@ -23,6 +23,7 @@ code_table = Table(
     ),
     Column("user_id", Integer, ForeignKey(user_table.c.id), nullable=False),
     Column("code", String(4), nullable=False),
+    Column("type", String(14), nullable=False),
     Column(
         "created_at", DateTime(timezone=True), server_default=func.now(), nullable=False
     ),

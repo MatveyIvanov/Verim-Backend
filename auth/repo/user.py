@@ -5,7 +5,7 @@ from sqlalchemy import func, or_
 from schemas import RegistrationSchema
 from services.repo import IUserRepo
 from models.users import User
-from utils.typing import UserType
+from utils.types import UserType
 
 
 class UserRepo(IUserRepo):
