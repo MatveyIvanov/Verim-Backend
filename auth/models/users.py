@@ -6,7 +6,7 @@ mapper_registry = registry()
 
 
 user_table = Table(
-    "user",
+    "auth_user",
     mapper_registry.metadata,
     Column(
         "id", Integer, primary_key=True, unique=True, autoincrement=True, nullable=False

@@ -40,3 +40,9 @@ class Database:
             raise
         finally:
             session.close()
+
+
+"""
+1. alembic revision --autogenerate -m ""
+2. alembic upgrade head
+"""

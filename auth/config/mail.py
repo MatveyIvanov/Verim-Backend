@@ -10,9 +10,6 @@ from fastapi_mail import FastMail
 from config import settings
 
 
-__all__ = "SendEmailEntry"
-
-
 config = ConnectionConfig(
     MAIL_USERNAME=settings.MAIL_USERNAME,
     MAIL_PASSWORD=settings.MAIL_PASSWORD,
