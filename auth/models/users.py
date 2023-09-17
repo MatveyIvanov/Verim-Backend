@@ -28,6 +28,13 @@ user_table = Table(
         nullable=False,
     ),
     Column("tokens_revoked_at", DateTime(timezone=True), default=None, nullable=True),
+    Column(
+        "email_confirmed",
+        Boolean,
+        default=False,
+        server_default="false",
+        nullable=False,
+    ),
 )
 
 

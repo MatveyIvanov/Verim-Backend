@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
 import string
 
+from ..entries import CreateCodeEntry, SendCodeEntry
 from .types import CodeType, CodeTypeEnum
-from ..entries import CreateCodeEntry
 from .repo import ICodeRepo
+from .send import ISendCode
 from config import settings
 from config.i18n import _
+from schemas import CodeSentSchema
 from utils.types import UserType
 from utils.time import get_current_time
 from utils.exceptions import Custom400Exception
@@ -14,17 +16,25 @@ from utils.random import get_random_string
 
 class ICreateCode(ABC):
     @abstractmethod
-    def __call__(self, user: UserType, type: CodeType) -> str:
+    def __call__(
+        self, user: UserType, type: CodeType, *, send: bool = True
+    ) -> str | CodeSentSchema:
         ...
 
 
 class CreateCode(ICreateCode):
-    def __init__(self, repo: ICodeRepo) -> None:
+    def __init__(self, send_code: ISendCode, repo: ICodeRepo) -> None:
+        self.send_code = send_code
         self.repo = repo
 
-    def __call__(self, user: UserType, type: CodeTypeEnum) -> str:
+    def __call__(
+        self, user: UserType, type: CodeTypeEnum, *, send: bool = True
+    ) -> str | CodeSentSchema:
         self._check_has_active(user, type)
-        return self._create_code(user, type).code
+        code = self._create_code(user, type)
+        if send:
+            return self._send_code(user.email, code)
+        return code.code
 
     def _check_has_active(self, user: UserType, type: CodeTypeEnum) -> None:
         last_code = self.repo.get_last(user.id, type)
@@ -45,4 +55,9 @@ class CreateCode(ICreateCode):
                 code=get_random_string(length=4, allowed_characters=string.digits),
                 type=type,
             )
+        )
+
+    def _send_code(self, email: str, code: CodeType) -> CodeSentSchema:
+        return self.send_code(
+            entry=SendCodeEntry(email=email, code=code.code, type=code.type)
         )

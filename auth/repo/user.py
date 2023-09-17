@@ -48,10 +48,11 @@ class UserRepo(IUserRepo):
             return (
                 session.query(self.model)
                 .filter(
+                    self.model.email_confirmed == True,
                     or_(
                         func.lower(self.model.username) == func.lower(login),
                         func.lower(self.model.email) == func.lower(login),
-                    )
+                    ),
                 )
                 .first()
             )

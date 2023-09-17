@@ -23,3 +23,10 @@ class CreateCodeEntry:
     user_id: int
     code: str
     type: CodeType
+
+
+@dataclass
+class SendCodeEntry:
+    email: str
+    code: str
+    type: CodeType

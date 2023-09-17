@@ -6,6 +6,7 @@ from typing import List
 from fastapi_mail.config import ConnectionConfig
 from fastapi_mail.schemas import MessageSchema, MessageType
 from fastapi_mail import FastMail
+from fastapi.background import BackgroundTasks
 
 from config import settings
 
@@ -37,6 +38,17 @@ class ISendEmail(ABC):
 
 
 class SendEmail(ISendEmail):
+    def __init__(self, send_email: ISendEmail) -> None:
+        self.send_email = send_email
+
+    def __call__(self, entry: SendEmailEntry) -> None:
+        self._add_task(entry)
+
+    def _add_task(self, entry: SendEmailEntry) -> None:
+        BackgroundTasks().add_task(self.send_email, entry=entry)
+
+
+class _SendEmail(ISendEmail):
     async def __call__(self, entry: SendEmailEntry) -> None:
         await self._send_email(entry)
 
