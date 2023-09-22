@@ -1,12 +1,11 @@
 from smtplib import SMTPException
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from abc import ABC, abstractmethod
 from typing import List
 
 from fastapi_mail.config import ConnectionConfig
 from fastapi_mail.schemas import MessageSchema, MessageType
 from fastapi_mail import FastMail
-from fastapi.background import BackgroundTasks
 
 from config import settings
 
@@ -31,9 +30,18 @@ class SendEmailEntry:
     message: str = ""
 
 
+SendEmailDict = SendEmailEntry
+
+
 class ISendEmail(ABC):
     @abstractmethod
     def __call__(self, entry: SendEmailEntry) -> None:
+        ...
+
+
+class _ISendEmail(ABC):
+    @abstractmethod
+    def __call__(self, entry_dict: SendEmailDict) -> None:
         ...
 
 
@@ -44,17 +52,20 @@ class SendEmail(ISendEmail):
     def __call__(self, entry: SendEmailEntry) -> None:
         self._add_task(entry)
 
-    def _add_task(
-        self, entry: SendEmailEntry, background_tasks: BackgroundTasks
-    ) -> None:
-        background_tasks.add_task(
-            self.send_email, entry=entry
-        )  # FIXME: не работает, переходим на celery
+    def _add_task(self, entry: SendEmailEntry) -> None:
+        from config import celery_app
+
+        celery_app.send_task(
+            "config.celery.send_email", kwargs={"entry_dict": asdict(entry)}
+        )
 
 
-class _SendEmail(ISendEmail):
-    async def __call__(self, entry: SendEmailEntry) -> None:
-        await self._send_email(entry)
+class _SendEmail(_ISendEmail):
+    async def __call__(self, entry_dict: SendEmailDict) -> None:
+        await self._send_email(entry=self._to_entry(entry_dict))
+
+    def _to_entry(self, entry_dict: SendEmailDict) -> SendEmailEntry:
+        return SendEmailEntry(**entry_dict)
 
     async def _send_email(self, entry: SendEmailEntry) -> int:
         try:
