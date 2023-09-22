@@ -28,7 +28,7 @@ class Container(containers.DeclarativeContainer):
     db = providers.Singleton(Database, db_url=settings.DATABASE_URL)
 
     _send_email = providers.Singleton(_SendEmail)
-    send_email = providers.Singleton(SendEmail, send_email=_send_email)
+    send_email = providers.Singleton(SendEmail)
 
     user_repo = providers.Factory(UserRepo, session_factory=db.provided.session)
     _code_repo = providers.Factory(CodeRepo, session_factory=db.provided.session)

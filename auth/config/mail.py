@@ -46,9 +46,6 @@ class _ISendEmail(ABC):
 
 
 class SendEmail(ISendEmail):
-    def __init__(self, send_email: ISendEmail) -> None:
-        self.send_email = send_email
-
     def __call__(self, entry: SendEmailEntry) -> None:
         self._add_task(entry)
 
