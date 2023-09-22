@@ -8,6 +8,10 @@ from utils.repo import IRepo
 
 class IUserRepo(IRepo):
     @abstractmethod
+    def all(self, *, include_not_confirmed_email: bool = False):
+        ...
+
+    @abstractmethod
     def create(self, entry: RegistrationSchema) -> UserType:
         ...
 
@@ -29,4 +33,8 @@ class IUserRepo(IRepo):
 
     @abstractmethod
     def get_by_id(self, id: int) -> UserType | None:
+        ...
+
+    @abstractmethod
+    def get_by_email(self, email: str) -> UserType | None:
         ...

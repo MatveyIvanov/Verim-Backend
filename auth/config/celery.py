@@ -14,5 +14,11 @@ app.autodiscover_tasks()
 @inject
 def send_email(
     entry_dict: SendEmailDict, service: _ISendEmail = Provide[Container._send_email]
-):
+) -> None:
     service(entry_dict)
+
+
+@app.task
+@inject
+def ckeck_email_confirmed(self, user_id: int) -> None:
+    pass

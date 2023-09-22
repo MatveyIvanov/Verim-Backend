@@ -16,3 +16,4 @@ class UserType:
     created_at: datetime
     updated_at: datetime
     tokens_revoked_at: datetime | None
+    email_confirmed: bool

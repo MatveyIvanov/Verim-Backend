@@ -22,7 +22,7 @@ from services.codes import CheckCode, CreateCode, SendCode
 
 class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
-        packages=["endpoints"], modules=["utils.middleware", "config.mail"]
+        packages=["endpoints"], modules=["utils.middleware", "config.celery"]
     )
 
     db = providers.Singleton(Database, db_url=settings.DATABASE_URL)
