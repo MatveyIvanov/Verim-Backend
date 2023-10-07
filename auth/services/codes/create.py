@@ -23,6 +23,11 @@ class ICreateCode(ABC):
 
 
 class CreateCode(ICreateCode):
+    code_duration_map = {
+        CodeTypeEnum.EMAIL_CONFIRM: settings.CONFIRM_EMAIL_CODE_DURATION,
+        CodeTypeEnum.RESET_PASSWORD: settings.RESET_PASSWORD_CODE_DURATION,
+    }
+
     def __init__(self, send_code: ISendCode, repo: ICodeRepo) -> None:
         self.send_code = send_code
         self.repo = repo
@@ -42,10 +47,10 @@ class CreateCode(ICreateCode):
             return
 
         seconds_diff = (get_current_time() - last_code.created_at).seconds
-        if seconds_diff <= settings.CONFIRM_EMAIL_CODE_DURATION:
+        if seconds_diff <= self.code_duration_map[type]:
             raise Custom400Exception(
                 _("New code will be available to obtain after: %(seconds)s")
-                % {"seconds": settings.CONFIRM_EMAIL_CODE_DURATION - seconds_diff}
+                % {"seconds": self.code_duration_map[type] - seconds_diff}
             )
 
     def _create_code(self, user: UserType, type: CodeTypeEnum) -> CodeType:
