@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from .create import ICreateJWTTokens
 from schemas import JWTTokensSchema, RefreshTokensSchema
-from utils.typing import UserType
+from utils.types import UserType
 
 
 class IRefreshJWTTokens(ABC):

@@ -2,17 +2,25 @@ from abc import abstractmethod
 from typing import Dict
 
 from schemas import RegistrationSchema
-from utils.typing import UserType
+from utils.types import UserType
 from utils.repo import IRepo
 
 
 class IUserRepo(IRepo):
+    @abstractmethod
+    def all(self, *, include_not_confirmed_email: bool = False):
+        ...
+
     @abstractmethod
     def create(self, entry: RegistrationSchema) -> UserType:
         ...
 
     @abstractmethod
     def update(self, user: UserType, values: Dict) -> None:
+        ...
+
+    @abstractmethod
+    def delete(self, user: UserType) -> None:
         ...
 
     @abstractmethod
@@ -29,4 +37,10 @@ class IUserRepo(IRepo):
 
     @abstractmethod
     def get_by_id(self, id: int) -> UserType | None:
+        ...
+
+    @abstractmethod
+    def get_by_email(
+        self, email: str, *, include_not_confirmed_email: bool = False
+    ) -> UserType | None:
         ...

@@ -6,7 +6,7 @@ from ..jwt import IRevokeJWTTokens
 from ..validators import IValidate
 from ..repo import IUserRepo
 from schemas import ChangePasswordSchema
-from utils.typing import UserType
+from utils.types import UserType
 from utils.exceptions import Custom400Exception
 from config.i18n import _
 
