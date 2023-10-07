@@ -6,4 +6,8 @@ from .register import (
     RepeatRegistrationCodeSchema,
 )
 from .token import JWTTokensSchema, RefreshTokensSchema
-from .password import ChangePasswordSchema, ResetPasswordSchema
+from .password import (
+    ChangePasswordSchema,
+    ResetPasswordSchema,
+    ResetPasswordConfirmSchema,
+)

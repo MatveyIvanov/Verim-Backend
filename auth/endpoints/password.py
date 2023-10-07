@@ -8,7 +8,12 @@ from dependency_injector.wiring import Provide, inject
 
 from config.di import Container
 from services.password import IChangePassword, IResetPassword
-from schemas import ChangePasswordSchema, CodeSentSchema, ResetPasswordSchema
+from schemas import (
+    ChangePasswordSchema,
+    CodeSentSchema,
+    ResetPasswordSchema,
+    ResetPasswordConfirmSchema,
+)
 from utils.middleware import AuthenticationMiddleware
 from utils.routing import CustomAPIRouter
 
@@ -42,3 +47,14 @@ async def reset_password(
     service: IResetPassword = Depends(Provide[Container.reset_password]),
 ):
     return JSONResponse(asdict(service(schema)), status_code=status.HTTP_200_OK)
+
+
+@router.post("/reset-password/confirm/", status_code=status.HTTP_200_OK)
+@version(1)
+@inject
+async def reset_password_confirm(
+    schema: ResetPasswordConfirmSchema,
+    service: IResetPassword = Depends(Provide[Container.confirm_reset_password]),
+):
+    service(schema)
+    return Response(status_code=status.HTTP_200_OK)

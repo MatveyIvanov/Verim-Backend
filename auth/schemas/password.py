@@ -12,3 +12,11 @@ class ChangePasswordSchema:
 @dataclass
 class ResetPasswordSchema:
     email: EmailStr
+
+
+@dataclass
+class ResetPasswordConfirmSchema:
+    email: EmailStr
+    code: str
+    new_password: str
+    re_new_password: str
