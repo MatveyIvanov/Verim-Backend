@@ -15,12 +15,17 @@ class ISendCode(ABC):
 
 
 class SendCode(ISendCode):
-    subject_map = {CodeTypeEnum.EMAIL_CONFIRM.value: _("Email confirmation")}
+    subject_map = {
+        CodeTypeEnum.EMAIL_CONFIRM.value: _("Email confirmation"),
+        CodeTypeEnum.RESET_PASSWORD.value: _("Reset password"),
+    }
     message_map = {
-        CodeTypeEnum.EMAIL_CONFIRM.value: _("Your confirmation code: %(code)s")
+        CodeTypeEnum.EMAIL_CONFIRM: _("Your confirmation code: %(code)s"),
+        CodeTypeEnum.RESET_PASSWORD.value: _("Your code for password reset: %(code)s"),
     }
     result_map = {
-        CodeTypeEnum.EMAIL_CONFIRM.value: _("Code successfully sent to %(email)s.")
+        CodeTypeEnum.EMAIL_CONFIRM.value: _("Code successfully sent to %(email)s."),
+        CodeTypeEnum.RESET_PASSWORD.value: _("Code successfully sent to %(email)s."),
     }
 
     def __init__(self, send_email: ISendEmail) -> None:

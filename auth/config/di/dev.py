@@ -19,7 +19,7 @@ from services.validators import (
     PasswordRequiredCharactersValidator,
 )
 from services.validators.password import get_password_required_groups
-from services.password import HashPassword, CheckPassword, ChangePassword
+from services.password import HashPassword, CheckPassword, ChangePassword, ResetPassword
 from services.jwt import CreateJWTTokens, RefreshJWTTokens, RevokeJWTTokens
 from services.login import LoginUser
 from services.codes import CheckCode, CreateCode, SendCode
@@ -118,4 +118,7 @@ class Container(containers.DeclarativeContainer):
         validate_password=validate_password,
         revoke_jwt_tokens=revoke_jwt_tokens,
         repo=user_repo,
+    )
+    reset_password = providers.Singleton(
+        ResetPassword, create_code=create_code, repo=user_repo
     )

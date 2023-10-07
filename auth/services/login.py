@@ -7,6 +7,7 @@ from .repo import IUserRepo
 from .password import ICheckPassword
 from utils.types import UserType
 from utils.exceptions import Custom401Exception, Custom404Exception
+from utils.shortcuts import get_object_or_404
 
 
 class ILoginUser(ABC):
@@ -32,10 +33,7 @@ class LoginUser(ILoginUser):
         return self._make_tokens(user)
 
     def _get_user_by_login(self, login: str) -> UserType:
-        user = self.repo.get_by_login(login)
-        if user is None:
-            raise Custom404Exception(_("User not found."))
-        return user
+        return get_object_or_404(self.repo.get_by_login(login), msg="User not found.")
 
     def _check_password(self, user: UserType, password: str) -> None:
         if not self.check_password(password, user.password):

@@ -7,6 +7,7 @@ from config.i18n import _
 from schemas import RepeatRegistrationCodeSchema, CodeSentSchema
 from utils.types import UserType
 from utils.exceptions import Custom400Exception, Custom404Exception
+from utils.shortcuts import get_object_or_404
 
 
 class IRepeatRegistrationCode(ABC):
@@ -26,12 +27,10 @@ class RepeatRegistrationCode(IRepeatRegistrationCode):
         return self._create_code(user)
 
     def _get_user(self, entry: RepeatRegistrationCodeSchema) -> UserType:
-        user = self.repo.get_by_email(
-            email=entry.email, include_not_confirmed_email=True
+        return get_object_or_404(
+            self.repo.get_by_email(email=entry.email, include_not_confirmed_email=True),
+            msg="User not found.",
         )
-        if user is None:
-            raise Custom404Exception(_("User not found"))
-        return user
 
     def _check_email_confirmed(self, user: UserType) -> None:
         if user.email_confirmed:

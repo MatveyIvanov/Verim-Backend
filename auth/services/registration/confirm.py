@@ -8,6 +8,7 @@ from config.i18n import _
 from schemas import ConfirmRegistrationSchema, JWTTokensSchema
 from utils.types import UserType
 from utils.exceptions import Custom400Exception, Custom404Exception
+from utils.shortcuts import get_object_or_404
 
 
 class IConfirmRegistration(ABC):
@@ -36,10 +37,10 @@ class ConfirmRegistration(IConfirmRegistration):
         return self._create_tokens(user)
 
     def _get_user(self, email: str) -> UserType:
-        user = self.repo.get_by_email(email, include_not_confirmed_email=True)
-        if not user:
-            raise Custom404Exception(_("User not found"))
-        return user
+        return get_object_or_404(
+            self.repo.get_by_email(email, include_not_confirmed_email=True),
+            msg="User not found.",
+        )
 
     def _check_code(self, user: UserType, code: str) -> None:
         self.check_code(user=user, type=CodeTypeEnum.EMAIL_CONFIRM, code=code)
