@@ -8,6 +8,7 @@ from services.registration import (
     RegisterUser,
     ConfirmRegistration,
     RepeatRegistrationCode,
+    CheckRegistration,
 )
 from services.validators import (
     Validate,
@@ -101,6 +102,7 @@ class Container(containers.DeclarativeContainer):
         check_code=check_code,
         repo=user_repo,
     )
+    check_registration = providers.Singleton(CheckRegistration, repo=user_repo)
 
     login_user = providers.Singleton(
         LoginUser,

@@ -20,6 +20,10 @@ class IUserRepo(IRepo):
         ...
 
     @abstractmethod
+    def delete(self, user: UserType) -> None:
+        ...
+
+    @abstractmethod
     def email_exists(self, email: str) -> bool:
         ...
 

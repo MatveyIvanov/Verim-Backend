@@ -6,9 +6,11 @@ from ..repo import IUserRepo
 from ..codes import ICreateCode
 from ..codes.types import CodeTypeEnum
 from config.i18n import _
+from config.settings import CONFIRM_EMAIL_CHECK_DELAY
 from schemas import RegistrationSchema, CodeSentSchema
 from utils.types import UserType
 from utils.exceptions import Custom400Exception
+from utils.time import get_current_time_with_delta
 
 
 class IRegisterUser(ABC):
@@ -38,6 +40,7 @@ class RegisterUser(IRegisterUser):
         self._validate_password(entry)
         entry.password = self._hash_password(entry)
         user = self._create_user(entry)
+        self._send_registration_check_task(user)
         return self._create_code(user)
 
     def _validate_email(self, entry: RegistrationSchema) -> None:
@@ -59,6 +62,15 @@ class RegisterUser(IRegisterUser):
 
     def _hash_password(self, entry: RegistrationSchema) -> None:
         return self.hash_password(entry.password)
+
+    def _send_registration_check_task(self, user: UserType) -> None:
+        from config import celery_app
+
+        celery_app.send_task(
+            "config.celery.ckeck_email_confirmed",
+            args=(user.id,),
+            eta=get_current_time_with_delta(seconds=CONFIRM_EMAIL_CHECK_DELAY),
+        )
 
     def _create_code(self, user: UserType) -> CodeSentSchema:
         return self.create_code(user, CodeTypeEnum.EMAIL_CONFIRM, send=True)

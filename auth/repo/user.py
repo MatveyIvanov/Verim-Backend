@@ -40,6 +40,11 @@ class UserRepo(IUserRepo):
             session.commit()
         return user
 
+    def delete(self, user: UserType) -> None:
+        with self.session_factory() as session:
+            session.query(self.model).filter(self.model.id == user.id).delete()
+            session.commit()
+
     def email_exists(self, email: str) -> bool:
         with self.session_factory() as session:
             return session.query(

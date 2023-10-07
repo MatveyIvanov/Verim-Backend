@@ -21,7 +21,12 @@ code_table = Table(
     Column(
         "id", Integer, primary_key=True, unique=True, autoincrement=True, nullable=False
     ),
-    Column("user_id", Integer, ForeignKey(user_table.c.id), nullable=False),
+    Column(
+        "user_id",
+        Integer,
+        ForeignKey(user_table.c.id, ondelete="CASCADE"),
+        nullable=False,
+    ),
     Column("code", String(4), nullable=False),
     Column("type", String(14), nullable=False),
     Column(

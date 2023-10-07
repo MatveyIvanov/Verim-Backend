@@ -42,3 +42,4 @@ MAIL_SERVER = os.environ.get("MAIL_SERVER")
 MAIL_FROM_NAME = os.environ.get("MAIL_FROM_NAME")
 
 CONFIRM_EMAIL_CODE_DURATION = 60  # seconds
+CONFIRM_EMAIL_CHECK_DELAY = 60  # seconds
