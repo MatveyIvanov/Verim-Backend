@@ -6,12 +6,17 @@ from fastapi_versioning import version
 from dependency_injector.wiring import Provide, inject
 
 from config.di import Container
-from services.registration import IRegisterUser, IConfirmRegistration
+from services.registration import (
+    IRegisterUser,
+    IConfirmRegistration,
+    IRepeatRegistrationCode,
+)
 from schemas import (
     RegistrationSchema,
     JWTTokensSchema,
     CodeSentSchema,
     ConfirmRegistrationSchema,
+    RepeatRegistrationCodeSchema,
 )
 from utils.routing import CustomAPIRouter
 
@@ -32,6 +37,22 @@ async def register(
 
 
 @router.post(
+    "/register/repeat-code/",
+    response_model=CodeSentSchema,
+    status_code=status.HTTP_200_OK,
+)
+@version(1)
+@inject
+async def repeat_code(
+    schema: RepeatRegistrationCodeSchema,
+    service: IRepeatRegistrationCode = Depends(
+        Provide[Container.repeat_registration_code]
+    ),
+):
+    return JSONResponse(asdict(service(schema)), status_code=status.HTTP_200_OK)
+
+
+@router.post(
     "/register/confirm/",
     response_model=JWTTokensSchema,
     status_code=status.HTTP_200_OK,
@@ -40,6 +61,6 @@ async def register(
 @inject
 async def register_confirm(
     schema: ConfirmRegistrationSchema,
-    service: IConfirmRegistration = Depends(Provide[Container]),
+    service: IConfirmRegistration = Depends(Provide[Container.confirm_registration]),
 ):
-    return JSONResponse(asdict(service()), status.HTTP_200_OK)
+    return JSONResponse(asdict(service(schema)), status_code=status.HTTP_200_OK)

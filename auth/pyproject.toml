@@ -23,6 +23,7 @@ fastapi-versioning = "0.10.0"
 email-validator = "2.0.0.post2"
 bcrypt = "4.0.1"
 fastapi-mail = "1.4.1"
+asgiref = "3.7.2"
 
 [tool.poetry.dev-dependencies]
 

@@ -5,6 +5,7 @@ from .types import CodeTypeEnum
 from config.mail import ISendEmail, SendEmailEntry
 from config.i18n import _
 from schemas import CodeSentSchema
+from utils.email import safe_email_str
 
 
 class ISendCode(ABC):
@@ -41,5 +42,6 @@ class SendCode(ISendCode):
     def _result(self, entry: SendCodeEntry) -> CodeSentSchema:
         return CodeSentSchema(
             email=entry.email,
-            message=self.result_map[entry.type] % {"email": entry.email},
+            message=self.result_map[entry.type]
+            % {"email": safe_email_str(entry.email)},
         )

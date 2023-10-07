@@ -7,7 +7,7 @@ from ..entries import CodeTypeEnum
 from config.i18n import _
 from schemas import ConfirmRegistrationSchema, JWTTokensSchema
 from utils.types import UserType
-from utils.exceptions import Custom404Exception
+from utils.exceptions import Custom400Exception, Custom404Exception
 
 
 class IConfirmRegistration(ABC):
@@ -30,13 +30,13 @@ class ConfirmRegistration(IConfirmRegistration):
     def __call__(self, entry: ConfirmRegistrationSchema) -> JWTTokensSchema:
         user = self._get_user(entry.email)
         if user.email_confirmed:
-            return self._create_tokens(user)
+            raise Custom400Exception(_("Email is already confirmed"))
         self._check_code(user, entry.code)
         self._update_user(user)
         return self._create_tokens(user)
 
     def _get_user(self, email: str) -> UserType:
-        user = self.repo.get_by_email(email)
+        user = self.repo.get_by_email(email, include_not_confirmed_email=True)
         if not user:
             raise Custom404Exception(_("User not found"))
         return user

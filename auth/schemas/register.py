@@ -20,3 +20,8 @@ class CodeSentSchema:
 class ConfirmRegistrationSchema:
     email: EmailStr
     code: str = Field(min_length=4, max_length=4)
+
+
+@dataclass
+class RepeatRegistrationCodeSchema:
+    email: EmailStr

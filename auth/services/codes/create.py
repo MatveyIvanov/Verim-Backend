@@ -17,7 +17,7 @@ from utils.random import get_random_string
 class ICreateCode(ABC):
     @abstractmethod
     def __call__(
-        self, user: UserType, type: CodeType, *, send: bool = True
+        self, user: UserType, type: CodeTypeEnum, *, send: bool = True
     ) -> str | CodeSentSchema:
         ...
 

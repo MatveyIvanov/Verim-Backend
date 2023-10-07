@@ -4,7 +4,11 @@ from config import settings
 from config.db import Database
 from config.mail import SendEmail, _SendEmail
 from repo import UserRepo, CodeRepo
-from services.registration import RegisterUser
+from services.registration import (
+    RegisterUser,
+    ConfirmRegistration,
+    RepeatRegistrationCode,
+)
 from services.validators import (
     Validate,
     UsernameLengthValidator,
@@ -86,6 +90,15 @@ class Container(containers.DeclarativeContainer):
         validate_username=validate_username,
         validate_password=validate_password,
         hash_password=hash_password,
+        repo=user_repo,
+    )
+    repeat_registration_code = providers.Singleton(
+        RepeatRegistrationCode, create_code=create_code, repo=user_repo
+    )
+    confirm_registration = providers.Singleton(
+        ConfirmRegistration,
+        create_jwt_tokens=create_jwt_tokens,
+        check_code=check_code,
         repo=user_repo,
     )
 

@@ -75,9 +75,11 @@ class UserRepo(IUserRepo):
             .first()
         )
 
-    def get_by_email(self, email: str) -> UserType | None:
+    def get_by_email(
+        self, email: str, *, include_not_confirmed_email: bool = False
+    ) -> UserType | None:
         return (
-            self.all()
+            self.all(include_not_confirmed_email=include_not_confirmed_email)
             .filter(
                 func.lower(self.model.email) == func.lower(email),
             )
