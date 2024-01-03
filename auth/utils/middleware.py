@@ -1,31 +1,27 @@
 from typing import Dict
 
-from dependency_injector.wiring import inject, Provide
 from starlette.types import Scope, Receive, Send
 from fastapi import status
 from fastapi.responses import JSONResponse
 import jwt
-
-from config import settings
-from config.di import Container
-from config.i18n import activate_translation, _
-from services.repo import IUserRepo
-from services.entries import JWTPayload
-from utils.time import timestamp_to_datetime
-from utils.types import UserType
-from utils.exceptions import Custom401Exception, Custom403Exception
 
 
 def headers_from_scope(scope: Scope) -> Dict:
     return dict((k.decode().lower(), v.decode()) for k, v in scope["headers"])
 
 
-@inject
-def authenticate_by_token(
-    token: str | bytes,
-    access: bool = True,
-    repo: IUserRepo = Provide[Container.user_repo],
-):
+def authenticate_by_token(token: str | bytes, access: bool = True):
+    from config import settings
+    from config.di import Container
+    from config.i18n import _
+    from services.repo import IUserRepo
+    from services.entries import JWTPayload
+    from utils.time import timestamp_to_datetime
+    from utils.types import UserType
+    from utils.exceptions import Custom401Exception, Custom403Exception
+
+    repo: IUserRepo = Container.user_repo()
+
     try:
         payload: Dict = jwt.decode(
             token,
@@ -91,6 +87,9 @@ class AuthenticationMiddleware:
                 await self._app(scope, receive, send)
             return
 
+        from config import settings
+        from utils.exceptions import Custom401Exception, Custom403Exception
+
         prefix, token = auth_header
 
         if prefix.lower() != settings.AUTHENTICATION_HEADER_PREFIX.lower():
@@ -117,6 +116,8 @@ class AuthenticationMiddleware:
 
     def _get_authorization_header(self, headers: Dict) -> str | None:
         try:
+            from config import settings
+
             return headers[settings.AUTHENTICATION_HEADER.lower()]
         except KeyError:
             return None
@@ -139,4 +140,6 @@ class TranslationMiddleware:
         return headers_from_scope(scope)
 
     def _activate_translation(self, headers: Dict) -> None:
+        from config.i18n import activate_translation
+
         activate_translation(headers.get("accept-language", None))

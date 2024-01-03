@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "Verim"
+name = "Verim-Auth"
 version = "0.1.0"
-description = "Verim Project"
+description = "Verim Auth Microservice"
 authors = ["Matvey Ivanov"]
 
 [tool.poetry.dependencies]
@@ -25,8 +25,38 @@ bcrypt = "4.0.1"
 fastapi-mail = "1.4.1"
 asgiref = "3.7.2"
 pytest = "7.4.2"
+mock = "5.1.0"
+grpcio-tools = "1.60.0"
 
 [tool.poetry.dev-dependencies]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+
+[tool.coverage.run]
+include = [
+]
+
+[tool.coverage.report]
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+]
+ignore_errors = true
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
