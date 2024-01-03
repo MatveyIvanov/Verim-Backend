@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "Verim-Auth"
+name = "Verim-Publisher"
 version = "0.1.0"
-description = "Verim Auth Microservice"
+description = "Verim Publisher Microservice"
 authors = ["Matvey Ivanov"]
 
 [tool.poetry.dependencies]
@@ -26,6 +26,7 @@ asgiref = "3.7.2"
 pytest = "7.4.2"
 mock = "5.1.0"
 grpcio-tools = "1.60.0"
+pytest-cov = "4.1.0"
 
 [tool.poetry.dev-dependencies]
 

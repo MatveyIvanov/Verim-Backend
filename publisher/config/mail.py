@@ -50,7 +50,7 @@ class SendEmail(ISendEmail):
         self._add_task(entry)
 
     def _add_task(self, entry: SendEmailEntry) -> None:
-        from config import celery_app
+        from config.celery import app as celery_app
 
         celery_app.send_task(
             "config.celery.send_email", kwargs={"entry_dict": asdict(entry)}
