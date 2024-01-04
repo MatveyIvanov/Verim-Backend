@@ -23,6 +23,7 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: "3.11.5"
+        cache: "poetry"
     - name: Install dependencies
       working-directory: ./auth
       run: |
@@ -52,6 +53,7 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: "3.11.5"
+        cache: "poetry"
     - name: Install dependencies
       working-directory: ./publisher
       run: |
