@@ -3,18 +3,18 @@ import os
 
 TIMEZONE = "Europe/Moscow"
 
-PASSWORD_SALT_LENGTH = 20
-PASSWORD_HASH_ITERATIONS = 100_100
+PASSWORD_SALT_LENGTH = int(os.environ.get("PASSWORD_SALT_LENGTH"))
+PASSWORD_HASH_ITERATIONS = int(os.environ.get("PASSWORD_HASH_ITERATIONS"))
 
-DB_USER = os.environ.get("DB_USER")
-DB_PASSWORD = os.environ.get("DB_PASSWORD")
-DB_NAME = os.environ.get("DB_NAME")
-DB_HOST = os.environ.get("DB_HOST")
-DB_PORT = os.environ.get("DB_PORT")
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DB_USER = os.environ.get("PUBLISHER_DB_USER")
+DB_PASSWORD = os.environ.get("PUBLISHER_DB_PASSWORD")
+DB_NAME = os.environ.get("PUBLISHER_DB_NAME")
+DB_HOST = os.environ.get("PUBLISHER_DB_HOST")
+DB_PORT = os.environ.get("PUBLISHER_DB_PORT")
+DATABASE_URL = os.environ.get("PUBLISHER_DATABASE_URL")
 
-AUTHENTICATION_HEADER = "Authorization"  # TODO: В env
-AUTHENTICATION_HEADER_PREFIX = "Bearer"  # TODO: В env
+AUTHENTICATION_HEADER = os.environ.get("AUTHENTICATION_HEADER")
+AUTHENTICATION_HEADER_PREFIX = os.environ.get("AUTHENTICATION_HEADER_PREFIX")
 
 MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
 MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")

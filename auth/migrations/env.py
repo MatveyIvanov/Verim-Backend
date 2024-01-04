@@ -1,4 +1,3 @@
-import os
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -6,6 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
+from config import settings
 from models.users import user_table
 from models.codes import code_table
 
@@ -14,11 +14,12 @@ from models.codes import code_table
 config = context.config
 
 section = config.config_ini_section
-config.set_section_option(section, "DB_USER", os.environ.get("DB_USER"))
-config.set_section_option(section, "DB_PASSWORD", os.environ.get("DB_PASSWORD"))
-config.set_section_option(section, "DB_NAME", os.environ.get("DB_NAME"))
-config.set_section_option(section, "DB_HOST", os.environ.get("DB_HOST"))
-config.set_section_option(section, "DB_PORT", os.environ.get("DB_PORT"))
+config.set_section_option(section, "DB_USER", settings.DB_USER)
+config.set_section_option(section, "DB_PASSWORD", settings.DB_PASSWORD)
+config.set_section_option(section, "DB_NAME", settings.DB_NAME)
+config.set_section_option(section, "DB_HOST", settings.DB_HOST)
+config.set_section_option(section, "DB_PORT", settings.DB_PORT)
+
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -75,7 +76,9 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(
+            connection=connection, target_metadata=target_metadata
+        )
 
         with context.begin_transaction():
             context.run_migrations()

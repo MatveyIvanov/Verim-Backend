@@ -10,10 +10,17 @@ services:
     container_name: ${CONTAINER_PREFIX}-db
     volumes:
       - ${DB_DATA_PATH}:/var/lib/postgresql/data
+      - ${MAIN_PATH}/configs/postgres:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      AUTH_POSTGRES_USER: ${AUTH_DB_USER}
+      AUTH_POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
+      AUTH_POSTGRES_DB: ${AUTH_DB_NAME}
+      PUBLISHER_POSTGRES_USER: ${PUBLISHER_DB_USER}
+      PUBLISHER_POSTGRES_PASSWORD: ${PUBLISHER_DB_PASSWORD}
+      PUBLISHER_POSTGRES_DB: ${PUBLISHER_DB_NAME}
+      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_MULTIPLE_DATABASES}
     networks:
       - verim_network
     ports:

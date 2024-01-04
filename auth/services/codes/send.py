@@ -20,7 +20,7 @@ class SendCode(ISendCode):
         CodeTypeEnum.RESET_PASSWORD.value: _("Reset password"),
     }
     message_map = {
-        CodeTypeEnum.EMAIL_CONFIRM: _("Your confirmation code: %(code)s"),
+        CodeTypeEnum.EMAIL_CONFIRM.value: _("Your confirmation code: %(code)s"),
         CodeTypeEnum.RESET_PASSWORD.value: _("Your code for password reset: %(code)s"),
     }
     result_map = {
