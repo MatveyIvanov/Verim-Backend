@@ -26,7 +26,7 @@ jobs:
       with:
         python-version: "3.11.5"
         cache: "poetry"
-        cache-dependency-path: "poetry.lock"
+        cache-dependency-path: "./auth/poetry.lock"
     - name: Install dependencies
       working-directory: ./auth
       run: |
@@ -59,7 +59,7 @@ jobs:
       with:
         python-version: "3.11.5"
         cache: "poetry"
-        cache-dependency-path: "poetry.lock"
+        cache-dependency-path: "./publisher/poetry.lock"
     - name: Install dependencies
       working-directory: ./publisher
       run: |
