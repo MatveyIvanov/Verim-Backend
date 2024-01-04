@@ -64,7 +64,7 @@ class RegisterUser(IRegisterUser):
         return self.hash_password(entry.password)
 
     def _send_registration_check_task(self, user: UserType) -> None:
-        from config import celery_app
+        from config.celery import app as celery_app
 
         celery_app.send_task(
             "config.celery.ckeck_email_confirmed",

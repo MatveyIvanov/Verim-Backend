@@ -42,15 +42,14 @@ services:
   auth:
     container_name: ${CONTAINER_PREFIX}-auth
     build:
-      context: ./auth/
-      dockerfile: ./Dockerfile
+      context: .
+      dockerfile: ./auth/Dockerfile
     command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     working_dir: ${DEFAULT_SERVICE_DIR}
     env_file:
       - .env
     volumes:
       - ./auth/:${DEFAULT_SERVICE_DIR}
-      - ./communicator.py:${DEFAULT_SERVICE_DIR}/communicator.py
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
@@ -62,12 +61,56 @@ services:
       - verim_network
     restart: always
 
-  celery_worker:
+  auth-grpc:
+    container_name: ${CONTAINER_PREFIX}-auth-grpc
+    build:
+      context: .
+      dockerfile: ./auth/Dockerfile
+    command: sh -c "python ${DEFAULT_SERVICE_DIR}/main_grpc.py"
+    working_dir: ${DEFAULT_SERVICE_DIR}
+    env_file:
+      - .env
+    volumes:
+      - ./auth/:${DEFAULT_SERVICE_DIR}
+      - ${STATIC_PATH}:/static
+      - ${MEDIA_PATH}:/media
+      - ${LOG_PATH}:/logs
+    depends_on:
+      - db
+    ports:
+      - "50051:50051"
+    networks:
+      - verim_network
+    restart: always
+
+  publisher:
+    container_name: ${CONTAINER_PREFIX}-publisher
+    build:
+      context: .
+      dockerfile: ./publisher/Dockerfile
+    command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8001 --reload"
+    working_dir: ${DEFAULT_SERVICE_DIR}
+    env_file:
+      - .env
+    volumes:
+      - ./publisher/:${DEFAULT_SERVICE_DIR}
+      - ${STATIC_PATH}:/static
+      - ${MEDIA_PATH}:/media
+      - ${LOG_PATH}:/logs
+    depends_on:
+      - db
+    ports:
+      - "8001:8001"
+    networks:
+      - verim_network
+    restart: always
+
+  celery-worker:
     container_name: ${CONTAINER_PREFIX}-celery-worker
     build:
-      context: ./auth/  # TODO: вынести в отдельный докерфайл
-      dockerfile: ./Dockerfile
-    command: sh -c "celery -A config.celery_app worker -l debug"
+      context: .
+      dockerfile: ./auth/Dockerfile
+    command: sh -c "celery -A config.celery.app worker -l debug"
     depends_on:
       - auth
       - db
@@ -84,12 +127,12 @@ services:
       - verim_network
     restart: always
 
-  celery_beat:
+  celery-beat:
     container_name: ${CONTAINER_PREFIX}-celery-beat
     build:
-      context: ./auth/  # TODO: вынести в отдельный докерфайл
-      dockerfile: ./Dockerfile
-    command: sh -c "celery -A config.celery_app beat -l debug"
+      context: .
+      dockerfile: ./auth/Dockerfile
+    command: sh -c "celery -A config.celery.app beat -l debug"
     depends_on:
       - auth
       - db
@@ -106,7 +149,7 @@ services:
       - verim_network
     restart: always
 
-  celery_flower:
+  celery-flower:
     image: mher/flower:2.0
     container_name: ${CONTAINER_PREFIX}-celery-flower
     environment:
@@ -115,7 +158,7 @@ services:
       FLOWER_BASIC_AUTH: ${FLOWER_LOGIN}:${FLOWER_PASSWORD}
       FLOWER_URL_PREFIX: ${FLOWER_URL_PREFIX}
     depends_on:
-      - celery_worker
+      - celery-worker
     env_file:
       - .env
     ports:

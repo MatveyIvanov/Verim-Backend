@@ -1,6 +1,6 @@
-# Mounted files/dirs for DRY reasons
-*/communicator.py
-
+# grpc
+*_pb2.py
+*_pb2_grpc.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
