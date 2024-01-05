@@ -40,9 +40,12 @@ services:
       - "13379:6379"
     volumes:
       - verim_redis_data:/var/lib/redis/data/
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
 
   rabbitmq:
     image: rabbitmq:3.12-management
+    hostname: verim-rabbitmq
     container_name: ${CONTAINER_PREFIX}-rabbitmq
     ports:
       - "5672:5672"
@@ -50,6 +53,11 @@ services:
     networks:
       - verim_network
     restart: on-failure
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
 
   auth:
     container_name: ${CONTAINER_PREFIX}-auth
@@ -196,6 +204,11 @@ services:
     networks:
       - verim_network
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "celery inspect ping --destination celery@$$HOSTNAME"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   celery-beat:
     container_name: ${CONTAINER_PREFIX}-celery-beat
