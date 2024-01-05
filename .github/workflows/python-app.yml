@@ -19,6 +19,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Create env file
+      run: |
+        echo "${{ secrets.ENV_FILE }}" > .env
     - name: Build containers
       run: docker-compose up -d --build
     - name: Lint auth-service with flake8
