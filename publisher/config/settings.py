@@ -1,7 +1,7 @@
 import os
 
 
-TIMEZONE = "Europe/Moscow"
+TIMEZONE = os.environ.get("TIMEZONE")
 
 PASSWORD_SALT_LENGTH = int(os.environ.get("PASSWORD_SALT_LENGTH"))
 PASSWORD_HASH_ITERATIONS = int(os.environ.get("PASSWORD_HASH_ITERATIONS"))

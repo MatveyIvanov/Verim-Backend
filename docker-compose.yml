@@ -60,6 +60,20 @@ services:
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
+      - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
+      - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
+      - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
+      - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
+      - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
+      - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+      - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
+      - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
+      - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
+      - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
+      - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
+      - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
+      - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
+      - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
     depends_on:
       - db
     ports:
@@ -82,6 +96,20 @@ services:
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
+      - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
+      - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
+      - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
+      - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
+      - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
+      - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+      - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
+      - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
+      - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
+      - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
+      - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
+      - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
+      - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
+      - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
     depends_on:
       - db
     ports:
@@ -104,6 +132,20 @@ services:
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
+      - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
+      - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
+      - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
+      - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
+      - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
+      - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+      - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
+      - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
+      - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
+      - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
+      - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
+      - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
+      - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
+      - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
     depends_on:
       - db
     ports:
@@ -130,6 +172,20 @@ services:
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
+      - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
+      - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
+      - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
+      - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
+      - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
+      - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+      - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
+      - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
+      - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
+      - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
+      - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
+      - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
+      - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
+      - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
     networks:
       - verim_network
     restart: always
@@ -152,6 +208,20 @@ services:
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
+      - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
+      - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
+      - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
+      - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
+      - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
+      - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+      - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
+      - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
+      - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
+      - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
+      - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
+      - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
+      - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
+      - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
     networks:
       - verim_network
     restart: always

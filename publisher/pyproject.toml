@@ -27,6 +27,8 @@ pytest = "7.4.2"
 mock = "5.1.0"
 grpcio-tools = "1.60.0"
 pytest-cov = "4.1.0"
+mypy = "1.8.0"
+flake8 = "7.0.0"
 
 [tool.poetry.dev-dependencies]
 
@@ -57,6 +59,26 @@ exclude_also = [
     "@(abc\\.)?abstractmethod",
 ]
 ignore_errors = true
+
+[tool.mypy]
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_subclassing_any = false
+mypy_path = '.'
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+warn_return_any = true
+no_implicit_optional = true
+strict_optional = true
+ignore_missing_imports = true
+exclude = '''
+(?x)(
+    pygettext\.py$
+    | app\.py$
+    | routing\.py$
+)
+'''
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
