@@ -23,7 +23,7 @@ jobs:
       run: |
         echo "${{ secrets.ENV_FILE }}" > .env
     - name: Build containers
-      run: docker-compose up -d auth --build
+      run: docker-compose up -d auth
     - name: Lint auth-service with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
