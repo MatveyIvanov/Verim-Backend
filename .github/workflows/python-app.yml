@@ -27,12 +27,12 @@ jobs:
     - name: Lint auth-service with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        docker-compose exec auth python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        docker exec -it local-verim-auth python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        docker-compose exec auth python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        docker exec -it local-verim-auth python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test auth-service with pytest
       run: |
-        docker-compose exec auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html
+        docker exec -it local-verim-auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html
     - name: Run MyPy checks on auth-service
       uses: tsuyoshicho/action-mypy@v3
       with:
@@ -40,7 +40,7 @@ jobs:
         reporter: github-pr-review
         level: warning
         workdir: microservice
-        execute_command: 'docker-compose exec auth python -m mypy'
+        execute_command: 'docker exec -it local-verim-auth python -m mypy'
 
   # build-publisher:
 
