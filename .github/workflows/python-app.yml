@@ -34,12 +34,8 @@ jobs:
       run: |
         docker exec local-verim-auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html
     - name: Run MyPy checks on auth-service
-      uses: tsuyoshicho/action-mypy@v3
-      with:
-        github_token: ${{ secrets.github_token }}
-        reporter: github-pr-review
-        level: warning
-        execute_command: 'docker exec local-verim-auth python -m mypy .'
+      run: |
+        docker exec local-verim-auth python -m mypy .
 
   build-publisher:
 
@@ -62,10 +58,5 @@ jobs:
       run: |
         docker exec local-verim-publisher python -m pytest tests --doctest-modules --junitxml=junit/publisher-test-results.xml --cov=com --cov-report=xml --cov-report=html
     - name: Run MyPy checks on publisher-service
-      uses: tsuyoshicho/action-mypy@v3
-      with:
-        github_token: ${{ secrets.github_token }}
-        reporter: github-pr-review
-        level: warning
-        execute_command: 'docker exec local-verim-publisher python -m mypy .'
-
+      run: |
+        docker exec local-verim-publisher python -m mypy .
