@@ -19,75 +19,62 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Install poetry
-      run: pip install poetry
-    - name: Set up Python 3.11.5
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.11.5"
-        cache: "poetry"
-    - name: Install dependencies
-      working-directory: ./auth
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest
-        poetry install
-    - name: Lint with flake8
-      working-directory: ./auth
+    - name: Build containers
+      run: docker-compose up -d --build
+    - name: Lint auth-service with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        docker-compose exec auth flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
-      working-directory: ./auth
+        docker-compose exec auth flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test auth-service with pytest
       run: |
-        poetry run python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html
-    - name: Run MyPy checks
+        docker-compose exec auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html
+    - name: Run MyPy checks on auth-service
       uses: tsuyoshicho/action-mypy@v3
       with:
         github_token: ${{ secrets.github_token }}
         reporter: github-pr-review
         level: warning
-        workdir: src
-        execute_command: 'poetry run mypy'
+        workdir: microservice
+        execute_command: 'docker-compose exec auth mypy'
 
 
-  build-publisher:
+  # build-publisher:
 
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v3
-    - name: Install poetry
-      run: pip install poetry
-    - name: Set up Python 3.11.5
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.11.5"
-        cache: "poetry"
-    - name: Install dependencies
-      working-directory: ./publisher
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest
-        poetry install
-    - name: Lint with flake8
-      working-directory: ./publisher
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
-      working-directory: ./publisher
-      run: |
-        poetry run python -m pytest tests --doctest-modules --junitxml=junit/publisher-test-results.xml --cov=com --cov-report=xml --cov-report=html
-    - name: Run MyPy checks
-      uses: tsuyoshicho/action-mypy@v3
-      with:
-        github_token: ${{ secrets.github_token }}
-        reporter: github-pr-review
-        level: warning
-        workdir: src
-        execute_command: 'poetry run mypy'
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: Install poetry
+  #     run: pip install poetry
+  #   - name: Set up Python 3.11.5
+  #     uses: actions/setup-python@v3
+  #     with:
+  #       python-version: "3.11.5"
+  #       cache: "poetry"
+  #   - name: Install dependencies
+  #     working-directory: ./publisher
+  #     run: |
+  #       python -m pip install --upgrade pip
+  #       pip install flake8 pytest
+  #       poetry install
+  #   - name: Lint with flake8
+  #     working-directory: ./publisher
+  #     run: |
+  #       # stop the build if there are Python syntax errors or undefined names
+  #       poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+  #       # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+  #       poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+  #   - name: Test with pytest
+  #     working-directory: ./publisher
+  #     run: |
+  #       poetry run python -m pytest tests --doctest-modules --junitxml=junit/publisher-test-results.xml --cov=com --cov-report=xml --cov-report=html
+  #   - name: Run MyPy checks
+  #     uses: tsuyoshicho/action-mypy@v3
+  #     with:
+  #       github_token: ${{ secrets.github_token }}
+  #       reporter: github-pr-review
+  #       level: warning
+  #       workdir: src
+  #       execute_command: 'poetry run mypy'
