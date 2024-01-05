@@ -47,9 +47,14 @@ services:
     image: rabbitmq:3.12-management
     hostname: verim-rabbitmq
     container_name: ${CONTAINER_PREFIX}-rabbitmq
+    volumes:
+      - verim_rabbitmq_data:/var/lib/rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     networks:
       - verim_network
     restart: on-failure
@@ -249,7 +254,8 @@ services:
     image: mher/flower:2.0
     container_name: ${CONTAINER_PREFIX}-celery-flower
     environment:
-      CELERY_BROKER_URL: ${FLOWER_CELERY_BROKER_URL}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
       FLOWER_PORT: ${FLOWER_PORT}
       FLOWER_BASIC_AUTH: ${FLOWER_LOGIN}:${FLOWER_PASSWORD}
       FLOWER_URL_PREFIX: ${FLOWER_URL_PREFIX}
@@ -264,7 +270,7 @@ services:
     restart: always
 
 volumes:
-  verim_db_data:
-    name: verim_db_data
+  verim_rabbitmq_data:
+    name: verim_rabbitmq_data
   verim_redis_data:
     name: verim_redis_data
