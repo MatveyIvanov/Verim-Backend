@@ -1,1 +1,2 @@
-from .base import IValidate, IValidator, Validate, RegexValidator
+from .base import IValidate, IValidator, Validate
+from .regex import RegexValidator

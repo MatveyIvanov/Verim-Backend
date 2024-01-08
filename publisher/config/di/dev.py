@@ -7,17 +7,11 @@ from config import settings
 from config.db import Database
 from config.grpc import GRPCConnection
 
-from services.validators import RegexValidator
+from services.validators import RegexValidator, Validate
+from services.publications import CreatePublication
+from repo import PublicationRepo
 
-
-YOUTUBE_REGEX = re.compile(
-    r"/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?[\w\?=]*)?"
-)
-TIKTOK_REGEX = re.compile(
-    r"^.*https:\/\/(?:m|www|vm)?\.?tiktok\.com\/((?:.*\b(?:(?:usr|v|embed|user|video)\/|\?shareId=|\&item_id=)(\d+))|\w+)"
-)
-VK_REGEX = re.compile(r"/http(?:s?):\/\/(?:www\.)?vk.com/video.*")
-TWITCH_REGEX = re.compile(r"/(?:https:\/\/)?clips\.twitch\.tv\/(\S+)/i")
+from utils.regex import YOUTUBE_REGEX, TIKTOK_REGEX, VK_REGEX, TWITCH_REGEX
 
 
 class Container(containers.DeclarativeContainer):
@@ -34,7 +28,22 @@ class Container(containers.DeclarativeContainer):
 
     db = providers.Singleton(Database, db_url=settings.DATABASE_URL)
 
-    youtube_validator = providers.Singleton(RegexValidator, pattern=YOUTUBE_REGEX)
-    tiktok_validator = providers.Singleton(RegexValidator, pattern=TIKTOK_REGEX)
-    vk_validator = providers.Singleton(RegexValidator, pattern=VK_REGEX)
-    twitch_validator = providers.Singleton(RegexValidator, pattern=TWITCH_REGEX)
+    _publication_repo = providers.Singleton(
+        PublicationRepo, session_factory=db.provided.session
+    )
+
+    _youtube_validator = providers.Singleton(RegexValidator, pattern=YOUTUBE_REGEX)
+    _tiktok_validator = providers.Singleton(RegexValidator, pattern=TIKTOK_REGEX)
+    _vk_validator = providers.Singleton(RegexValidator, pattern=VK_REGEX)
+    _twitch_validator = providers.Singleton(RegexValidator, pattern=TWITCH_REGEX)
+    _validate_platform = providers.Singleton(
+        Validate,
+        _youtube_validator,
+        _tiktok_validator,
+        _vk_validator,
+        _twitch_validator,
+    )
+
+    create_publication = providers.Singleton(
+        CreatePublication, repo=_publication_repo, validate_url=_validate_platform
+    )
