@@ -24,8 +24,8 @@ vote_table = Table(
 )
 
 
-class Publication:
+class Vote:
     pass
 
 
-publication_mapper = mapper_registry.map_imperatively(Publication, publication_table)
+vote_mapper = mapper_registry.map_imperatively(Vote, vote_table)
