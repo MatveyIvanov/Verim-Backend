@@ -1,10 +1,6 @@
-import re
 from abc import ABC, abstractmethod
-from typing import Any, Pattern
+from typing import Any
 from enum import Enum
-
-from config.i18n import _
-from utils.exceptions import Custom400Exception
 
 
 class ValidationMode(Enum):

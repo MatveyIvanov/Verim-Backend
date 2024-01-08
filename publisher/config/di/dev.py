@@ -11,8 +11,6 @@ from services.validators import RegexValidator, Validate
 from services.publications import CreatePublication
 from repo import PublicationRepo
 
-from utils.regex import YOUTUBE_REGEX, TIKTOK_REGEX, VK_REGEX, TWITCH_REGEX
-
 
 class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
@@ -32,18 +30,4 @@ class Container(containers.DeclarativeContainer):
         PublicationRepo, session_factory=db.provided.session
     )
 
-    _youtube_validator = providers.Singleton(RegexValidator, pattern=YOUTUBE_REGEX)
-    _tiktok_validator = providers.Singleton(RegexValidator, pattern=TIKTOK_REGEX)
-    _vk_validator = providers.Singleton(RegexValidator, pattern=VK_REGEX)
-    _twitch_validator = providers.Singleton(RegexValidator, pattern=TWITCH_REGEX)
-    _validate_platform = providers.Singleton(
-        Validate,
-        _youtube_validator,
-        _tiktok_validator,
-        _vk_validator,
-        _twitch_validator,
-    )
-
-    create_publication = providers.Singleton(
-        CreatePublication, repo=_publication_repo, validate_url=_validate_platform
-    )
+    create_publication = providers.Singleton(CreatePublication, repo=_publication_repo)
