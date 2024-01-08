@@ -1,19 +1,21 @@
-from typing import ClassVar, Dict, Protocol
 from datetime import datetime
+
+from pydantic.dataclasses import dataclass
+from pydantic import HttpUrl
 
 from services.entries import ContentType
 
 
-class Dataclass(Protocol):
-    __dataclass_fields__: ClassVar[Dict]
+@dataclass
+class CreatePublicationSchema:
+    url: HttpUrl
 
 
-class PublicationType:
+@dataclass
+class PublicationSchema:
     id: int
-    user_id: int
     url: str
     type: ContentType
     believed_count: int
     disbelieved_count: int
     created_at: datetime
-    updated_at: datetime
