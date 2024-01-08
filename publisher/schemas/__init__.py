@@ -1,1 +1,1 @@
-from .publication import PublicationSchema
+from .publication import CreatePublicationSchema, PublicationSchema

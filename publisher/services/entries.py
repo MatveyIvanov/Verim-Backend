@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class ContentType(Enum):
+class ContentType(str, Enum):
     YOUTUBE = "YOUTUBE"
     VK = "VK"
     TIKTOK = "TIKTOK"

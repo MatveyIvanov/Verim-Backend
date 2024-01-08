@@ -1,3 +1,5 @@
+from dataclasses import asdict
+
 from fastapi import Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.requests import Request
@@ -7,7 +9,7 @@ from dependency_injector.wiring import Provide, inject
 
 from config.di import Container
 from services.publications import ICreatePublication
-from schemas import PublicationSchema
+from schemas import CreatePublicationSchema, PublicationSchema
 from utils.middleware import AuthenticationMiddleware
 from utils.routing import CustomAPIRouter
 
@@ -17,6 +19,7 @@ router = CustomAPIRouter(prefix="/publications")
 
 @router.post(
     "/",
+    response_model=PublicationSchema,
     status_code=status.HTTP_201_CREATED,
     middleware=[Middleware(AuthenticationMiddleware)],
 )
@@ -24,8 +27,9 @@ router = CustomAPIRouter(prefix="/publications")
 @inject
 async def create_publication(
     request: Request,
-    schema: PublicationSchema,
+    schema: CreatePublicationSchema,
     service: ICreatePublication = Depends(Provide[Container.create_publication]),
 ):
-    publication = service(request.user, schema)
-    return JSONResponse({}, status_code=status.HTTP_201_CREATED)
+    return JSONResponse(
+        asdict(service(request.user, schema)), status_code=status.HTTP_201_CREATED
+    )
