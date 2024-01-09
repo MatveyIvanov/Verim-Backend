@@ -1,6 +1,7 @@
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi_versioning import VersionedFastAPI
+from fastapi_pagination import add_pagination
 
 from config.di import get_di_container
 import endpoints
@@ -29,6 +30,9 @@ __app = CustomFastAPI(
 __app.container = container
 for router in endpoints.get_routers():
     __app.include_router(router)
+
+
+add_pagination(__app)
 
 
 # custom exception handlers do not work w/o this

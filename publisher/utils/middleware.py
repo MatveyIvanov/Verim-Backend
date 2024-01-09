@@ -67,14 +67,18 @@ class AuthenticationMiddleware:
             response = Container.auth_grpc()().auth(AuthRequest(token=token))
             if response.user.id == -1:
                 if self.raise_exception:
-                    response = JSONResponse({"detail": response.error_message}, status.HTTP_401_UNAUTHORIZED)
+                    response = JSONResponse(
+                        {"detail": response.error_message}, status.HTTP_401_UNAUTHORIZED
+                    )
                     await response(scope, receive, send)
                 else:
                     await self._app(scope, receive, send)
                 return
             scope["user"] = response.user.id
         except Exception:  # TODO
-            response = JSONResponse({"detail": _("Token is not correct.")}, status.HTTP_401_UNAUTHORIZED)
+            response = JSONResponse(
+                {"detail": _("Token is not correct.")}, status.HTTP_401_UNAUTHORIZED
+            )
             await response(scope, receive, send)
             return
 

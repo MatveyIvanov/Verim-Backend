@@ -26,8 +26,8 @@ class Container(containers.DeclarativeContainer):
 
     db = providers.Singleton(Database, db_url=settings.DATABASE_URL)
 
-    _publication_repo = providers.Singleton(
+    publication_repo = providers.Singleton(
         PublicationRepo, session_factory=db.provided.session
     )
 
-    create_publication = providers.Singleton(CreatePublication, repo=_publication_repo)
+    create_publication = providers.Singleton(CreatePublication, repo=publication_repo)

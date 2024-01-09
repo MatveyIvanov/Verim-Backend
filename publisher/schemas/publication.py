@@ -2,6 +2,7 @@ from datetime import datetime
 
 from pydantic.dataclasses import dataclass
 from pydantic import HttpUrl
+from pydantic.fields import Field
 
 from services.entries import ContentType
 
@@ -19,3 +20,4 @@ class PublicationSchema:
     believed_count: int
     disbelieved_count: int
     created_at: datetime
+    believed: bool | None

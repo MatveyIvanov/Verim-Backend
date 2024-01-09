@@ -17,3 +17,10 @@ class PublicationType:
     disbelieved_count: int
     created_at: datetime
     updated_at: datetime
+
+
+class VoteType:
+    id: int
+    publication_id: int
+    user_id: int
+    believed: bool
