@@ -1,7 +1,6 @@
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi_versioning import VersionedFastAPI
-from fastapi_pagination import add_pagination
 
 from config.di import get_di_container
 import endpoints
@@ -12,6 +11,7 @@ from utils.exceptions import (
     request_validation_exception_handler,
 )
 from utils.middleware import TranslationMiddleware
+from utils.pagination import add_pagination
 
 
 container = get_di_container()
@@ -34,7 +34,6 @@ for router in endpoints.get_routers():
 
 add_pagination(__app)
 
-
 # custom exception handlers do not work w/o this
 # because of versioned fastapi
 handlers_to_apply = {}
@@ -51,6 +50,7 @@ __app = VersionedFastAPI(
 # __app.add_middleware(HTTPSRedirectMiddleware)  # FIXME for production
 __app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])  # FIXME for production
 __app.add_middleware(TranslationMiddleware)
+
 
 # custom exception handlers do not work w/o this
 # because of versioned fastapi

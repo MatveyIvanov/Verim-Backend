@@ -1,7 +1,7 @@
 from dataclasses import asdict
 
-from sqlalchemy import and_, func
-from sqlalchemy.orm import Query, contains_eager
+from sqlalchemy import and_
+from sqlalchemy.orm import Query
 from fastapi_pagination.ext.sqlalchemy import paginate
 
 from models.publication import Publication
@@ -41,6 +41,7 @@ class PublicationRepo(IPublicationRepo):
                     Vote,
                     and_(Vote.publication_id == self.model.id, Vote.user_id == user_id),
                 )
-                .add_columns(Vote.believed),
+                .add_columns(Vote.believed)
+                .order_by(Vote.believed.desc()),
                 transformer=pagination_transformer(PublicationSchema),
             )

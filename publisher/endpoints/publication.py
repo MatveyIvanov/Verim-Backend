@@ -41,7 +41,7 @@ async def create_publication(
     "/",
     response_model=Page[PublicationSchema],
     status_code=status.HTTP_200_OK,
-    middleware=[Middleware(AuthenticationMiddleware)],
+    middleware=[Middleware(AuthenticationMiddleware, raise_exception=False)],
 )
 @version(1)
 @inject

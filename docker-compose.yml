@@ -92,6 +92,7 @@ services:
       - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
       - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
       - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
+      - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
     depends_on:
       db:
         condition: service_healthy
@@ -129,6 +130,7 @@ services:
       - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
       - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
       - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
+      - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
     depends_on:
       db:
         condition: service_healthy
@@ -166,6 +168,7 @@ services:
       - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
       - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
       - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
+      - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
     depends_on:
       db:
         condition: service_healthy
@@ -206,6 +209,7 @@ services:
       - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
       - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
       - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
+      - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
     networks:
       - verim_network
     restart: always
@@ -246,6 +250,7 @@ services:
       - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
       - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
       - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
+      - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
     networks:
       - verim_network
     restart: always
