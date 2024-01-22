@@ -19,7 +19,7 @@ vote_table = Table(
         nullable=False,
     ),
     Column("user_id", Integer, nullable=False),
-    Column("believed", Boolean, nullable=False),
+    Column("believed", Boolean, nullable=True),
 )
 
 
