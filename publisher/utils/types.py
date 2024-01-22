@@ -23,4 +23,4 @@ class VoteType:
     id: int
     publication_id: int
     user_id: int
-    believed: bool
+    believed: bool | None

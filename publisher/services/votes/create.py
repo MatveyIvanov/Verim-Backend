@@ -17,9 +17,10 @@ class Vote(IVote):
 
     def __call__(self, user_id: int, publication_id: int, schema: VoteSchema) -> None:
         vote = self._get(user_id, publication_id)
-        if not vote:
+        if vote:
+            self._update(vote, schema)
+        else:
             self._create(user_id, publication_id, schema)
-        self._update(vote, schema)
 
     def _get(self, user_id: int, publication_id: int) -> VoteType | None:
         return self.repo.get(user_id, publication_id)
