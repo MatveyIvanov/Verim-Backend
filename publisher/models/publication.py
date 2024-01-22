@@ -1,8 +1,7 @@
 from sqlalchemy import Table, Column, Integer, String, DateTime, func
-from sqlalchemy.orm import registry
+from sqlalchemy.orm import relationship
 
-
-mapper_registry = registry()
+from models import mapper_registry
 
 
 publication_table = Table(
@@ -25,7 +24,7 @@ publication_table = Table(
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False,
-    )
+    ),
 )
 
 
@@ -33,4 +32,8 @@ class Publication:
     pass
 
 
-publication_mapper = mapper_registry.map_imperatively(Publication, publication_table)
+publication_mapper = mapper_registry.map_imperatively(
+    Publication,
+    publication_table,
+    properties={"votes": relationship("Vote", back_populates="publication")},
+)

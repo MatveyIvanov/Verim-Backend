@@ -1,10 +1,9 @@
 from sqlalchemy import Table, Column, Integer, Boolean, ForeignKey
-from sqlalchemy.orm import registry
+from sqlalchemy.orm import registry, relationship
+
+from models import mapper_registry
 
 from .publication import publication_table
-
-
-mapper_registry = registry()
 
 
 vote_table = Table(
@@ -20,7 +19,7 @@ vote_table = Table(
         nullable=False,
     ),
     Column("user_id", Integer, nullable=False),
-    Column("believed", Boolean, nullable=False),
+    Column("believed", Boolean, nullable=True),
 )
 
 
@@ -28,4 +27,8 @@ class Vote:
     pass
 
 
-vote_mapper = mapper_registry.map_imperatively(Vote, vote_table)
+vote_mapper = mapper_registry.map_imperatively(
+    Vote,
+    vote_table,
+    properties={"publication": relationship("Publication", back_populates="votes")},
+)

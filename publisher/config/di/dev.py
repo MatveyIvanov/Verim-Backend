@@ -7,9 +7,9 @@ from config import settings
 from config.db import Database
 from config.grpc import GRPCConnection
 
-from services.validators import RegexValidator, Validate
 from services.publications import CreatePublication
-from repo import PublicationRepo
+from services.votes import Vote
+from repo import PublicationRepo, VoteRepo
 
 
 class Container(containers.DeclarativeContainer):
@@ -26,8 +26,10 @@ class Container(containers.DeclarativeContainer):
 
     db = providers.Singleton(Database, db_url=settings.DATABASE_URL)
 
-    _publication_repo = providers.Singleton(
+    publication_repo = providers.Singleton(
         PublicationRepo, session_factory=db.provided.session
     )
+    _vote_repo = providers.Singleton(VoteRepo, session_factory=db.provided.session)
 
-    create_publication = providers.Singleton(CreatePublication, repo=_publication_repo)
+    create_publication = providers.Singleton(CreatePublication, repo=publication_repo)
+    create_vote = providers.Singleton(Vote, repo=_vote_repo)

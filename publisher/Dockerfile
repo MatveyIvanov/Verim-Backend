@@ -4,7 +4,7 @@ ENV DEFAULT_SERVICE_DIR /microservice
 
 RUN mkdir $DEFAULT_SERVICE_DIR
 
-COPY ./auth/ $DEFAULT_SERVICE_DIR
+COPY ./publisher/ $DEFAULT_SERVICE_DIR
 COPY ./protobufs/ /protobufs/
 COPY ./.vscode/ $DEFAULT_SERVICE_DIR/.vscode/
 

@@ -19,3 +19,9 @@ class PublicationSchema:
     believed_count: int
     disbelieved_count: int
     created_at: datetime
+    believed: bool | None
+
+
+@dataclass
+class VoteSchema:
+    believe: bool | None
