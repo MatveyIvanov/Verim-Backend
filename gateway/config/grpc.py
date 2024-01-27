@@ -1,6 +1,5 @@
 from typing import TypeVar, Generic
 
-from fastapi.responses import JSONResponse
 import grpc
 
 from utils.exceptions import Custom400Exception
