@@ -5,8 +5,9 @@ from fastapi.responses import JSONResponse
 from fastapi_versioning import version
 from dependency_injector.wiring import Provide, inject
 
+from auth_pb2 import LoginRequest
 from config.di import Container
-from services.login import ILoginUser
+from config.grpc import GRPCHandler
 from schemas import JWTTokensSchema, LoginSchema
 from utils.routing import CustomAPIRouter
 
@@ -22,7 +23,11 @@ router = CustomAPIRouter(prefix="/auth")
 @version(1)
 @inject
 async def login(
-    schema: LoginSchema,
-    service: ILoginUser = Depends(Provide[Container.login_user]),
+    schema: LoginSchema, auth_grpc: GRPCHandler = Depends(Provide[Container.auth_grpc])
 ):
-    return JSONResponse(asdict(service(schema)))
+    response = await auth_grpc(
+        "login", LoginRequest(login=schema.login, password=schema.password)
+    )
+    return JSONResponse(
+        asdict(JWTTokensSchema(access=response.access, refresh=response.refresh))
+    )

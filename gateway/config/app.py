@@ -17,9 +17,6 @@ from utils.middleware import TranslationMiddleware
 container = get_di_container()
 
 
-db = container.db()
-db.create_database()
-
 __app = CustomFastAPI(
     debug=True,
     exception_handlers={

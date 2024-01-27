@@ -31,50 +31,50 @@ services:
       timeout: 5s
       retries: 5
 
-  redis:
-    image: redis:7.2.0
-    container_name: ${CONTAINER_PREFIX}-redis
-    networks:
-      - verim_network
-    ports:
-      - "13379:6379"
-    volumes:
-      - verim_redis_data:/var/lib/redis/data/
-    healthcheck:
-      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+  # redis:
+  #   image: redis:7.2.0
+  #   container_name: ${CONTAINER_PREFIX}-redis
+  #   networks:
+  #     - verim_network
+  #   ports:
+  #     - "13379:6379"
+  #   volumes:
+  #     - verim_redis_data:/var/lib/redis/data/
+  #   healthcheck:
+  #     test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
 
-  rabbitmq:
-    image: rabbitmq:3.12-management
-    hostname: verim-rabbitmq
-    container_name: ${CONTAINER_PREFIX}-rabbitmq
-    volumes:
-      - verim_rabbitmq_data:/var/lib/rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
-    networks:
-      - verim_network
-    restart: on-failure
-    healthcheck:
-      test: rabbitmq-diagnostics -q ping
-      interval: 30s
-      timeout: 30s
-      retries: 3
+  # rabbitmq:
+  #   image: rabbitmq:3.12-management
+  #   hostname: verim-rabbitmq
+  #   container_name: ${CONTAINER_PREFIX}-rabbitmq
+  #   volumes:
+  #     - verim_rabbitmq_data:/var/lib/rabbitmq
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+  #     RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+  #   networks:
+  #     - verim_network
+  #   restart: on-failure
+  #   healthcheck:
+  #     test: rabbitmq-diagnostics -q ping
+  #     interval: 30s
+  #     timeout: 30s
+  #     retries: 3
 
-  auth:
-    container_name: ${CONTAINER_PREFIX}-auth
+  gateway:
+    container_name: ${CONTAINER_PREFIX}-gateway
     build:
       context: .
-      dockerfile: ./auth/Dockerfile
+      dockerfile: ./gateway/Dockerfile
     command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     working_dir: ${DEFAULT_SERVICE_DIR}
     env_file:
       - .env
     volumes:
-      - ./auth/:${DEFAULT_SERVICE_DIR}
+      - ./gateway/:${DEFAULT_SERVICE_DIR}
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
@@ -102,12 +102,12 @@ services:
       - verim_network
     restart: always
 
-  auth-grpc:
-    container_name: ${CONTAINER_PREFIX}-auth-grpc
+  auth:
+    container_name: ${CONTAINER_PREFIX}-auth
     build:
       context: .
       dockerfile: ./auth/Dockerfile
-    command: sh -c "python ${DEFAULT_SERVICE_DIR}/main_grpc.py"
+    command: watchmedo auto-restart --recursive --pattern="*.py" --directory="${DEFAULT_SERVICE_DIR}" python -- -m main
     working_dir: ${DEFAULT_SERVICE_DIR}
     env_file:
       - .env
@@ -145,7 +145,7 @@ services:
     build:
       context: .
       dockerfile: ./publisher/Dockerfile
-    command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8001 --reload"
+    command: watchmedo auto-restart --recursive --pattern="*.py" --directory="${DEFAULT_SERVICE_DIR}" python -- -m main
     working_dir: ${DEFAULT_SERVICE_DIR}
     env_file:
       - .env
@@ -173,106 +173,106 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "8001:8001"
+      - "50052:50052"
     networks:
       - verim_network
     restart: always
 
-  celery-worker:
-    container_name: ${CONTAINER_PREFIX}-celery-worker
-    build:
-      context: .
-      dockerfile: ./auth/Dockerfile
-    command: sh -c "celery -A config.celery.app worker -l debug"
-    depends_on:
-      - auth
-      - redis
-      - rabbitmq
-    env_file:
-      - .env
-    volumes:
-      - ./auth/:${DEFAULT_SERVICE_DIR}
-      - ${STATIC_PATH}:/static
-      - ${MEDIA_PATH}:/media
-      - ${LOG_PATH}:/logs
-      - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
-      - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
-      - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
-      - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
-      - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
-      - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
-      - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
-      - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
-      - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
-      - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
-      - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
-      - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
-      - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
-      - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
-      - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
-    networks:
-      - verim_network
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "celery inspect ping --destination celery@$$HOSTNAME"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+  # celery-worker:
+  #   container_name: ${CONTAINER_PREFIX}-celery-worker
+  #   build:
+  #     context: .
+  #     dockerfile: ./auth/Dockerfile
+  #   command: sh -c "celery -A config.celery.app worker -l debug"
+  #   depends_on:
+  #     - auth
+  #     - redis
+  #     - rabbitmq
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./auth/:${DEFAULT_SERVICE_DIR}
+  #     - ${STATIC_PATH}:/static
+  #     - ${MEDIA_PATH}:/media
+  #     - ${LOG_PATH}:/logs
+  #     - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
+  #     - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
+  #     - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
+  #     - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
+  #     - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
+  #     - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+  #     - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
+  #     - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
+  #     - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
+  #     - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
+  #     - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
+  #     - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
+  #     - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
+  #     - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
+  #     - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
+  #   networks:
+  #     - verim_network
+  #   restart: always
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "celery inspect ping --destination celery@$$HOSTNAME"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
 
-  celery-beat:
-    container_name: ${CONTAINER_PREFIX}-celery-beat
-    build:
-      context: .
-      dockerfile: ./auth/Dockerfile
-    command: sh -c "celery -A config.celery.app beat -l debug"
-    depends_on:
-      - auth
-      - redis
-      - rabbitmq
-    env_file:
-      - .env
-    volumes:
-      - ./auth/:${DEFAULT_SERVICE_DIR}
-      - ${STATIC_PATH}:/static
-      - ${MEDIA_PATH}:/media
-      - ${LOG_PATH}:/logs
-      - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
-      - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
-      - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
-      - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
-      - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
-      - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
-      - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
-      - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
-      - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
-      - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
-      - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
-      - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
-      - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
-      - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
-      - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
-    networks:
-      - verim_network
-    restart: always
+  # celery-beat:
+  #   container_name: ${CONTAINER_PREFIX}-celery-beat
+  #   build:
+  #     context: .
+  #     dockerfile: ./auth/Dockerfile
+  #   command: sh -c "celery -A config.celery.app beat -l debug"
+  #   depends_on:
+  #     - auth
+  #     - redis
+  #     - rabbitmq
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./auth/:${DEFAULT_SERVICE_DIR}
+  #     - ${STATIC_PATH}:/static
+  #     - ${MEDIA_PATH}:/media
+  #     - ${LOG_PATH}:/logs
+  #     - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
+  #     - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
+  #     - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
+  #     - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
+  #     - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
+  #     - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+  #     - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
+  #     - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
+  #     - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
+  #     - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
+  #     - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
+  #     - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
+  #     - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
+  #     - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
+  #     - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
+  #   networks:
+  #     - verim_network
+  #   restart: always
 
-  celery-flower:
-    image: mher/flower:2.0
-    container_name: ${CONTAINER_PREFIX}-celery-flower
-    environment:
-      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
-      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
-      FLOWER_PORT: ${FLOWER_PORT}
-      FLOWER_BASIC_AUTH: ${FLOWER_LOGIN}:${FLOWER_PASSWORD}
-      FLOWER_URL_PREFIX: ${FLOWER_URL_PREFIX}
-    depends_on:
-      - celery-worker
-    env_file:
-      - .env
-    ports:
-      - "5555:5555"
-    networks:
-      - verim_network
-    restart: always
+  # celery-flower:
+  #   image: mher/flower:2.0
+  #   container_name: ${CONTAINER_PREFIX}-celery-flower
+  #   environment:
+  #     CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+  #     CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
+  #     FLOWER_PORT: ${FLOWER_PORT}
+  #     FLOWER_BASIC_AUTH: ${FLOWER_LOGIN}:${FLOWER_PASSWORD}
+  #     FLOWER_URL_PREFIX: ${FLOWER_URL_PREFIX}
+  #   depends_on:
+  #     - celery-worker
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - "5555:5555"
+  #   networks:
+  #     - verim_network
+  #   restart: always
 
 volumes:
   verim_rabbitmq_data:

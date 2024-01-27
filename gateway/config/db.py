@@ -39,17 +39,10 @@ class Database:
             session.rollback()
             raise
         finally:
-            session.expunge_all()  # TODO: можно подумать над вызовом expunge для отдельных объектов
             session.close()
 
 
 """
-====Init migrations====
-0. alembic init migrations
-0.1. Set sqlalchemy.url in `alembic.ini`
-0.2. Set env and tables metadata in `migrations/env.py`
-====Create and apply migration====
 1. alembic revision --autogenerate -m ""
 2. alembic upgrade head
-====End====
 """

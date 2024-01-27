@@ -5,8 +5,9 @@ from fastapi.responses import JSONResponse
 from fastapi_versioning import version
 from dependency_injector.wiring import Provide, inject
 
+from auth_pb2 import RefreshTokensRequest
 from config.di import Container
-from services.jwt import IRefreshJWTTokens
+from config.grpc import GRPCHandler
 from schemas import JWTTokensSchema, RefreshTokensSchema
 from utils.routing import CustomAPIRouter
 
@@ -23,6 +24,11 @@ router = CustomAPIRouter(prefix="/auth/jwt")
 @inject
 async def refresh(
     schema: RefreshTokensSchema,
-    service: IRefreshJWTTokens = Depends(Provide[Container.refresh_jwt_tokens]),
+    auth_grpc: GRPCHandler = Depends(Provide[Container.auth_grpc]),
 ):
-    return JSONResponse(asdict(service(schema)))
+    response = await auth_grpc(
+        "jwt_refresh", RefreshTokensRequest(refresh=schema.refresh)
+    )
+    return JSONResponse(
+        asdict(JWTTokensSchema(access=response.access, refresh=response.refresh))
+    )

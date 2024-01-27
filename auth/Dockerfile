@@ -17,3 +17,5 @@ RUN pip install -r requirements.txt
 
 RUN python -m grpc_tools.protoc -I /protobufs --python_out=. \
            --grpc_python_out=. /protobufs/auth.proto
+RUN python -m grpc_tools.protoc -I /protobufs --python_out=. \
+           --grpc_python_out=. /protobufs/publisher.proto

@@ -74,11 +74,15 @@ class UserRepo(IUserRepo):
         )
 
     def get_by_id(self, id: int) -> UserType | None:
-        return (
-            self.all(include_not_confirmed_email=True)
-            .filter(self.model.id == id)
-            .first()
-        )
+        with self.session_factory() as session:
+            user = (
+                self.all(session=session, include_not_confirmed_email=True)
+                .filter(self.model.id == id)
+                .first()
+            )
+            if user:
+                session.expunge(user)
+            return user
 
     def get_by_email(
         self, email: str, *, include_not_confirmed_email: bool = False
