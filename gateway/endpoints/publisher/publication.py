@@ -8,12 +8,12 @@ from fastapi_versioning import version
 from fastapi_pagination import Page
 from dependency_injector.wiring import Provide, inject
 
-from publisher_pb2 import (
+from publisher_grpc_typed import (
+    IPublisherStub,
     CreatePublicationRequest,
     PaginationRequest,
 )
 from config.di import Container
-from config.grpc import GRPCHandler
 from schemas import (
     CreatePublicationSchema,
     PublicationSchema,
@@ -37,11 +37,10 @@ router = CustomAPIRouter(prefix="/publications")
 async def create_publication(
     request: Request,
     schema: CreatePublicationSchema,
-    publisher_grpc: GRPCHandler = Depends(Provide[Container.publisher_grpc]),
+    publisher_grpc: IPublisherStub = Depends(Provide[Container.publisher_grpc]),
 ):
-    response = await publisher_grpc(
-        "publications_create",
-        CreatePublicationRequest(user_id=request.user, url=str(schema.url)),
+    response = await publisher_grpc.publications_create(
+        request=CreatePublicationRequest(user_id=request.user, url=str(schema.url))
     )
     return JSONResponse(
         asdict(
@@ -69,7 +68,7 @@ async def create_publication(
 @inject
 async def get_publications(
     request: Request,
-    publisher_grpc: GRPCHandler = Depends(Provide[Container.publisher_grpc]),
+    publisher_grpc: IPublisherStub = Depends(Provide[Container.publisher_grpc]),
 ):
     page = request.query_params.get("page", None)
     size = request.query_params.get("size", None)
@@ -77,13 +76,12 @@ async def get_publications(
         page = int(page)
     if size:
         size = int(size)
-    response = await publisher_grpc(
-        "publications_selection",
-        PaginationRequest(
+    response = await publisher_grpc.publications_selection(
+        request=PaginationRequest(
             user_id=request.user,
             page=page,
             size=size,
-        ),
+        )
     )
     return JSONResponse(
         asdict(

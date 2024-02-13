@@ -14,21 +14,9 @@ class GRPCConnection(Generic[T]):
     def __init__(self, host: str, port: int, stub: T):
         """Init a channel"""
         self.channel = grpc.aio.insecure_channel(f"{host}:{port}")
-        self.stub = stub(self.channel)
+        self._stub = stub(self.channel)
 
-    def __call__(self) -> T:
+    @property
+    def stub(self) -> T:
         """Get a stub to use for the grpc"""
-        return self.stub
-
-
-class GRPCHandler:
-    def __init__(self, grpc_conn: GRPCConnection) -> None:
-        self.grpc_conn = grpc_conn
-
-    async def __call__(self, method: str, request):
-        connection = self.grpc_conn()
-        assert hasattr(connection, method), "Bad method"
-        response = await getattr(connection, method)(request)
-        if getattr(response, "detail", None):
-            raise Custom400Exception(detail=response.detail)
-        return response
+        return self._stub

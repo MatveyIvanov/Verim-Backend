@@ -45,11 +45,10 @@ class AuthenticationMiddleware:
                 await self._app(scope, receive, send)
             return
 
-        from auth_pb2 import AuthRequest
+        from auth_grpc_typed import IAuthStub, AuthRequest
         from config import settings
         from config.di import Container
         from config.i18n import _
-        from utils.exceptions import Custom401Exception
 
         prefix, token = auth_header
 
@@ -64,8 +63,9 @@ class AuthenticationMiddleware:
             return
 
         try:
-            response = await Container.auth_grpc()("auth", AuthRequest(token=token))
-            print(response)
+            response = await Container.auth_grpc().auth(
+                request=AuthRequest(token=token)
+            )
             if response.user.id == -1:
                 if self.raise_exception:
                     response = JSONResponse(

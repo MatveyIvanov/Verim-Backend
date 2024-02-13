@@ -3,6 +3,7 @@ import re
 from dependency_injector import containers, providers
 
 import auth_pb2_grpc
+from auth_grpc_typed import AuthStub
 from config import settings
 from config.db import Database
 from config.grpc import GRPCConnection
@@ -17,12 +18,13 @@ class Container(containers.DeclarativeContainer):
         packages=["grpc_services"], modules=["config.celery", "grpc_services.publisher"]
     )
 
-    auth_grpc = providers.Singleton(
+    _auth_grpc = providers.Singleton(
         GRPCConnection,
         host=settings.AUTH_GRPC_HOST,
         port=settings.AUTH_GRPC_PORT,
         stub=auth_pb2_grpc.AuthStub,
     )
+    auth_grpc = providers.Singleton(AuthStub, connection=_auth_grpc)
 
     db = providers.Singleton(Database, db_url=settings.DATABASE_URL)
 

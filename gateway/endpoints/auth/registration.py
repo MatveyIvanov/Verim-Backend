@@ -5,13 +5,13 @@ from fastapi.responses import JSONResponse
 from fastapi_versioning import version
 from dependency_injector.wiring import Provide, inject
 
-from auth_pb2 import (
+from auth_grpc_typed import (
+    IAuthStub,
     RegisterRequest,
     RepeatRegisterRequest,
     ConfirmRegisterRequest,
 )
 from config.di import Container
-from config.grpc import GRPCHandler
 from schemas import (
     RegistrationSchema,
     JWTTokensSchema,
@@ -32,16 +32,15 @@ router = CustomAPIRouter(prefix="/auth")
 @inject
 async def register(
     schema: RegistrationSchema,
-    auth_grpc: GRPCHandler = Depends(Provide[Container.auth_grpc]),
+    auth_grpc: IAuthStub = Depends(Provide[Container.auth_grpc]),
 ):
-    response = await auth_grpc(
-        "register",
-        RegisterRequest(
+    response = await auth_grpc.register(
+        request=RegisterRequest(
             email=schema.email,
             username=schema.username,
             password=schema.password,
             re_password=schema.re_password,
-        ),
+        )
     )
     return JSONResponse(
         asdict(CodeSentSchema(email=response.email, message=response.message)),
@@ -58,10 +57,10 @@ async def register(
 @inject
 async def repeat_code(
     schema: RepeatRegistrationCodeSchema,
-    auth_grpc: GRPCHandler = Depends(Provide[Container.auth_grpc]),
+    auth_grpc: IAuthStub = Depends(Provide[Container.auth_grpc]),
 ):
-    response = await auth_grpc(
-        "register_repeat", RepeatRegisterRequest(email=schema.email)
+    response = await auth_grpc.register_repeat(
+        request=RepeatRegisterRequest(email=schema.email)
     )
     return JSONResponse(
         asdict(CodeSentSchema(email=response.email, message=response.message)),
@@ -78,10 +77,10 @@ async def repeat_code(
 @inject
 async def register_confirm(
     schema: ConfirmRegistrationSchema,
-    auth_grpc: GRPCHandler = Depends(Provide[Container.auth_grpc]),
+    auth_grpc: IAuthStub = Depends(Provide[Container.auth_grpc]),
 ):
-    response = await auth_grpc(
-        "register_confirm", ConfirmRegisterRequest(email=schema.email, code=schema.code)
+    response = await auth_grpc.register_confirm(
+        request=ConfirmRegisterRequest(email=schema.email, code=schema.code)
     )
     return JSONResponse(
         asdict(JWTTokensSchema(access=response.access, refresh=response.refresh)),

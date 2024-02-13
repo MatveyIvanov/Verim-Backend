@@ -74,19 +74,26 @@ services:
     env_file:
       - .env
     volumes:
+      # app dir
       - ./gateway/:${DEFAULT_SERVICE_DIR}
+      # web stuff
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
+      # protobufs
       - ./protobufs/compiled/auth_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/auth_pb2_grpc.py
       - ./protobufs/compiled/auth_pb2.py:${DEFAULT_SERVICE_DIR}/auth_pb2.py
+      - ./protobufs/compiled/auth_grpc_typed.py:${DEFAULT_SERVICE_DIR}/auth_grpc_typed.py
       - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
       - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
+      - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
+      # common stuff
       - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
       - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
       - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
       - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
       - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+      - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
       - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
       - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
       - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
@@ -113,14 +120,20 @@ services:
     env_file:
       - .env
     volumes:
+      # app dir
       - ./auth/:${DEFAULT_SERVICE_DIR}
+      # web stuff
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
+      # protobufs
       - ./protobufs/compiled/auth_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/auth_pb2_grpc.py
       - ./protobufs/compiled/auth_pb2.py:${DEFAULT_SERVICE_DIR}/auth_pb2.py
+      - ./protobufs/compiled/auth_grpc_typed.py:${DEFAULT_SERVICE_DIR}/auth_grpc_typed.py
       - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
       - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
+      - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
+      # common stuff
       - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
       - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
       - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
@@ -154,14 +167,20 @@ services:
     env_file:
       - .env
     volumes:
+      # app dir
       - ./publisher/:${DEFAULT_SERVICE_DIR}
+      # web stuff
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
+      # protobufs
       - ./protobufs/compiled/auth_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/auth_pb2_grpc.py
       - ./protobufs/compiled/auth_pb2.py:${DEFAULT_SERVICE_DIR}/auth_pb2.py
+      - ./protobufs/compiled/auth_grpc_typed.py:${DEFAULT_SERVICE_DIR}/auth_grpc_typed.py
       - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
       - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
+      - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
+      # common stuff
       - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
       - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
       - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
@@ -198,19 +217,26 @@ services:
     env_file:
       - .env
     volumes:
+      # app dir
       - ./gateway/:${DEFAULT_SERVICE_DIR}
+      # web stuff
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
+      # protobufs
       - ./protobufs/compiled/auth_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/auth_pb2_grpc.py
       - ./protobufs/compiled/auth_pb2.py:${DEFAULT_SERVICE_DIR}/auth_pb2.py
+      - ./protobufs/compiled/auth_grpc_typed.py:${DEFAULT_SERVICE_DIR}/auth_grpc_typed.py
       - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
       - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
+      - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
+      # common stuff
       - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
       - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
       - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
       - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
       - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+      - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
       - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
       - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
       - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
@@ -240,19 +266,26 @@ services:
     env_file:
       - .env
     volumes:
+      # app dir
       - ./gateway/:${DEFAULT_SERVICE_DIR}
+      # web stuff
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
+      # protobufs
       - ./protobufs/compiled/auth_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/auth_pb2_grpc.py
       - ./protobufs/compiled/auth_pb2.py:${DEFAULT_SERVICE_DIR}/auth_pb2.py
+      - ./protobufs/compiled/auth_grpc_typed.py:${DEFAULT_SERVICE_DIR}/auth_grpc_typed.py
       - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
       - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
+      - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
+      # common stuff
       - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
       - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
       - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
       - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
       - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+      - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
       - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
       - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
       - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py

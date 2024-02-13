@@ -1,6 +1,7 @@
 from dependency_injector import containers, providers
 
 import publisher_pb2_grpc
+from publisher_grpc_typed import PublisherStub
 from config import settings
 from config.db import Database
 from config.mail import SendEmail
@@ -38,12 +39,13 @@ class Container(containers.DeclarativeContainer):
         packages=["grpc_services"], modules=["config.celery", "grpc_services.auth"]
     )
 
-    publisher_grpc = providers.Singleton(
+    _publisher_grpc = providers.Singleton(
         GRPCConnection,
         host=settings.PUBLISHER_GRPC_HOST,
         port=settings.PUBLISHER_GRPC_PORT,
         stub=publisher_pb2_grpc.PublisherStub,
     )
+    publisher_grpc = providers.Singleton(PublisherStub, connection=_publisher_grpc)
 
     db = providers.Singleton(Database, db_url=settings.DATABASE_URL)
 
