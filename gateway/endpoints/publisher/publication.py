@@ -14,7 +14,11 @@ from publisher_pb2 import (
 )
 from config.di import Container
 from config.grpc import GRPCHandler
-from schemas import CreatePublicationSchema, PublicationSchema
+from schemas import (
+    CreatePublicationSchema,
+    PublicationSchema,
+    PublicationSelectionSchema,
+)
 from utils.middleware import AuthenticationMiddleware
 from utils.routing import CustomAPIRouter
 
@@ -36,7 +40,8 @@ async def create_publication(
     publisher_grpc: GRPCHandler = Depends(Provide[Container.publisher_grpc]),
 ):
     response = await publisher_grpc(
-        "publications_create", CreatePublicationRequest(url=schema.url)
+        "publications_create",
+        CreatePublicationRequest(user_id=request.user, url=str(schema.url)),
     )
     return JSONResponse(
         asdict(
@@ -66,5 +71,39 @@ async def get_publications(
     request: Request,
     publisher_grpc: GRPCHandler = Depends(Provide[Container.publisher_grpc]),
 ):
-    response = await publisher_grpc("publications_selection", PaginationRequest(page=1))
-    return JSONResponse()
+    page = request.query_params.get("page", None)
+    size = request.query_params.get("size", None)
+    if page:
+        page = int(page)
+    if size:
+        size = int(size)
+    response = await publisher_grpc(
+        "publications_selection",
+        PaginationRequest(
+            user_id=request.user,
+            page=page,
+            size=size,
+        ),
+    )
+    return JSONResponse(
+        asdict(
+            PublicationSelectionSchema(
+                items=[
+                    PublicationSchema(
+                        id=publication.id,
+                        url=publication.url,
+                        type=publication.type,
+                        believed_count=publication.believed_count,
+                        disbelieved_count=publication.disbelieved_count,
+                        created_at=publication.created_at,
+                        believed=publication.believed,
+                    )
+                    for publication in response.items
+                ],
+                total=response.total,
+                page=response.page,
+                size=response.size,
+                pages=response.pages,
+            )
+        )
+    )

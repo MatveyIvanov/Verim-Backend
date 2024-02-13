@@ -8,7 +8,7 @@ from grpc_services import GRPCAuth
 
 
 def serve():
-    container = Container()
+    Container()
     print("Auth GRPC Start Up...")
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     auth_pb2_grpc.add_AuthServicer_to_server(GRPCAuth(), server)

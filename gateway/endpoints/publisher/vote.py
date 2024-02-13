@@ -29,5 +29,12 @@ async def vote(
     publication_id: int,
     publisher_grpc: GRPCHandler = Depends(Provide[Container.publisher_grpc]),
 ):
-    await publisher_grpc("publications_vote", VoteRequest(believed=schema.believed))
+    await publisher_grpc(
+        "publications_vote",
+        VoteRequest(
+            user_id=request.user,
+            publication_id=publication_id,
+            believed=schema.believed,
+        ),
+    )
     return Response()

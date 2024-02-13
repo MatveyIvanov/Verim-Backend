@@ -12,6 +12,7 @@ from utils.exceptions import (
     request_validation_exception_handler,
 )
 from utils.middleware import TranslationMiddleware
+from utils.pagination import add_pagination
 
 
 container = get_di_container()
@@ -26,7 +27,10 @@ __app = CustomFastAPI(
 )
 __app.container = container
 for router in endpoints.get_routers():
-    __app.include_router(router)
+    __app.include_router(router, tags=router.tags)
+
+
+add_pagination(__app)
 
 
 # custom exception handlers do not work w/o this

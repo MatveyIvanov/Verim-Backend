@@ -1,4 +1,4 @@
-from typing import List
+from datetime import datetime
 from enum import Enum
 
 from pydantic.dataclasses import dataclass
@@ -24,14 +24,5 @@ class PublicationSchema:
     type: ContentType
     believed_count: int
     disbelieved_count: int
-    created_at: str
+    created_at: datetime
     believed: bool | None
-
-
-@dataclass
-class PublicationSelectionSchema:
-    items: List[PublicationSchema]
-    total: int
-    page: int
-    size: int
-    pages: int

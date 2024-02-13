@@ -1,16 +1,18 @@
 import grpc
 from concurrent import futures
 
-import auth_pb2_grpc
+import publisher_pb2_grpc
 from config import settings
+from config.di import Container
 
-# from grpc_services import GRPCAuth
+from grpc_services import GRPCPublisher
 
 
 def serve():
+    Container()
     print("Publisher gRPC Start Up...")
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    # auth_pb2_grpc.add_AuthServicer_to_server(GRPCAuth(), server)
+    publisher_pb2_grpc.add_PublisherServicer_to_server(GRPCPublisher(), server)
     server.add_insecure_port(
         f"{settings.PUBLISHER_GRPC_SERVER_HOST}:{settings.PUBLISHER_GRPC_SERVER_PORT}"
     )

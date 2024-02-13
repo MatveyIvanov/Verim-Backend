@@ -3,7 +3,7 @@ from dependency_injector import containers, providers
 import publisher_pb2_grpc
 from config import settings
 from config.db import Database
-from config.mail import SendEmail, _SendEmail
+from config.mail import SendEmail
 from config.grpc import GRPCConnection
 from repo import UserRepo, CodeRepo
 from services.registration import (
@@ -47,7 +47,6 @@ class Container(containers.DeclarativeContainer):
 
     db = providers.Singleton(Database, db_url=settings.DATABASE_URL)
 
-    _send_email = providers.Singleton(_SendEmail)
     send_email = providers.Singleton(SendEmail)
 
     user_repo = providers.Factory(UserRepo, session_factory=db.provided.session)

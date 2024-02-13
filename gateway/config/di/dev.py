@@ -3,6 +3,7 @@ from dependency_injector import containers, providers
 import auth_pb2_grpc
 import publisher_pb2_grpc
 from config import settings
+from config.mail import _SendEmail
 from config.grpc import GRPCConnection, GRPCHandler
 
 
@@ -25,3 +26,5 @@ class Container(containers.DeclarativeContainer):
     )
     auth_grpc = providers.Singleton(GRPCHandler, grpc_conn=_auth_grpc)
     publisher_grpc = providers.Singleton(GRPCHandler, grpc_conn=_publisher_grpc)
+
+    _send_email = providers.Singleton(_SendEmail)

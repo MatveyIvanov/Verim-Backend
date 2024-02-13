@@ -6,7 +6,8 @@ import "auth.proto";
 
 
 message CreatePublicationRequest {
-    string url = 1;
+    int32 user_id = 1;
+    string url = 2;
 }
 
 
@@ -23,18 +24,26 @@ message PublicationResponse {
 
 
 message VoteRequest {
-    bool believed = 1;
+    int32 user_id = 1;
+    int32 publication_id = 2;
+    bool believed = 3;
 }
 
 
 message PaginationRequest {
-    int32 page = 1;
+    int32 user_id = 1;
+    int32 page = 2;
+    int32 size = 3;
 }
 
 
 message PublicationsSelectionResponse {
     repeated PublicationResponse items = 1;
-    optional string detail = 2;
+    int32 total = 2;
+    int32 page = 3;
+    int32 size = 4;
+    int32 pages = 5;
+    optional string detail = 6;
 }
 
 

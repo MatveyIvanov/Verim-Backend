@@ -14,4 +14,5 @@ from .publisher import (
     CreatePublicationSchema,
     PublicationSchema,
     VoteSchema,
+    PublicationSelectionSchema,
 )

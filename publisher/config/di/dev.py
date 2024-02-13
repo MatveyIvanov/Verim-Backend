@@ -14,7 +14,7 @@ from repo import PublicationRepo, VoteRepo
 
 class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
-        packages=["endpoints"], modules=["utils.middleware", "config.celery"]
+        packages=["grpc_services"], modules=["config.celery", "grpc_services.publisher"]
     )
 
     auth_grpc = providers.Singleton(
