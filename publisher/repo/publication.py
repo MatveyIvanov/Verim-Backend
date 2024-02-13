@@ -3,7 +3,9 @@ from dataclasses import asdict
 from sqlalchemy import and_
 from sqlalchemy.orm import Query
 from fastapi_pagination.ext.sqlalchemy import paginate
+from fastapi_pagination.default import Params
 
+from config import settings
 from models.publication import Publication
 from models.vote import Vote
 from services.repo import IPublicationRepo
@@ -25,7 +27,11 @@ class PublicationRepo(IPublicationRepo):
             session.refresh(publication)
         return publication
 
-    def selection(self, user_id: int | None) -> Query[Publication]:
+    def selection(
+        self, user_id: int | None, size: int | None, page: int | None
+    ) -> Query[Publication]:
+        size = size or settings.PAGINATION_DEFAULT_PAGE_SIZE
+        page = page or settings.PAGINATION_DEFAULT_PAGE
         with self.session_factory() as session:
             return paginate(
                 session.query(
@@ -43,5 +49,6 @@ class PublicationRepo(IPublicationRepo):
                 )
                 .add_columns(Vote.believed)
                 .order_by(Vote.believed.desc()),
+                params=Params(page=page, size=size),
                 transformer=pagination_transformer(PublicationSchema),
             )

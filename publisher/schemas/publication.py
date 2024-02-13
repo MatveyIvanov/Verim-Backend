@@ -1,9 +1,15 @@
 from datetime import datetime
+from enum import Enum
 
 from pydantic.dataclasses import dataclass
 from pydantic import HttpUrl
 
-from services.entries import ContentType
+
+class ContentType(str, Enum):
+    YOUTUBE = "YOUTUBE"
+    VK = "VK"
+    TIKTOK = "TIKTOK"
+    TWITCH = "TWITCH"
 
 
 @dataclass
@@ -20,8 +26,3 @@ class PublicationSchema:
     disbelieved_count: int
     created_at: datetime
     believed: bool | None
-
-
-@dataclass
-class VoteSchema:
-    believe: bool | None

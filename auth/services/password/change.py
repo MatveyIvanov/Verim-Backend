@@ -13,7 +13,7 @@ from config.i18n import _
 
 class IChangePassword(ABC):
     @abstractmethod
-    def __call__(self, user: UserType, entry: ChangePasswordSchema) -> None:
+    def __call__(self, user_id: int, entry: ChangePasswordSchema) -> None:
         ...
 
 
@@ -32,7 +32,8 @@ class ChangePassword(IChangePassword):
         self.revoke_jwt_tokens = revoke_jwt_tokens
         self.repo = repo
 
-    def __call__(self, user: UserType, entry: ChangePasswordSchema) -> None:
+    def __call__(self, user_id: int, entry: ChangePasswordSchema) -> None:
+        user = self.repo.get_by_id(id=user_id)
         self._chech_current_password(user, entry.current_password)
         self._validate_new_password(entry)
         self._set_password(user, entry.new_password)

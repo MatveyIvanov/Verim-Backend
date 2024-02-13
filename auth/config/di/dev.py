@@ -1,8 +1,11 @@
 from dependency_injector import containers, providers
 
+import publisher_pb2_grpc
+from publisher_grpc_typed import PublisherStub
 from config import settings
 from config.db import Database
-from config.mail import SendEmail, _SendEmail
+from config.mail import SendEmail
+from config.grpc import GRPCConnection
 from repo import UserRepo, CodeRepo
 from services.registration import (
     RegisterUser,
@@ -33,12 +36,19 @@ from services.codes import CheckCode, CreateCode, SendCode
 
 class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
-        packages=["endpoints"], modules=["config.celery"]
+        packages=["grpc_services"], modules=["config.celery", "grpc_services.auth"]
     )
+
+    _publisher_grpc = providers.Singleton(
+        GRPCConnection,
+        host=settings.PUBLISHER_GRPC_HOST,
+        port=settings.PUBLISHER_GRPC_PORT,
+        stub=publisher_pb2_grpc.PublisherStub,
+    )
+    publisher_grpc = providers.Singleton(PublisherStub, connection=_publisher_grpc)
 
     db = providers.Singleton(Database, db_url=settings.DATABASE_URL)
 
-    _send_email = providers.Singleton(_SendEmail)
     send_email = providers.Singleton(SendEmail)
 
     user_repo = providers.Factory(UserRepo, session_factory=db.provided.session)

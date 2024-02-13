@@ -1,10 +1,27 @@
 # Common microservice's files, mounted via docker
+gateway/config/db.py
+gateway/config/grpc.py
+gateway/config/i18n.py
+gateway/config/mail.py
+gateway/utils/app.py
+gateway/utils/exceptions.py
+gateway/utils/pygettext.py
+gateway/utils/random.py
+gateway/utils/repo.py
+gateway/utils/routing.py
+gateway/utils/schemas.py
+gateway/utils/shortcuts.py
+gateway/utils/test.py
+gateway/utils/time.py
+gateway/utils/pagination.py
+
 auth/config/db.py
 auth/config/grpc.py
 auth/config/i18n.py
 auth/config/mail.py
 auth/utils/app.py
 auth/utils/exceptions.py
+auth/utils/decorators.py
 auth/utils/pygettext.py
 auth/utils/random.py
 auth/utils/repo.py
@@ -21,6 +38,7 @@ publisher/config/i18n.py
 publisher/config/mail.py
 publisher/utils/app.py
 publisher/utils/exceptions.py
+auth/utils/decorators.py
 publisher/utils/pygettext.py
 publisher/utils/random.py
 publisher/utils/repo.py
@@ -32,8 +50,15 @@ publisher/utils/time.py
 publisher/utils/pagination.py
 
 # grpc
-*_pb2.py
-*_pb2_grpc.py
+auth/*_pb2.py
+auth/*_pb2_grpc.py
+auth/*_grpc_typed.py
+gateway/*_pb2.py
+gateway/*_pb2_grpc.py
+gateway/*_grpc_typed.py
+publisher/*_pb2.py
+publisher/*_pb2_grpc.py
+publisher/*_grpc_typed.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

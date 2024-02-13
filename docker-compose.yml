@@ -64,29 +64,37 @@ services:
       timeout: 30s
       retries: 3
 
-  auth:
-    container_name: ${CONTAINER_PREFIX}-auth
+  gateway:
+    container_name: ${CONTAINER_PREFIX}-gateway
     build:
       context: .
-      dockerfile: ./auth/Dockerfile
+      dockerfile: ./gateway/Dockerfile
     command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     working_dir: ${DEFAULT_SERVICE_DIR}
     env_file:
       - .env
     volumes:
-      - ./auth/:${DEFAULT_SERVICE_DIR}
+      # app dir
+      - ./gateway/:${DEFAULT_SERVICE_DIR}
+      # web stuff
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
-      - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
+      # protobufs
+      - ./protobufs/compiled/auth_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/auth_pb2_grpc.py
+      - ./protobufs/compiled/auth_pb2.py:${DEFAULT_SERVICE_DIR}/auth_pb2.py
+      - ./protobufs/compiled/auth_grpc_typed.py:${DEFAULT_SERVICE_DIR}/auth_grpc_typed.py
+      - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
+      - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
+      - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
+      # common stuff
       - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
       - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
       - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
       - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
       - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+      - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
       - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
-      - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
-      - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
       - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
       - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
       - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
@@ -102,30 +110,39 @@ services:
       - verim_network
     restart: always
 
-  auth-grpc:
-    container_name: ${CONTAINER_PREFIX}-auth-grpc
+  auth:
+    container_name: ${CONTAINER_PREFIX}-auth
     build:
       context: .
       dockerfile: ./auth/Dockerfile
-    command: sh -c "python ${DEFAULT_SERVICE_DIR}/main_grpc.py"
+    command: watchmedo auto-restart --recursive --pattern="*.py" --directory="${DEFAULT_SERVICE_DIR}" python -- -m main
     working_dir: ${DEFAULT_SERVICE_DIR}
     env_file:
       - .env
     volumes:
+      # app dir
       - ./auth/:${DEFAULT_SERVICE_DIR}
+      # web stuff
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
+      # protobufs
+      - ./protobufs/compiled/auth_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/auth_pb2_grpc.py
+      - ./protobufs/compiled/auth_pb2.py:${DEFAULT_SERVICE_DIR}/auth_pb2.py
+      - ./protobufs/compiled/auth_grpc_typed.py:${DEFAULT_SERVICE_DIR}/auth_grpc_typed.py
+      - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
+      - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
+      - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
+      # common stuff
       - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
       - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
       - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
       - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
-      - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
       - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+      - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
       - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
       - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
       - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
-      - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
       - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
       - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
       - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
@@ -145,25 +162,34 @@ services:
     build:
       context: .
       dockerfile: ./publisher/Dockerfile
-    command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8001 --reload"
+    command: watchmedo auto-restart --recursive --pattern="*.py" --directory="${DEFAULT_SERVICE_DIR}" python -- -m main
     working_dir: ${DEFAULT_SERVICE_DIR}
     env_file:
       - .env
     volumes:
+      # app dir
       - ./publisher/:${DEFAULT_SERVICE_DIR}
+      # web stuff
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
+      # protobufs
+      - ./protobufs/compiled/auth_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/auth_pb2_grpc.py
+      - ./protobufs/compiled/auth_pb2.py:${DEFAULT_SERVICE_DIR}/auth_pb2.py
+      - ./protobufs/compiled/auth_grpc_typed.py:${DEFAULT_SERVICE_DIR}/auth_grpc_typed.py
+      - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
+      - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
+      - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
+      # common stuff
       - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
       - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
       - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
       - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
-      - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
       - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+      - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
       - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
       - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
       - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
-      - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
       - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
       - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
       - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
@@ -173,7 +199,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "8001:8001"
+      - "50052:50052"
     networks:
       - verim_network
     restart: always
@@ -182,28 +208,36 @@ services:
     container_name: ${CONTAINER_PREFIX}-celery-worker
     build:
       context: .
-      dockerfile: ./auth/Dockerfile
+      dockerfile: ./gateway/Dockerfile
     command: sh -c "celery -A config.celery.app worker -l debug"
     depends_on:
-      - auth
+      - gateway
       - redis
       - rabbitmq
     env_file:
       - .env
     volumes:
-      - ./auth/:${DEFAULT_SERVICE_DIR}
+      # app dir
+      - ./gateway/:${DEFAULT_SERVICE_DIR}
+      # web stuff
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
-      - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
+      # protobufs
+      - ./protobufs/compiled/auth_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/auth_pb2_grpc.py
+      - ./protobufs/compiled/auth_pb2.py:${DEFAULT_SERVICE_DIR}/auth_pb2.py
+      - ./protobufs/compiled/auth_grpc_typed.py:${DEFAULT_SERVICE_DIR}/auth_grpc_typed.py
+      - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
+      - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
+      - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
+      # common stuff
       - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
       - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
       - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
       - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
       - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+      - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
       - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
-      - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
-      - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
       - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
       - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
       - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
@@ -223,28 +257,36 @@ services:
     container_name: ${CONTAINER_PREFIX}-celery-beat
     build:
       context: .
-      dockerfile: ./auth/Dockerfile
+      dockerfile: ./gateway/Dockerfile
     command: sh -c "celery -A config.celery.app beat -l debug"
     depends_on:
-      - auth
+      - gateway
       - redis
       - rabbitmq
     env_file:
       - .env
     volumes:
-      - ./auth/:${DEFAULT_SERVICE_DIR}
+      # app dir
+      - ./gateway/:${DEFAULT_SERVICE_DIR}
+      # web stuff
       - ${STATIC_PATH}:/static
       - ${MEDIA_PATH}:/media
       - ${LOG_PATH}:/logs
-      - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
+      # protobufs
+      - ./protobufs/compiled/auth_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/auth_pb2_grpc.py
+      - ./protobufs/compiled/auth_pb2.py:${DEFAULT_SERVICE_DIR}/auth_pb2.py
+      - ./protobufs/compiled/auth_grpc_typed.py:${DEFAULT_SERVICE_DIR}/auth_grpc_typed.py
+      - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
+      - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
+      - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
+      # common stuff
       - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
       - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
       - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
       - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
       - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
+      - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
       - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
-      - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
-      - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
       - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
       - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
       - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py

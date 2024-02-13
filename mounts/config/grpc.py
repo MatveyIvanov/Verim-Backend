@@ -2,6 +2,8 @@ from typing import TypeVar, Generic
 
 import grpc
 
+from utils.exceptions import Custom400Exception
+
 
 T = TypeVar("T")
 
@@ -11,9 +13,10 @@ class GRPCConnection(Generic[T]):
 
     def __init__(self, host: str, port: int, stub: T):
         """Init a channel"""
-        self.channel = grpc.insecure_channel(f"{host}:{port}")
-        self.stub = stub(self.channel)
+        self.channel = grpc.aio.insecure_channel(f"{host}:{port}")
+        self._stub = stub(self.channel)
 
-    def __call__(self) -> T:
+    @property
+    def stub(self) -> T:
         """Get a stub to use for the grpc"""
-        return self.stub
+        return self._stub

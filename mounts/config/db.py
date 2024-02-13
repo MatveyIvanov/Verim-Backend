@@ -39,6 +39,7 @@ class Database:
             session.rollback()
             raise
         finally:
+            session.expunge_all()  # TODO: можно подумать над вызовом expunge для отдельных объектов
             session.close()
 
 
