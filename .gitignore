@@ -52,10 +52,13 @@ publisher/utils/pagination.py
 # grpc
 auth/*_pb2.py
 auth/*_pb2_grpc.py
+auth/*_grpc_typed.py
 gateway/*_pb2.py
 gateway/*_pb2_grpc.py
+gateway/*_grpc_typed.py
 publisher/*_pb2.py
 publisher/*_pb2_grpc.py
+publisher/*_grpc_typed.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
