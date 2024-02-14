@@ -8,8 +8,6 @@ from jwt.exceptions import PyJWTError
 from config import settings
 from config.di import get_di_test_container
 from services.authenticate import Authenticate
-from schemas import LoginSchema, JWTTokensSchema
-from repo.user import UserRepo
 from utils.test import ServiceTestMixin
 from utils.exceptions import Custom401Exception, Custom403Exception
 
