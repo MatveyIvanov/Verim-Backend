@@ -1,12 +1,17 @@
 from typing import Any, Dict
 
+from config.i18n import _
+
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.utils import is_body_allowed_for_status_code
 from fastapi import status
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
-from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
+from starlette.status import (
+    HTTP_422_UNPROCESSABLE_ENTITY,
+    HTTP_500_INTERNAL_SERVER_ERROR,
+)
 
 
 class CustomException(HTTPException):
@@ -59,4 +64,12 @@ async def request_validation_exception_handler(
     return JSONResponse(
         status_code=HTTP_422_UNPROCESSABLE_ENTITY,
         content={"detail": jsonable_encoder(errors)},
+    )
+
+
+async def internal_exception_handler(request: Request, exc: Exception):
+    # TODO: logging
+    return JSONResponse(
+        status_code=HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": _("An internal error has occurred.")},
     )

@@ -2,6 +2,7 @@ from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi_versioning import VersionedFastAPI
+from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
 
 from config.di import get_di_container
 import endpoints
@@ -10,6 +11,7 @@ from utils.exceptions import (
     CustomException,
     custom_exception_handler,
     request_validation_exception_handler,
+    internal_exception_handler,
 )
 from utils.middleware import TranslationMiddleware
 from utils.pagination import add_pagination
@@ -23,6 +25,7 @@ __app = CustomFastAPI(
     exception_handlers={
         CustomException: custom_exception_handler,
         RequestValidationError: request_validation_exception_handler,
+        HTTP_500_INTERNAL_SERVER_ERROR: internal_exception_handler,
     },
 )
 __app.container = container
