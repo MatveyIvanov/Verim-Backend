@@ -1,6 +1,8 @@
 from pydantic import EmailStr, Field
 from pydantic.dataclasses import dataclass
 
+from config import settings
+
 
 @dataclass
 class RegistrationSchema:
@@ -19,7 +21,10 @@ class CodeSentSchema:
 @dataclass
 class ConfirmRegistrationSchema:
     email: EmailStr
-    code: str = Field(min_length=4, max_length=4)
+    code: str = Field(
+        min_length=settings.CONFIRMATION_CODE_LENGTH,
+        max_length=settings.CONFIRMATION_CODE_LENGTH,
+    )
 
 
 @dataclass

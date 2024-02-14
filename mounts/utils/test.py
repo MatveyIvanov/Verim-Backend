@@ -23,8 +23,10 @@ class ServiceTestMixin:
     user = SimpleNamespace(
         **{
             "id": 1,
-            "login": "testuser",
+            "username": "testuser",
+            "email": "testuser@email.com",
             "password": "testpassword",
+            "email_confirmed": True,
         }
     )
 

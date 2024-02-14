@@ -3,12 +3,12 @@ from abc import ABC, abstractmethod
 from .create import ICreateJWTTokens
 from schemas import JWTTokensSchema, RefreshTokensSchema
 from utils.types import UserType
+from utils.middleware import authenticate_by_token
 
 
 class IRefreshJWTTokens(ABC):
     @abstractmethod
-    def __call__(self, entry: RefreshTokensSchema) -> JWTTokensSchema:
-        ...
+    def __call__(self, entry: RefreshTokensSchema) -> JWTTokensSchema: ...
 
 
 class RefreshJWTTokens(IRefreshJWTTokens):
@@ -19,6 +19,4 @@ class RefreshJWTTokens(IRefreshJWTTokens):
         return self.create_jwt_tokens(user=self._get_user(entry.refresh))
 
     def _get_user(self, refresh: str) -> UserType:
-        from utils.middleware import authenticate_by_token
-
         return authenticate_by_token(refresh, access=False)

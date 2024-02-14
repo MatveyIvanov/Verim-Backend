@@ -9,6 +9,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import registry
 
+from config import settings
 from .users import user_table
 
 
@@ -27,7 +28,7 @@ code_table = Table(
         ForeignKey(user_table.c.id, ondelete="CASCADE"),
         nullable=False,
     ),
-    Column("code", String(4), nullable=False),
+    Column("code", String(settings.CONFIRMATION_CODE_LENGTH), nullable=False),
     Column("type", String(14), nullable=False),
     Column(
         "created_at", DateTime(timezone=True), server_default=func.now(), nullable=False
