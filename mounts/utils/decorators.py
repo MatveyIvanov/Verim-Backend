@@ -20,7 +20,12 @@ def handle_errors(return_class):
 
 def handle_grpc_response_error(func):
     async def wrapper(*args, **kwargs):
-        response = await func(*args, **kwargs)
+        try:
+            response = await func(*args, **kwargs)
+        except Exception as e:
+            # TODO: logging
+            raise e
+
         if getattr(response, "detail", None):
             raise Custom400Exception(detail=response.detail)
         return response
