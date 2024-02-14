@@ -1,13 +1,13 @@
-from dataclasses import asdict
-
 from services.repo import IVoteRepo
 from models.vote import Vote
 from utils.types import VoteType
+from utils.decorators import handle_orm_error
 
 
 class VoteRepo(IVoteRepo):
     model = Vote
 
+    @handle_orm_error
     def get(self, user_id: int, publication_id: int) -> VoteType | None:
         with self.session_factory() as session:
             return (
@@ -16,6 +16,7 @@ class VoteRepo(IVoteRepo):
                 .first()
             )
 
+    @handle_orm_error
     def create(
         self, user_id: int, publication_id: int, believed: bool | None
     ) -> VoteType:
@@ -28,6 +29,7 @@ class VoteRepo(IVoteRepo):
             session.refresh(vote)
         return vote
 
+    @handle_orm_error
     def update(self, vote_id: int, believed: bool | None) -> None:
         with self.session_factory() as session:
             session.query(self.model).filter(Vote.id == vote_id).update(

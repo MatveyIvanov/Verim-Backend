@@ -1,5 +1,7 @@
 from typing import Iterable
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from utils.exceptions import CustomException, Custom400Exception
 
 
@@ -41,3 +43,14 @@ def apply_tags(tags: Iterable[str]):
         return inner
 
     return outer
+
+
+def handle_orm_error(func):
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except SQLAlchemyError as e:
+            # TODO: logging
+            raise e
+
+    return wrapper
