@@ -5,6 +5,7 @@ gateway/config/i18n.py
 gateway/config/mail.py
 gateway/utils/app.py
 gateway/utils/exceptions.py
+gateway/utils/decorators.py
 gateway/utils/pygettext.py
 gateway/utils/random.py
 gateway/utils/repo.py
@@ -38,7 +39,7 @@ publisher/config/i18n.py
 publisher/config/mail.py
 publisher/utils/app.py
 publisher/utils/exceptions.py
-auth/utils/decorators.py
+publisher/utils/decorators.py
 publisher/utils/pygettext.py
 publisher/utils/random.py
 publisher/utils/repo.py
