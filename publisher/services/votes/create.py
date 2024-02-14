@@ -20,7 +20,7 @@ class Vote(IVote):
         self.publication_repo = publication_repo
 
     def __call__(self, user_id: int, publication_id: int, schema: VoteSchema) -> None:
-        # self._validate_publication_id(publication_id)
+        self._validate_publication_id(publication_id)
         vote = self._get(user_id, publication_id)
         if vote:
             self._update(vote, schema)
