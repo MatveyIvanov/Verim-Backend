@@ -34,4 +34,6 @@ class Container(containers.DeclarativeContainer):
     _vote_repo = providers.Singleton(VoteRepo, session_factory=db.provided.session)
 
     create_publication = providers.Singleton(CreatePublication, repo=publication_repo)
-    create_vote = providers.Singleton(Vote, repo=_vote_repo)
+    create_vote = providers.Singleton(
+        Vote, repo=_vote_repo, publication_repo=publication_repo
+    )

@@ -13,11 +13,13 @@ from schemas.publication import PublicationSchema
 from services.publications.entries import CreatePublicationData
 from utils.repo import pagination_transformer
 from utils.types import PublicationType
+from utils.decorators import handle_orm_error
 
 
 class PublicationRepo(IPublicationRepo):
     model = Publication
 
+    @handle_orm_error
     def create(self, user_id: int, entry: CreatePublicationData) -> PublicationType:
         entry.type = entry.type.value
         publication = self.model(user_id=user_id, **asdict(entry))
@@ -27,6 +29,7 @@ class PublicationRepo(IPublicationRepo):
             session.refresh(publication)
         return publication
 
+    @handle_orm_error
     def selection(
         self, user_id: int | None, size: int | None, page: int | None
     ) -> Query[Publication]:
@@ -51,4 +54,13 @@ class PublicationRepo(IPublicationRepo):
                 .order_by(Vote.believed.desc()),
                 params=Params(page=page, size=size),
                 transformer=pagination_transformer(PublicationSchema),
+            )
+
+    @handle_orm_error
+    def get_by_id(self, publication_id: int) -> Publication | None:
+        with self.session_factory() as session:
+            return (
+                session.query(self.model)
+                .filter(self.model.id == publication_id)
+                .first()
             )

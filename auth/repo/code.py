@@ -4,11 +4,13 @@ from services.codes.types import CodeTypeEnum, CodeType
 from services.entries import CreateCodeEntry
 from services.codes.repo import ICodeRepo
 from models.codes import Code
+from utils.decorators import handle_orm_error
 
 
 class CodeRepo(ICodeRepo):
     model = Code
 
+    @handle_orm_error
     def create(self, entry: CreateCodeEntry) -> CodeType:
         entry.type = entry.type.value
         code = self.model(**asdict(entry))
@@ -18,6 +20,7 @@ class CodeRepo(ICodeRepo):
             session.refresh(code)
         return code
 
+    @handle_orm_error
     def get_last(self, user_id: int, type: CodeTypeEnum) -> CodeType | None:
         with self.session_factory() as session:
             return (

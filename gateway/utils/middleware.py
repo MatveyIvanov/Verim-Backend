@@ -4,6 +4,8 @@ from starlette.types import Scope, Receive, Send
 from fastapi import status
 from fastapi.responses import JSONResponse
 
+from config.i18n import _
+
 
 def headers_from_scope(scope: Scope) -> Dict:
     return dict((k.decode().lower(), v.decode()) for k, v in scope["headers"])
@@ -76,7 +78,7 @@ class AuthenticationMiddleware:
                     await self._app(scope, receive, send)
                 return
             scope["user"] = response.user.id
-        except Exception as e:  # TODO
+        except Exception as e:  # TODO: logging
             print(str(e))
             response = JSONResponse(
                 {"detail": _("Token is not correct.")}, status.HTTP_401_UNAUTHORIZED
