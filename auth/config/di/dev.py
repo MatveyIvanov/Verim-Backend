@@ -36,7 +36,8 @@ from services.codes import CheckCode, CreateCode, SendCode
 
 class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
-        packages=["grpc_services"], modules=["config.celery", "grpc_services.auth"]
+        packages=["grpc_services"],
+        modules=["config.celery", "grpc_services.auth"],
     )
 
     _publisher_grpc = providers.Singleton(

@@ -27,6 +27,8 @@ class ServiceTestMixin:
             "email": "testuser@email.com",
             "password": "testpassword",
             "email_confirmed": True,
+            "is_active": True,
+            "tokens_revoked_at": None,
         }
     )
 
