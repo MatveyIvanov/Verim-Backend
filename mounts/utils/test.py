@@ -1,7 +1,7 @@
 from typing import Dict
+from types import SimpleNamespace
 
 import pytest
-import mock
 
 from utils.repo import IRepo
 
@@ -19,6 +19,13 @@ class SchemaTestMixin:
 
 class ServiceTestMixin:
     service = None
+    user = SimpleNamespace(
+        **{
+            "id": 1,
+            "login": "testuser",
+            "password": "testpassword",
+        }
+    )
 
 
 class RepoTestMixin:
