@@ -29,19 +29,5 @@ class ServiceTestMixin:
     )
 
 
-def environment_safe_repo_test(func):
-    """
-    Декоратор предотвращает выполнение тестов репозиториев,
-    если `TESTING_REPO_ALLOWED = False`
-    """
-
-    def wrapper(*args, **kwargs):
-        if not settings.TESTING_REPO_ALLOWED:
-            return
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
 class RepoTestMixin:
     repo: IRepo = None
