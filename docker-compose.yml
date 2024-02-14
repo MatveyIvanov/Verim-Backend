@@ -17,9 +17,15 @@ services:
       AUTH_POSTGRES_USER: ${AUTH_DB_USER}
       AUTH_POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
       AUTH_POSTGRES_DB: ${AUTH_DB_NAME}
+      TEST_AUTH_POSTGRES_USER: ${TEST_AUTH_DB_USER}
+      TEST_AUTH_POSTGRES_PASSWORD: ${TEST_AUTH_DB_PASSWORD}
+      TEST_AUTH_POSTGRES_DB: ${TEST_AUTH_DB_NAME}
       PUBLISHER_POSTGRES_USER: ${PUBLISHER_DB_USER}
       PUBLISHER_POSTGRES_PASSWORD: ${PUBLISHER_DB_PASSWORD}
       PUBLISHER_POSTGRES_DB: ${PUBLISHER_DB_NAME}
+      TEST_PUBLISHER_POSTGRES_USER: ${TEST_PUBLISHER_DB_USER}
+      TEST_PUBLISHER_POSTGRES_PASSWORD: ${TEST_PUBLISHER_DB_PASSWORD}
+      TEST_PUBLISHER_POSTGRES_DB: ${TEST_PUBLISHER_DB_NAME}
       POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_MULTIPLE_DATABASES}
     networks:
       - verim_network
@@ -115,7 +121,7 @@ services:
     build:
       context: .
       dockerfile: ./auth/Dockerfile
-    command: watchmedo auto-restart --recursive --pattern="*.py" --directory="${DEFAULT_SERVICE_DIR}" python -- -m main
+    command: watchmedo auto-restart --recursive --pattern="*.py" --directory="${DEFAULT_SERVICE_DIR}" python -- -m main  # TODO: вынести в скрипт и прогонять миграции
     working_dir: ${DEFAULT_SERVICE_DIR}
     env_file:
       - .env
@@ -162,7 +168,7 @@ services:
     build:
       context: .
       dockerfile: ./publisher/Dockerfile
-    command: watchmedo auto-restart --recursive --pattern="*.py" --directory="${DEFAULT_SERVICE_DIR}" python -- -m main
+    command: watchmedo auto-restart --recursive --pattern="*.py" --directory="${DEFAULT_SERVICE_DIR}" python -- -m main  # TODO: вынести в скрипт и прогонять миграции
     working_dir: ${DEFAULT_SERVICE_DIR}
     env_file:
       - .env
