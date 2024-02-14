@@ -29,6 +29,7 @@ from schemas import (
 from config.di import Container
 from services.jwt import IRefreshJWTTokens
 from services.login import ILoginUser
+from services.authenticate import IAuthenticate
 from services.password import IChangePassword, IResetPassword, IConfirmResetPassword
 from services.registration import (
     IRegisterUser,
@@ -36,17 +37,16 @@ from services.registration import (
     IConfirmRegistration,
 )
 from utils.decorators import handle_errors
+from utils.exceptions import CustomException
 
 
 class GRPCAuth(auth_pb2_grpc.AuthServicer):
-    def auth(self, request, context):
-        from utils.exceptions import CustomException
-        from utils.middleware import authenticate_by_token
-
+    @inject
+    def auth(
+        self, request, context, service: IAuthenticate = Provide[Container.authenticate]
+    ):
         try:
-            return AuthResponse(
-                user=User(id=authenticate_by_token(token=request.token).id)
-            )
+            return AuthResponse(user=User(id=service(token=request.token).id))
         except CustomException as e:
             return AuthResponse(user=User(id=-1), error_message=str(e))
 
