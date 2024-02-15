@@ -6,10 +6,10 @@ from config import settings
 
 @dataclass
 class RegistrationSchema:
-    email: EmailStr
-    username: str
-    password: str
-    re_password: str
+    email: EmailStr = Field(min_length=1)
+    username: str = Field(min_length=1)
+    password: str = Field(min_length=1)
+    re_password: str = Field(min_length=1)
 
 
 @dataclass
@@ -20,7 +20,7 @@ class CodeSentSchema:
 
 @dataclass
 class ConfirmRegistrationSchema:
-    email: EmailStr
+    email: EmailStr = Field(min_length=1)
     code: str = Field(
         min_length=settings.CONFIRMATION_CODE_LENGTH,
         max_length=settings.CONFIRMATION_CODE_LENGTH,
@@ -29,4 +29,4 @@ class ConfirmRegistrationSchema:
 
 @dataclass
 class RepeatRegistrationCodeSchema:
-    email: EmailStr
+    email: EmailStr = Field(min_length=1)

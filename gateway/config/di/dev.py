@@ -5,7 +5,7 @@ import publisher_pb2_grpc
 from auth_grpc_typed import AuthStub
 from publisher_grpc_typed import PublisherStub
 from config import settings
-from config.mail import _SendEmail
+from config.mail import SendEmail, _SendEmail
 from config.grpc import GRPCConnection
 
 
@@ -30,3 +30,4 @@ class Container(containers.DeclarativeContainer):
     publisher_grpc = providers.Singleton(PublisherStub, connection=_publisher_grpc)
 
     _send_email = providers.Singleton(_SendEmail)
+    send_email = providers.Singleton(SendEmail)
