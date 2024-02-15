@@ -31,12 +31,14 @@ from services.password import (
 )
 from services.jwt import CreateJWTTokens, RefreshJWTTokens, RevokeJWTTokens
 from services.login import LoginUser
+from services.authenticate import Authenticate
 from services.codes import CheckCode, CreateCode, SendCode
 
 
 class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
-        packages=["grpc_services"], modules=["config.celery", "grpc_services.auth"]
+        packages=["grpc_services"],
+        modules=["config.celery", "grpc_services.auth"],
     )
 
     _publisher_grpc = providers.Singleton(
@@ -54,9 +56,11 @@ class Container(containers.DeclarativeContainer):
     user_repo = providers.Factory(UserRepo, session_factory=db.provided.session)
     _code_repo = providers.Factory(CodeRepo, session_factory=db.provided.session)
 
+    authenticate = providers.Singleton(Authenticate, repo=user_repo)
+
     create_jwt_tokens = providers.Singleton(CreateJWTTokens)
     refresh_jwt_tokens = providers.Singleton(
-        RefreshJWTTokens, create_jwt_tokens=create_jwt_tokens
+        RefreshJWTTokens, authenticate=authenticate, create_jwt_tokens=create_jwt_tokens
     )
     revoke_jwt_tokens = providers.Singleton(RevokeJWTTokens, repo=user_repo)
 

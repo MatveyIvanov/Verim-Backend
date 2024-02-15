@@ -15,11 +15,18 @@ from models.vote import vote_table
 config = context.config
 
 section = config.config_ini_section
+
 config.set_section_option(section, "DB_USER", settings.DB_USER)
 config.set_section_option(section, "DB_PASSWORD", settings.DB_PASSWORD)
 config.set_section_option(section, "DB_NAME", settings.DB_NAME)
 config.set_section_option(section, "DB_HOST", settings.DB_HOST)
 config.set_section_option(section, "DB_PORT", settings.DB_PORT)
+
+config.set_section_option(section, "TEST_DB_USER", settings.TEST_DB_USER)
+config.set_section_option(section, "TEST_DB_PASSWORD", settings.TEST_DB_PASSWORD)
+config.set_section_option(section, "TEST_DB_NAME", settings.TEST_DB_NAME)
+config.set_section_option(section, "TEST_DB_HOST", settings.TEST_DB_HOST)
+config.set_section_option(section, "TEST_DB_PORT", settings.TEST_DB_PORT)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

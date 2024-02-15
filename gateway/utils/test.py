@@ -1,7 +1,7 @@
 from typing import Dict
 
 import pytest
-import mock
+from pydantic import ValidationError
 
 from utils.repo import IRepo
 

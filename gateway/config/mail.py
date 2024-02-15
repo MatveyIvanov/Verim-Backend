@@ -8,6 +8,7 @@ from fastapi_mail.schemas import MessageSchema, MessageType
 from fastapi_mail import FastMail
 
 from config import settings
+from config.celery import app as celery_app
 
 
 config = ConnectionConfig(
@@ -35,14 +36,12 @@ SendEmailDict = SendEmailEntry
 
 class ISendEmail(ABC):
     @abstractmethod
-    def __call__(self, entry: SendEmailEntry) -> None:
-        ...
+    def __call__(self, entry: SendEmailEntry) -> None: ...
 
 
 class _ISendEmail(ABC):
     @abstractmethod
-    def __call__(self, entry_dict: SendEmailDict) -> None:
-        ...
+    def __call__(self, entry_dict: SendEmailDict) -> None: ...
 
 
 class SendEmail(ISendEmail):
@@ -50,8 +49,6 @@ class SendEmail(ISendEmail):
         self._add_task(entry)
 
     def _add_task(self, entry: SendEmailEntry) -> None:
-        from config.celery import app as celery_app
-
         celery_app.send_task(
             "config.celery.send_email", kwargs={"entry_dict": asdict(entry)}
         )
@@ -76,4 +73,4 @@ class _SendEmail(_ISendEmail):
             )
         except SMTPException as e:
             # logger.critical(f"Failed to send email - {e}", extra={'emails': entry.emails})
-            raise Exception()
+            raise e

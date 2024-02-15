@@ -18,8 +18,7 @@ class ICreateCode(ABC):
     @abstractmethod
     def __call__(
         self, user: UserType, type: CodeTypeEnum, *, send: bool = True
-    ) -> str | CodeSentSchema:
-        ...
+    ) -> str | CodeSentSchema: ...
 
 
 class CreateCode(ICreateCode):
@@ -57,7 +56,10 @@ class CreateCode(ICreateCode):
         return self.repo.create(
             entry=CreateCodeEntry(
                 user_id=user.id,
-                code=get_random_string(length=4, allowed_characters=string.digits),
+                code=get_random_string(
+                    length=settings.CONFIRMATION_CODE_LENGTH,
+                    allowed_characters=settings.CONFIRMATION_CODE_CHARACTERS,
+                ),
                 type=type,
             )
         )

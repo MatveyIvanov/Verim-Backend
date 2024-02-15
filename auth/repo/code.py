@@ -12,7 +12,8 @@ class CodeRepo(ICodeRepo):
 
     @handle_orm_error
     def create(self, entry: CreateCodeEntry) -> CodeType:
-        entry.type = entry.type.value
+        if not isinstance(entry.type, str):
+            entry.type = entry.type.value
         code = self.model(**asdict(entry))
         with self.session_factory() as session:
             session.add(code)
