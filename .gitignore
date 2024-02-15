@@ -15,6 +15,7 @@ gateway/utils/shortcuts.py
 gateway/utils/test.py
 gateway/utils/time.py
 gateway/utils/pagination.py
+gateway/utils/logging.py
 
 auth/config/db.py
 auth/config/grpc.py
@@ -32,6 +33,7 @@ auth/utils/shortcuts.py
 auth/utils/test.py
 auth/utils/time.py
 auth/utils/pagination.py
+auth/utils/logging.py
 
 publisher/config/db.py
 publisher/config/grpc.py
@@ -49,6 +51,7 @@ publisher/utils/shortcuts.py
 publisher/utils/test.py
 publisher/utils/time.py
 publisher/utils/pagination.py
+publisher/utils/logging.py
 
 # grpc
 auth/*_pb2.py

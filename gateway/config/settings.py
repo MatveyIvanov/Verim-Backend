@@ -20,3 +20,15 @@ PUBLISHER_GRPC_HOST = os.environ.get("PUBLISHER_GRPC_HOST")
 PUBLISHER_GRPC_PORT = os.environ.get("PUBLISHER_GRPC_PORT")
 
 CONFIRMATION_CODE_LENGTH = int(os.environ.get("CONFIRMATION_CODE_LENGTH"))
+
+APP_NAME = os.environ.get("GETEWAY_APP_NAME")
+PORT = os.environ.get("GATEWAY_PORT")
+APP_VERSION = os.environ.get("APP_VERSION")
+ENVIRONMENT = os.environ.get("ENVIRONMENT")
+DEBUG = bool(int(os.environ.get("DEBUG", 0)))
+
+LOGGING_MAX_BYTES = int(os.environ.get("LOGGING_MAX_BYTES"))
+LOGGING_BACKUP_COUNT = int(os.environ.get("LOGGING_BACKUP_COUNT"))
+LOGGING_LOGGERS = os.environ.get("LOGGING_GATEWAY_LOGGERS").split(",")
+LOGGING_SENSITIVE_FIELDS = os.environ.get("LOGGING_GATEWAY_SENSITIVE_FIELDS").split(",")
+LOG_PATH = os.environ.get("LOGGING_GATEWAY_PATH")

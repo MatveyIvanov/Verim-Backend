@@ -1,11 +1,15 @@
+import logging
+
+from fastapi import Request
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi_versioning import VersionedFastAPI
 from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
 
-from config.di import get_di_container
 import endpoints
+from config import settings
+from config.di import get_di_container
 from utils.app import CustomFastAPI
 from utils.exceptions import (
     CustomException,
@@ -13,11 +17,15 @@ from utils.exceptions import (
     request_validation_exception_handler,
     internal_exception_handler,
 )
-from utils.middleware import TranslationMiddleware
+from utils.middleware import TranslationMiddleware, LoggingMiddleware
 from utils.pagination import add_pagination
+from utils.logging import get_config
 
 
 container = get_di_container()
+
+
+logging.config.dictConfig(get_config(settings.LOG_PATH))
 
 
 __app = CustomFastAPI(
@@ -52,6 +60,12 @@ __app = VersionedFastAPI(
 # __app.add_middleware(HTTPSRedirectMiddleware)  # FIXME for production
 __app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])  # FIXME for production
 __app.add_middleware(TranslationMiddleware)
+
+
+@__app.middleware("http")
+async def logging_middleware(request: Request, call_next):
+    return await LoggingMiddleware()(request, call_next)
+
 
 # custom exception handlers do not work w/o this
 # because of versioned fastapi
