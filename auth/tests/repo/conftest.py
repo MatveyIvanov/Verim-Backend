@@ -3,7 +3,8 @@ import subprocess
 from sqlalchemy.sql import text
 
 from config.di import get_di_test_container
-from models import mapper_registry
+from models.users import mapper_registry as user_mapper_registry
+from models.codes import mapper_registry as code_mapper_registry
 
 
 container = get_di_test_container()
@@ -23,6 +24,10 @@ def pytest_unconfigure(config):
     called before test process is exited.
     """
     with container.db().session() as session:
-        for table in reversed(mapper_registry.metadata.sorted_tables):
+        for table in reversed(user_mapper_registry.metadata.sorted_tables):
             session.execute(text(f"TRUNCATE {table.name} RESTART IDENTITY CASCADE;"))
-            session.commit()
+
+        for table in reversed(code_mapper_registry.metadata.sorted_tables):
+            session.execute(text(f"TRUNCATE {table.name} RESTART IDENTITY CASCADE;"))
+
+        session.commit()

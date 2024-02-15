@@ -39,6 +39,7 @@ pytest-mock = "3.12.0"
 testpaths = [
     "tests",
 ]
+addopts = "--show-capture=no"
 
 [tool.coverage.run]
 include = [

@@ -20,6 +20,13 @@ DB_HOST = os.environ.get("AUTH_DB_HOST")
 DB_PORT = os.environ.get("AUTH_DB_PORT")
 DATABASE_URL = os.environ.get("AUTH_DATABASE_URL")
 
+TEST_DB_USER = os.environ.get("TEST_AUTH_DB_USER")
+TEST_DB_PASSWORD = os.environ.get("TEST_AUTH_DB_PASSWORD")
+TEST_DB_NAME = os.environ.get("TEST_AUTH_DB_NAME")
+TEST_DB_HOST = os.environ.get("TEST_AUTH_DB_HOST")
+TEST_DB_PORT = os.environ.get("TEST_AUTH_DB_PORT")
+TEST_DATABASE_URL = os.environ.get("TEST_AUTH_DATABASE_URL")
+
 USERNAME_MIN_LENGTH = int(os.environ.get("USERNAME_MIN_LENGTH"))
 USERNAME_MAX_LENGTH = int(os.environ.get("USERNAME_MAX_LENGTH"))
 USERNAME_ALLOWED_SPECIAL_CHARACTERS = os.environ.get(

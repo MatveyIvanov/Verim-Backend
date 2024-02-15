@@ -1,7 +1,7 @@
 from typing import Dict
 
 from sqlalchemy import func, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, Query
 
 from schemas import RegistrationSchema
 from services.repo import IUserRepo
@@ -19,7 +19,7 @@ class UserRepo(IUserRepo):
         *,
         session: Session | None = None,
         include_not_confirmed_email: bool = False
-    ):
+    ) -> Query:
         with session or self.session_factory() as session:
             qs = session.query(self.model)
             if not include_not_confirmed_email:
@@ -38,11 +38,10 @@ class UserRepo(IUserRepo):
         return user
 
     @handle_orm_error
-    def update(self, user: UserType, values: Dict) -> UserType:
+    def update(self, user: UserType, values: Dict) -> None:
         with self.session_factory() as session:
             session.query(self.model).filter(self.model.id == user.id).update(values)
             session.commit()
-        return user
 
     @handle_orm_error
     def delete(self, user: UserType) -> None:
