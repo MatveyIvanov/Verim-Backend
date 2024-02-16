@@ -1,3 +1,4 @@
+import logging
 from smtplib import SMTPException
 from dataclasses import dataclass, asdict
 from abc import ABC, abstractmethod
@@ -8,6 +9,9 @@ from fastapi_mail.schemas import MessageSchema, MessageType
 from fastapi_mail import FastMail
 
 from config import settings
+
+
+logger = logging.getLogger("mail")
 
 
 config = ConnectionConfig(
@@ -35,14 +39,12 @@ SendEmailDict = SendEmailEntry
 
 class ISendEmail(ABC):
     @abstractmethod
-    def __call__(self, entry: SendEmailEntry) -> None:
-        ...
+    def __call__(self, entry: SendEmailEntry) -> None: ...
 
 
 class _ISendEmail(ABC):
     @abstractmethod
-    def __call__(self, entry_dict: SendEmailDict) -> None:
-        ...
+    def __call__(self, entry_dict: SendEmailDict) -> None: ...
 
 
 class SendEmail(ISendEmail):
@@ -75,5 +77,9 @@ class _SendEmail(_ISendEmail):
                 )
             )
         except SMTPException as e:
-            # logger.critical(f"Failed to send email - {e}", extra={'emails': entry.emails})
-            raise Exception()
+            logger.critical(
+                f"Failed to send email - {str(e)}",
+                extra={"entry": asdict(entry)},
+                exc_info=e,
+            )
+            raise

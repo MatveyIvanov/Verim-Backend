@@ -14,7 +14,8 @@ from config.i18n import _
 from utils.logging import RequestJsonLogSchema, EMPTY_VALUE
 
 
-logger = logging.getLogger("requests")
+requests_logger = logging.getLogger("requests")
+auth_logger = logging.getLogger("auth")
 
 
 def headers_from_scope(scope: Scope) -> Dict:
@@ -88,8 +89,11 @@ class AuthenticationMiddleware:
                     await self._app(scope, receive, send)
                 return
             scope["user"] = response.user.id
-        except Exception as e:  # TODO: logging
-            print(str(e))
+        except Exception as e:
+            requests_logger.error(
+                f"Error while authenticating user - {str(e)}",
+                exc_info=e,
+            )
             response = JSONResponse(
                 {"detail": _("Token is not correct.")}, status.HTTP_401_UNAUTHORIZED
             )
@@ -194,6 +198,7 @@ class LoggingMiddleware:
                 media_type=response.media_type,
             )
         duration: int = math.ceil((time.time() - start_time) * 1000)
+        response_body = response_body.decode()
         # Инициализация и формирования полей для запроса-ответа
         request_json_fields = RequestJsonLogSchema(
             request_uri=str(request.url),
@@ -205,14 +210,14 @@ class LoggingMiddleware:
             request_size=int(request_headers.get("content-length", 0)),
             request_content_type=request_headers.get("content-type", EMPTY_VALUE),
             request_headers=request_headers,
-            request_body=request_body,
+            request_body=request_body or {},
             request_direction="in",
             remote_ip=request.client[0],
             remote_port=request.client[1],
             response_status_code=response.status_code,
             response_size=int(response_headers.get("content-length", 0)),
             response_headers=response_headers,
-            response_body=json.loads(response_body.decode()),
+            response_body=json.loads(response_body) if response_body else {},
             duration=duration,
         ).dict()
         # Хочется на каждый запрос читать
@@ -224,7 +229,7 @@ class LoggingMiddleware:
             f'на запрос {request.method} "{str(request.url)}", '
             f"за {duration} мс"
         )
-        logger.info(
+        getattr(requests_logger, "error" if exception_object else "info")(
             message,
             extra={
                 "request_json_fields": request_json_fields,

@@ -1,3 +1,4 @@
+import logging
 from typing import Iterable
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -5,12 +6,21 @@ from sqlalchemy.exc import SQLAlchemyError
 from utils.exceptions import CustomException, Custom400Exception
 
 
-def handle_errors(return_class):
+orm_logger = logging.getLogger("orm")
+grpc_logger = logging.getLogger("grpc")
+
+
+def handle_grpc_request_error(return_class):
     def outer(func):
         def inner(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
             except CustomException as e:
+                grpc_logger.info(
+                    f"Custom exception has occured - {str(e)}",
+                    extra={"args": args, "kwargs": kwargs},
+                    exc_info=e,
+                )
                 return return_class(detail=e.detail)
 
         return inner
@@ -23,8 +33,12 @@ def handle_grpc_response_error(func):
         try:
             response = await func(*args, **kwargs)
         except Exception as e:
-            # TODO: logging
-            raise e
+            grpc_logger.error(
+                f"Error from gRPC response - {str(e)}",
+                extra={"args": args, "kwargs": kwargs},
+                exc_info=e,
+            )
+            raise
 
         if getattr(response, "detail", None):
             raise Custom400Exception(detail=response.detail)
@@ -55,7 +69,11 @@ def handle_orm_error(func):
         try:
             return func(*args, **kwargs)
         except SQLAlchemyError as e:
-            # TODO: logging
-            raise e
+            orm_logger.error(
+                f"Error while processing orm query - {str(e)}",
+                extra={"args": args, "kwargs": kwargs},
+                exc_info=e,
+            )
+            raise
 
     return wrapper

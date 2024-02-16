@@ -36,7 +36,7 @@ from services.registration import (
     IRepeatRegistrationCode,
     IConfirmRegistration,
 )
-from utils.decorators import handle_errors
+from utils.decorators import handle_grpc_request_error
 from utils.exceptions import CustomException
 
 
@@ -50,7 +50,7 @@ class GRPCAuth(auth_pb2_grpc.AuthServicer):
         except CustomException as e:
             return AuthResponse(user=User(id=-1), error_message=str(e))
 
-    @handle_errors(JWTTokens)
+    @handle_grpc_request_error(JWTTokens)
     @inject
     def jwt_refresh(
         self,
@@ -61,7 +61,7 @@ class GRPCAuth(auth_pb2_grpc.AuthServicer):
         tokens = service(entry=RefreshTokensSchema(refresh=request.refresh))
         return JWTTokens(access=tokens.access, refresh=tokens.refresh)
 
-    @handle_errors(JWTTokens)
+    @handle_grpc_request_error(JWTTokens)
     @inject
     def login(
         self,
@@ -74,7 +74,7 @@ class GRPCAuth(auth_pb2_grpc.AuthServicer):
         )
         return JWTTokens(access=tokens.access, refresh=tokens.refresh)
 
-    @handle_errors(Empty)
+    @handle_grpc_request_error(Empty)
     @inject
     def password_change(
         self,
@@ -92,7 +92,7 @@ class GRPCAuth(auth_pb2_grpc.AuthServicer):
         )
         return Empty()
 
-    @handle_errors(CodeSentResponse)
+    @handle_grpc_request_error(CodeSentResponse)
     @inject
     def password_reset(
         self,
@@ -103,7 +103,7 @@ class GRPCAuth(auth_pb2_grpc.AuthServicer):
         response = service(entry=ResetPasswordSchema(email=request.email))
         return CodeSentResponse(email=response.email, message=response.message)
 
-    @handle_errors(Empty)
+    @handle_grpc_request_error(Empty)
     @inject
     def password_reset_confirm(
         self,
@@ -121,7 +121,7 @@ class GRPCAuth(auth_pb2_grpc.AuthServicer):
         )
         return Empty()
 
-    @handle_errors(CodeSentResponse)
+    @handle_grpc_request_error(CodeSentResponse)
     @inject
     def register(
         self,
@@ -139,7 +139,7 @@ class GRPCAuth(auth_pb2_grpc.AuthServicer):
         )
         return CodeSentResponse(email=response.email, message=response.message)
 
-    @handle_errors(CodeSentResponse)
+    @handle_grpc_request_error(CodeSentResponse)
     @inject
     def register_repeat(
         self,
@@ -150,7 +150,7 @@ class GRPCAuth(auth_pb2_grpc.AuthServicer):
         response = service(entry=RepeatRegistrationCodeSchema(email=request.email))
         return CodeSentResponse(email=response.email, message=response.message)
 
-    @handle_errors(JWTTokens)
+    @handle_grpc_request_error(JWTTokens)
     @inject
     def register_confirm(
         self,

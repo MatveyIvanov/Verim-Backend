@@ -12,7 +12,7 @@ from sqlalchemy.orm import (
 )
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("orm")
 Base = declarative_base()
 
 
@@ -35,8 +35,10 @@ class Database:
         session: Session = self._session_factory()
         try:
             yield session
-        except Exception:
-            logger.exception("Session rollback because of exception")
+        except Exception as e:
+            logger.error(
+                f"Session rollback because of exception - {str(e)}", exc_info=e
+            )
             session.rollback()
             raise
         finally:
