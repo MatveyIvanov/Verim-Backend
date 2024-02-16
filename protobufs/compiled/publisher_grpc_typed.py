@@ -52,17 +52,17 @@ class PublicationsSelectionResponse:
 
 class IPublisherStub(ABC):
     @abstractmethod
-    def publications_create(
+    async def publications_create(
         self, request: CreatePublicationRequest
     ) -> PublicationResponse: ...
 
     @abstractmethod
-    def publications_selection(
+    async def publications_selection(
         self, request: PaginationRequest
     ) -> PublicationsSelectionResponse: ...
 
     @abstractmethod
-    def publications_vote(self, request: VoteRequest) -> Empty: ...
+    async def publications_vote(self, request: VoteRequest) -> Empty: ...
 
 
 class PublisherStub(IPublisherStub):
