@@ -2,8 +2,6 @@ from typing import TypeVar, Generic
 
 import grpc
 
-from utils.exceptions import Custom400Exception
-
 
 T = TypeVar("T")
 

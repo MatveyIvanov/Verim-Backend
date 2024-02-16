@@ -17,4 +17,4 @@ def send_email(entry_dict: SendEmailDict) -> None:
 
 @app.task
 def ckeck_email_confirmed(user_id: int) -> bool | None:
-    return Container().check_registration()(user_id)
+    return Container().check_registration()(user_id)  # FIXME: вызывать grpc

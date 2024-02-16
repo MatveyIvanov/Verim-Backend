@@ -1,3 +1,4 @@
+import logging
 from abc import ABC, abstractmethod
 from typing import Dict
 
@@ -10,6 +11,9 @@ from services.entries import JWTPayload
 from utils.time import timestamp_to_datetime
 from utils.types import UserType
 from utils.exceptions import Custom401Exception, Custom403Exception
+
+
+logger = logging.getLogger("auth")
 
 
 class IAuthenticate(ABC):
@@ -36,13 +40,18 @@ class Authenticate(IAuthenticate):
                 settings.ACCESS_SECRET_KEY if access else settings.REFRESH_SECRET_KEY,
                 algorithms=[settings.JWT_ALGORITHM],
             )
-        except jwt.exceptions.PyJWTError as e:
+        except jwt.exceptions.PyJWTError:
             raise Custom401Exception(_("Token is not correct."))
 
     def _payload_to_dataclass(self, payload: Dict) -> JWTPayload:
         try:
             return JWTPayload(**payload)
-        except TypeError:
+        except TypeError as e:
+            logger.error(
+                f"JWT payload has bad structure - {str(e)}",
+                extra={"payload": payload},
+                exc_info=e,
+            )
             raise Custom401Exception(_("Token is not correct."))
 
     def _get_user(self, user_id: int) -> UserType:

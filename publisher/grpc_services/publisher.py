@@ -20,11 +20,11 @@ from config.di import Container
 from services.publications import ICreatePublication
 from services.votes import IVote
 from services.repo import IPublicationRepo
-from utils.decorators import handle_errors
+from utils.decorators import handle_grpc_request_error
 
 
 class GRPCPublisher(publisher_pb2_grpc.PublisherServicer):
-    @handle_errors(PublicationResponse)
+    @handle_grpc_request_error(PublicationResponse)
     @inject
     def publications_create(
         self,
@@ -45,7 +45,7 @@ class GRPCPublisher(publisher_pb2_grpc.PublisherServicer):
             believed=None,
         )
 
-    @handle_errors(PublicationsSelectionResponse)
+    @handle_grpc_request_error(PublicationsSelectionResponse)
     @inject
     def publications_selection(
         self,
@@ -75,7 +75,7 @@ class GRPCPublisher(publisher_pb2_grpc.PublisherServicer):
             pages=selection.__dict__["pages"],
         )
 
-    @handle_errors(Empty)
+    @handle_grpc_request_error(Empty)
     @inject
     def publications_vote(
         self,

@@ -107,6 +107,7 @@ services:
       - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
       - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
       - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
+      - ./mounts/utils/logging.py:${DEFAULT_SERVICE_DIR}/utils/logging.py
     depends_on:
       db:
         condition: service_healthy
@@ -154,6 +155,7 @@ services:
       - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
       - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
       - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
+      - ./mounts/utils/logging.py:${DEFAULT_SERVICE_DIR}/utils/logging.py
     depends_on:
       db:
         condition: service_healthy
@@ -201,6 +203,7 @@ services:
       - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
       - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
       - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
+      - ./mounts/utils/logging.py:${DEFAULT_SERVICE_DIR}/utils/logging.py
     depends_on:
       db:
         condition: service_healthy
@@ -250,6 +253,7 @@ services:
       - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
       - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
       - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
+      - ./mounts/utils/logging.py:${DEFAULT_SERVICE_DIR}/utils/logging.py
     networks:
       - verim_network
     restart: always
@@ -299,6 +303,7 @@ services:
       - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
       - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
       - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
+      - ./mounts/utils/logging.py:${DEFAULT_SERVICE_DIR}/utils/logging.py
     networks:
       - verim_network
     restart: always

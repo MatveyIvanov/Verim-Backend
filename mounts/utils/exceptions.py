@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Dict
 
 from config.i18n import _
@@ -12,6 +13,9 @@ from starlette.status import (
     HTTP_422_UNPROCESSABLE_ENTITY,
     HTTP_500_INTERNAL_SERVER_ERROR,
 )
+
+
+logger = logging.getLogger("exceptions")
 
 
 class CustomException(HTTPException):
@@ -61,6 +65,11 @@ async def request_validation_exception_handler(
     errors = {}
     for error in exc._errors:
         errors["__".join(error.get("loc")[1:])] = error.get("msg")
+    logger.info(
+        f"Validation error has occured - {str(exc)}",
+        extra={"built_msg": errors},
+        exc_info=exc,
+    )
     return JSONResponse(
         status_code=HTTP_422_UNPROCESSABLE_ENTITY,
         content={"detail": jsonable_encoder(errors)},
@@ -68,7 +77,10 @@ async def request_validation_exception_handler(
 
 
 async def internal_exception_handler(request: Request, exc: Exception):
-    # TODO: logging
+    logger.critical(
+        f"An internal error has occured - {str(exc)}",
+        exc_info=exc,
+    )
     return JSONResponse(
         status_code=HTTP_500_INTERNAL_SERVER_ERROR,
         content={"detail": _("An internal error has occurred.")},
