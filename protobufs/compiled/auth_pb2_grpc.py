@@ -59,6 +59,11 @@ class AuthStub(object):
                 request_serializer=auth__pb2.ConfirmRegisterRequest.SerializeToString,
                 response_deserializer=auth__pb2.JWTTokens.FromString,
                 )
+        self.check_email_confirmed = channel.unary_unary(
+                '/auth.Auth/check_email_confirmed',
+                request_serializer=auth__pb2.CheckEmailConfirmedRequest.SerializeToString,
+                response_deserializer=auth__pb2.CheckEmailConfirmedResponse.FromString,
+                )
 
 
 class AuthServicer(object):
@@ -118,6 +123,12 @@ class AuthServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def check_email_confirmed(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AuthServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -165,6 +176,11 @@ def add_AuthServicer_to_server(servicer, server):
                     servicer.register_confirm,
                     request_deserializer=auth__pb2.ConfirmRegisterRequest.FromString,
                     response_serializer=auth__pb2.JWTTokens.SerializeToString,
+            ),
+            'check_email_confirmed': grpc.unary_unary_rpc_method_handler(
+                    servicer.check_email_confirmed,
+                    request_deserializer=auth__pb2.CheckEmailConfirmedRequest.FromString,
+                    response_serializer=auth__pb2.CheckEmailConfirmedResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -326,5 +342,22 @@ class Auth(object):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/register_confirm',
             auth__pb2.ConfirmRegisterRequest.SerializeToString,
             auth__pb2.JWTTokens.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def check_email_confirmed(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/check_email_confirmed',
+            auth__pb2.CheckEmailConfirmedRequest.SerializeToString,
+            auth__pb2.CheckEmailConfirmedResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

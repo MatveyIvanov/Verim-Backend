@@ -15,6 +15,8 @@ from auth_pb2 import (
     RegisterRequest,
     RepeatRegisterRequest,
     ConfirmRegisterRequest,
+    CheckEmailConfirmedRequest,
+    CheckEmailConfirmedResponse,
 )
 from schemas import (
     RefreshTokensSchema,
@@ -35,6 +37,7 @@ from services.registration import (
     IRegisterUser,
     IRepeatRegistrationCode,
     IConfirmRegistration,
+    ICheckRegistration,
 )
 from utils.decorators import handle_grpc_request_error
 from utils.exceptions import CustomException
@@ -162,3 +165,13 @@ class GRPCAuth(auth_pb2_grpc.AuthServicer):
             entry=ConfirmRegistrationSchema(email=request.email, code=request.code)
         )
         return JWTTokens(access=tokens.access, refresh=tokens.refresh)
+
+    @handle_grpc_request_error(CheckEmailConfirmedResponse)
+    @inject
+    def check_email_confirmed(
+        self,
+        request,
+        context,
+        service: ICheckRegistration = Provide[Container.check_registration],
+    ):
+        return CheckEmailConfirmedResponse(confirmed=service(user_id=request.user_id))

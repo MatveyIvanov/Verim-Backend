@@ -90,6 +90,16 @@ class ConfirmRegisterRequest:
     code: str
 
 
+@dataclass
+class CheckEmailConfirmedRequest:
+    user_id: int
+
+
+@dataclass
+class CheckEmailConfirmedResponse:
+    confirmed: bool | None
+
+
 class IAuthStub(ABC):
     @abstractmethod
     async def auth(self, request: AuthRequest) -> AuthResponse: ...
@@ -123,6 +133,11 @@ class IAuthStub(ABC):
 
     @abstractmethod
     async def register_confirm(self, request: ConfirmRegisterRequest) -> JWTTokens: ...
+
+    @abstractmethod
+    async def check_email_confirmed(
+        self, request: CheckEmailConfirmedRequest
+    ) -> CheckEmailConfirmedResponse: ...
 
 
 class AuthStub(IAuthStub):
@@ -231,3 +246,14 @@ class AuthStub(IAuthStub):
             refresh=response.refresh,
             detail=response.detail,
         )
+
+    @handle_grpc_response_error
+    async def check_email_confirmed(
+        self, request: CheckEmailConfirmedRequest
+    ) -> CheckEmailConfirmedResponse:
+        from auth_pb2 import CheckEmailConfirmedRequest as _CheckEmailConfirmedRequest
+
+        response = await self.connection.stub.check_email_confirmed(
+            _CheckEmailConfirmedRequest(**asdict(request))
+        )
+        return CheckEmailConfirmedResponse(confirmed=response.confirmed)

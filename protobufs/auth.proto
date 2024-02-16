@@ -89,6 +89,17 @@ message ConfirmRegisterRequest {
 }
 
 
+message CheckEmailConfirmedRequest {
+    int32 user_id = 1;
+}
+
+
+message CheckEmailConfirmedResponse {
+    optional bool confirmed = 1;
+    optional string detail = 2;
+}
+
+
 service Auth {
     rpc auth (AuthRequest) returns (AuthResponse);
     rpc jwt_refresh (RefreshTokensRequest) returns (JWTTokens);
@@ -99,4 +110,5 @@ service Auth {
     rpc register (RegisterRequest) returns (CodeSentResponse);
     rpc register_repeat (RepeatRegisterRequest) returns (CodeSentResponse);
     rpc register_confirm (ConfirmRegisterRequest) returns (JWTTokens);
+    rpc check_email_confirmed (CheckEmailConfirmedRequest) returns (CheckEmailConfirmedResponse);
 }
