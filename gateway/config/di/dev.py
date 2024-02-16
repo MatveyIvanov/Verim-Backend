@@ -30,4 +30,3 @@ class Container(containers.DeclarativeContainer):
     publisher_grpc = providers.Singleton(PublisherStub, connection=_publisher_grpc)
 
     _send_email = providers.Singleton(_SendEmail)
-    send_email = providers.Singleton(SendEmail)

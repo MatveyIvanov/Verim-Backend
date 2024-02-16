@@ -75,7 +75,6 @@ services:
     build:
       context: .
       dockerfile: ./gateway/Dockerfile
-    command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     working_dir: ${DEFAULT_SERVICE_DIR}
     env_file:
       - .env
@@ -98,6 +97,7 @@ services:
       - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
       - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
       - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
+      - ./mounts/utils/email.py:${DEFAULT_SERVICE_DIR}/utils/email.py
       - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
       - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
       - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
@@ -122,7 +122,6 @@ services:
     build:
       context: .
       dockerfile: ./auth/Dockerfile
-    command: watchmedo auto-restart --recursive --pattern="*.py" --directory="${DEFAULT_SERVICE_DIR}" python -- -m main  # TODO: вынести в скрипт и прогонять миграции
     working_dir: ${DEFAULT_SERVICE_DIR}
     env_file:
       - .env
@@ -145,6 +144,7 @@ services:
       - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
       - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
       - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
+      - ./mounts/utils/email.py:${DEFAULT_SERVICE_DIR}/utils/email.py
       - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
       - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
       - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
@@ -170,7 +170,6 @@ services:
     build:
       context: .
       dockerfile: ./publisher/Dockerfile
-    command: watchmedo auto-restart --recursive --pattern="*.py" --directory="${DEFAULT_SERVICE_DIR}" python -- -m main  # TODO: вынести в скрипт и прогонять миграции
     working_dir: ${DEFAULT_SERVICE_DIR}
     env_file:
       - .env
@@ -193,6 +192,7 @@ services:
       - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
       - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
       - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
+      - ./mounts/utils/email.py:${DEFAULT_SERVICE_DIR}/utils/email.py
       - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
       - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
       - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
@@ -220,9 +220,12 @@ services:
       dockerfile: ./gateway/Dockerfile
     command: sh -c "celery -A config.celery.app worker -l debug"
     depends_on:
-      - gateway
-      - redis
-      - rabbitmq
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     env_file:
       - .env
     volumes:
@@ -270,9 +273,12 @@ services:
       dockerfile: ./gateway/Dockerfile
     command: sh -c "celery -A config.celery.app beat -l debug"
     depends_on:
-      - gateway
-      - redis
-      - rabbitmq
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     env_file:
       - .env
     volumes:
@@ -318,7 +324,10 @@ services:
       FLOWER_BASIC_AUTH: ${FLOWER_LOGIN}:${FLOWER_PASSWORD}
       FLOWER_URL_PREFIX: ${FLOWER_URL_PREFIX}
     depends_on:
-      - celery-worker
+      celery-worker:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     env_file:
       - .env
     ports:

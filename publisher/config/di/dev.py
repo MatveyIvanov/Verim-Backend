@@ -5,6 +5,7 @@ from dependency_injector import containers, providers
 import auth_pb2_grpc
 from auth_grpc_typed import AuthStub
 from config import settings
+from config.celery import app as _celery_app
 from config.db import Database
 from config.grpc import GRPCConnection
 
@@ -17,6 +18,8 @@ class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         packages=["grpc_services"], modules=["config.celery", "grpc_services.publisher"]
     )
+
+    celery_app = providers.Object(_celery_app)
 
     _auth_grpc = providers.Singleton(
         GRPCConnection,

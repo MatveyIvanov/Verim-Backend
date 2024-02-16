@@ -1,8 +1,11 @@
+import asyncio
+
 from asgiref.sync import async_to_sync
 from celery import Celery
 
 from .mail import SendEmailDict
-from .di import Container
+from auth_grpc_typed import CheckEmailConfirmedRequest
+from config.di import Container
 
 
 app = Celery("celery_app")
@@ -16,5 +19,11 @@ def send_email(entry_dict: SendEmailDict) -> None:
 
 
 @app.task
-def ckeck_email_confirmed(user_id: int) -> bool | None:
-    return Container().check_registration()(user_id)  # FIXME: вызывать grpc
+def check_email_confirmed(user_id: int) -> bool | None:
+    loop = asyncio.get_event_loop()
+    coro = (
+        Container()
+        .auth_grpc()
+        .check_email_confirmed(request=CheckEmailConfirmedRequest(user_id=user_id))
+    )
+    return loop.run_until_complete(coro).confirmed

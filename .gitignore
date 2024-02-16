@@ -4,6 +4,7 @@ gateway/config/grpc.py
 gateway/config/i18n.py
 gateway/config/mail.py
 gateway/utils/app.py
+gateway/utils/email.py
 gateway/utils/exceptions.py
 gateway/utils/decorators.py
 gateway/utils/pygettext.py
@@ -22,6 +23,7 @@ auth/config/grpc.py
 auth/config/i18n.py
 auth/config/mail.py
 auth/utils/app.py
+auth/utils/email.py
 auth/utils/exceptions.py
 auth/utils/decorators.py
 auth/utils/pygettext.py
@@ -40,6 +42,7 @@ publisher/config/grpc.py
 publisher/config/i18n.py
 publisher/config/mail.py
 publisher/utils/app.py
+publisher/utils/email.py
 publisher/utils/exceptions.py
 publisher/utils/decorators.py
 publisher/utils/pygettext.py

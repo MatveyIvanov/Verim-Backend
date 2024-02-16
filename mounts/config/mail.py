@@ -4,6 +4,7 @@ from dataclasses import dataclass, asdict
 from abc import ABC, abstractmethod
 from typing import List
 
+from celery import Celery
 from fastapi_mail.config import ConnectionConfig
 from fastapi_mail.schemas import MessageSchema, MessageType
 from fastapi_mail import FastMail
@@ -48,13 +49,14 @@ class _ISendEmail(ABC):
 
 
 class SendEmail(ISendEmail):
+    def __init__(self, celery_app: Celery):
+        self.celery_app = celery_app
+
     def __call__(self, entry: SendEmailEntry) -> None:
         self._add_task(entry)
 
     def _add_task(self, entry: SendEmailEntry) -> None:
-        from config.celery import app as celery_app
-
-        celery_app.send_task(
+        self.celery_app.send_task(
             "config.celery.send_email", kwargs={"entry_dict": asdict(entry)}
         )
 

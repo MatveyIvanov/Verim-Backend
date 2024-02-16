@@ -57,8 +57,7 @@ __app = VersionedFastAPI(
     default_version=(1, 0),
     enable_latest=True,
 )
-# __app.add_middleware(HTTPSRedirectMiddleware)  # FIXME for production
-__app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])  # FIXME for production
+__app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost"])
 __app.add_middleware(TranslationMiddleware)
 
 

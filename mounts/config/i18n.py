@@ -1,7 +1,6 @@
 import gettext
 
 
-# TODO: вынести в настройки
 DEFAULT_LANGUAGE = "en"
 SUPPORTED_LANGUAGES = ["en", "ru"]
 DOMAIN = "base"

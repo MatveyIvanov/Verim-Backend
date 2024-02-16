@@ -18,7 +18,7 @@ def handle_grpc_request_error(return_class):
             except CustomException as e:
                 grpc_logger.info(
                     f"Custom exception has occured - {str(e)}",
-                    extra={"args": args, "kwargs": kwargs},
+                    extra={"func_args": args, "func_kwargs": kwargs},
                     exc_info=e,
                 )
                 return return_class(detail=e.detail)
@@ -35,7 +35,7 @@ def handle_grpc_response_error(func):
         except Exception as e:
             grpc_logger.error(
                 f"Error from gRPC response - {str(e)}",
-                extra={"args": args, "kwargs": kwargs},
+                extra={"func_args": args, "func_kwargs": kwargs},
                 exc_info=e,
             )
             raise
@@ -71,7 +71,7 @@ def handle_orm_error(func):
         except SQLAlchemyError as e:
             orm_logger.error(
                 f"Error while processing orm query - {str(e)}",
-                extra={"args": args, "kwargs": kwargs},
+                extra={"func_args": args, "func_kwargs": kwargs},
                 exc_info=e,
             )
             raise

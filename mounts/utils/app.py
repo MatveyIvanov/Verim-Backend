@@ -55,11 +55,13 @@ class CustomFastAPI(FastAPI):
         swagger_ui_oauth2_redirect_url: str | None = "/docs/oauth2-redirect",
         swagger_ui_init_oauth: Dict[str, Any] | None = None,
         middleware: Sequence[Middleware] | None = None,
-        exception_handlers: Dict[
-            int | type[Exception],
-            Callable[[Request, Any], Coroutine[Any, Any, Response]],
-        ]
-        | None = None,
+        exception_handlers: (
+            Dict[
+                int | type[Exception],
+                Callable[[Request, Any], Coroutine[Any, Any, Response]],
+            ]
+            | None
+        ) = None,
         on_startup: Sequence[Callable[[], Any]] | None = None,
         on_shutdown: Sequence[Callable[[], Any]] | None = None,
         lifespan: Lifespan[AppType] | None = None,
@@ -105,7 +107,6 @@ class CustomFastAPI(FastAPI):
         if self.openapi_url:
             assert self.title, "A title must be provided for OpenAPI, e.g.: 'My API'"
             assert self.version, "A version must be provided for OpenAPI, e.g.: '2.1.0'"
-        # TODO: remove when discarding the openapi_prefix parameter
         if openapi_prefix:
             logger.warning(
                 '"openapi_prefix" has been deprecated in favor of "root_path", which '
