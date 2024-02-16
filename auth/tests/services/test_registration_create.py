@@ -31,6 +31,7 @@ class TestRegisterUser(ServiceTestMixin):
         self.validate_username = mock.Mock(return_value=True)
         self.validate_password = mock.Mock(return_value=True)
         self.hash_password = mock.Mock(return_value="hashed")
+        self.celery_app = mock.Mock()
 
         self.repo = mock.Mock()
         self.repo.email_exists.return_value = False
@@ -44,11 +45,11 @@ class TestRegisterUser(ServiceTestMixin):
                 validate_password=self.validate_password,
                 hash_password=self.hash_password,
                 repo=self.repo,
+                celery_app=self.celery_app,
             )
         )
 
     def test_email_exists(self, mocker: MockerFixture):
-        celery_app = mocker.patch("services.registration.create.celery_app")
         get_current_time_with_delta = mocker.patch(
             "services.registration.create.get_current_time_with_delta"
         )
@@ -62,11 +63,10 @@ class TestRegisterUser(ServiceTestMixin):
             self.validate_password.assert_not_called()
             self.hash_password.assert_not_called()
             self.repo.create.assert_not_called()
-            celery_app.send_task.assert_not_called()
+            self.celery_app.send_task.assert_not_called()
             get_current_time_with_delta.assert_not_called()
 
     def test_username_exists(self, mocker: MockerFixture):
-        celery_app = mocker.patch("services.registration.create.celery_app")
         get_current_time_with_delta = mocker.patch(
             "services.registration.create.get_current_time_with_delta"
         )
@@ -80,11 +80,10 @@ class TestRegisterUser(ServiceTestMixin):
             self.validate_password.assert_not_called()
             self.hash_password.assert_not_called()
             self.repo.create.assert_not_called()
-            celery_app.send_task.assert_not_called()
+            self.celery_app.send_task.assert_not_called()
             get_current_time_with_delta.assert_not_called()
 
     def test_username_not_valid(self, mocker: MockerFixture):
-        celery_app = mocker.patch("services.registration.create.celery_app")
         get_current_time_with_delta = mocker.patch(
             "services.registration.create.get_current_time_with_delta"
         )
@@ -100,11 +99,10 @@ class TestRegisterUser(ServiceTestMixin):
             self.validate_password.assert_not_called()
             self.hash_password.assert_not_called()
             self.repo.create.assert_not_called()
-            celery_app.send_task.assert_not_called()
+            self.celery_app.send_task.assert_not_called()
             get_current_time_with_delta.assert_not_called()
 
     def test_password_mismatch(self, mocker: MockerFixture):
-        celery_app = mocker.patch("services.registration.create.celery_app")
         get_current_time_with_delta = mocker.patch(
             "services.registration.create.get_current_time_with_delta"
         )
@@ -120,11 +118,10 @@ class TestRegisterUser(ServiceTestMixin):
             self.validate_password.assert_not_called()
             self.hash_password.assert_not_called()
             self.repo.create.assert_not_called()
-            celery_app.send_task.assert_not_called()
+            self.celery_app.send_task.assert_not_called()
             get_current_time_with_delta.assert_not_called()
 
     def test_password_not_valid(self, mocker: MockerFixture):
-        celery_app = mocker.patch("services.registration.create.celery_app")
         get_current_time_with_delta = mocker.patch(
             "services.registration.create.get_current_time_with_delta"
         )
@@ -142,11 +139,10 @@ class TestRegisterUser(ServiceTestMixin):
             )
             self.hash_password.assert_not_called()
             self.repo.create.assert_not_called()
-            celery_app.send_task.assert_not_called()
+            self.celery_app.send_task.assert_not_called()
             get_current_time_with_delta.assert_not_called()
 
     def test_register(self, mocker: MockerFixture):
-        celery_app = mocker.patch("services.registration.create.celery_app")
         get_current_time_with_delta = mocker.patch(
             "services.registration.create.get_current_time_with_delta"
         )
@@ -165,8 +161,8 @@ class TestRegisterUser(ServiceTestMixin):
             )
             self.hash_password.assert_called_once_with(self.entry.re_password)
             self.repo.create.assert_called_once_with(self.entry)
-            celery_app.send_task.assert_called_once_with(
-                "config.celery.ckeck_email_confirmed",
+            self.celery_app.send_task.assert_called_once_with(
+                "config.celery.check_email_confirmed",
                 args=(self.user.id,),
                 eta=self.now,
             )

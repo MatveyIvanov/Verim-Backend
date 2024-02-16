@@ -5,6 +5,7 @@ import publisher_pb2_grpc
 from auth_grpc_typed import AuthStub
 from publisher_grpc_typed import PublisherStub
 from config import settings
+from config.celery import app as _celery_app
 from config.mail import SendEmail, _SendEmail
 from config.grpc import GRPCConnection
 
@@ -13,6 +14,8 @@ class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         packages=["endpoints"], modules=["config.celery"]
     )
+
+    celery_app = providers.Object(_celery_app)
 
     _auth_grpc = providers.Singleton(
         GRPCConnection,
@@ -30,4 +33,4 @@ class Container(containers.DeclarativeContainer):
     publisher_grpc = providers.Singleton(PublisherStub, connection=_publisher_grpc)
 
     _send_email = providers.Singleton(_SendEmail)
-    send_email = providers.Singleton(SendEmail)
+    send_email = providers.Singleton(SendEmail, celery_app=celery_app)

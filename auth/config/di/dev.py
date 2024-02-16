@@ -3,6 +3,7 @@ from dependency_injector import containers, providers
 import publisher_pb2_grpc
 from publisher_grpc_typed import PublisherStub
 from config import settings
+from config.celery import app as _celery_app
 from config.db import Database
 from config.mail import SendEmail
 from config.grpc import GRPCConnection
@@ -41,6 +42,8 @@ class Container(containers.DeclarativeContainer):
         modules=["config.celery", "grpc_services.auth"],
     )
 
+    celery_app = providers.Object(_celery_app)
+
     _publisher_grpc = providers.Singleton(
         GRPCConnection,
         host=settings.PUBLISHER_GRPC_HOST,
@@ -51,7 +54,7 @@ class Container(containers.DeclarativeContainer):
 
     db = providers.Singleton(Database, db_url=settings.DATABASE_URL)
 
-    send_email = providers.Singleton(SendEmail)
+    send_email = providers.Singleton(SendEmail, celery_app=celery_app)
 
     user_repo = providers.Factory(UserRepo, session_factory=db.provided.session)
     _code_repo = providers.Factory(CodeRepo, session_factory=db.provided.session)
@@ -112,6 +115,7 @@ class Container(containers.DeclarativeContainer):
         validate_password=validate_password,
         hash_password=hash_password,
         repo=user_repo,
+        celery_app=celery_app,
     )
     repeat_registration_code = providers.Singleton(
         RepeatRegistrationCode, create_code=create_code, repo=user_repo
