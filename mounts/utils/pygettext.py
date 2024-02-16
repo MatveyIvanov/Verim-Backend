@@ -580,7 +580,7 @@ def main():
         GNU = 1
         SOLARIS = 2
         # defaults
-        extractall = 0  # FIXME: currently this option has no effect at all.
+        extractall = 0
         escape = 0
         keywords = []
         outpath = ""

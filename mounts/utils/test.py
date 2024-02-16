@@ -4,7 +4,6 @@ from types import SimpleNamespace
 import pytest
 
 from config import settings
-from utils.repo import IRepo
 
 
 class SchemaTestMixin:
@@ -34,4 +33,4 @@ class ServiceTestMixin:
 
 
 class RepoTestMixin:
-    repo: IRepo = None
+    repo = None
