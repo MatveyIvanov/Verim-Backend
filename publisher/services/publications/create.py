@@ -6,8 +6,6 @@ from utils.types import PublicationType
 from utils.domains import get_content_type
 from utils.exceptions import Custom400Exception
 
-from ..validators import IValidate
-from ..validators.base import ValidationMode
 from ..repo import IPublicationRepo
 from .entries import CreatePublicationData, PublicationData
 
@@ -16,8 +14,7 @@ class ICreatePublication(ABC):
     @abstractmethod
     def __call__(
         self, user_id: int, schema: CreatePublicationSchema
-    ) -> PublicationData:
-        ...
+    ) -> PublicationData: ...
 
 
 class CreatePublication(ICreatePublication):

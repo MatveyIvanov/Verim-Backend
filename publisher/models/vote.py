@@ -1,5 +1,5 @@
 from sqlalchemy import Table, Column, Integer, Boolean, ForeignKey
-from sqlalchemy.orm import registry, relationship
+from sqlalchemy.orm import relationship
 
 from models import mapper_registry
 
