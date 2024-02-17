@@ -27,7 +27,7 @@ class AuthenticationMiddleware:
         self._app = app
         self.raise_exception = raise_exception
 
-    async def __call__(self, scope: Scope, receive: Receive, send: Send):
+    async def __call__(self, scope: Scope, receive: Receive, send: Send):  # noqa: C901
         if not scope["type"] == "http":
             await self._app(scope, receive, send)
 
@@ -58,10 +58,9 @@ class AuthenticationMiddleware:
                 await self._app(scope, receive, send)
             return
 
-        from auth_grpc_typed import IAuthStub, AuthRequest
+        from auth_grpc_typed import AuthRequest
         from config import settings
         from config.di import Container
-        from config.i18n import _
 
         prefix, token = auth_header
 
@@ -135,7 +134,8 @@ class TranslationMiddleware:
 
 class LoggingMiddleware:
     """
-    Middleware для обработки запросов и ответов с целью журналирования (https://habr.com/ru/articles/575454/)
+    Middleware для обработки запросов и ответов
+    с целью журналирования (https://habr.com/ru/articles/575454/)
     """
 
     @staticmethod

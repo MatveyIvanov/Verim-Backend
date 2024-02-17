@@ -2,7 +2,7 @@ from typing import List
 from enum import Enum
 
 from pydantic.dataclasses import dataclass
-from pydantic import HttpUrl, Field
+from pydantic import HttpUrl
 
 
 class ContentType(str, Enum):
