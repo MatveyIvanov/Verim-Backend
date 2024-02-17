@@ -146,14 +146,14 @@ class AuthStub(IAuthStub):
 
     @handle_grpc_response_error
     async def auth(self, request: AuthRequest) -> AuthResponse:
-        from auth_pb2 import AuthRequest as _AuthRequest
+        from auth_pb2 import AuthRequest as _AuthRequest  # noqa: E501
 
         response = await self.connection.stub.auth(_AuthRequest(**asdict(request)))
         return AuthResponse(user=User(id=response.user.id))
 
     @handle_grpc_response_error
     async def jwt_refresh(self, request: RefreshTokensRequest) -> JWTTokens:
-        from auth_pb2 import RefreshTokensRequest as _RefreshTokensRequest
+        from auth_pb2 import RefreshTokensRequest as _RefreshTokensRequest  # noqa: E501
 
         response = await self.connection.stub.jwt_refresh(
             _RefreshTokensRequest(**asdict(request))
@@ -166,7 +166,7 @@ class AuthStub(IAuthStub):
 
     @handle_grpc_response_error
     async def login(self, request: LoginRequest) -> JWTTokens:
-        from auth_pb2 import LoginRequest as _LoginRequest
+        from auth_pb2 import LoginRequest as _LoginRequest  # noqa: E501
 
         response = await self.connection.stub.login(_LoginRequest(**asdict(request)))
         return JWTTokens(
@@ -177,7 +177,9 @@ class AuthStub(IAuthStub):
 
     @handle_grpc_response_error
     async def password_change(self, request: ChangePasswordRequest) -> Empty:
-        from auth_pb2 import ChangePasswordRequest as _ChangePasswordRequest
+        from auth_pb2 import (
+            ChangePasswordRequest as _ChangePasswordRequest,
+        )  # noqa: E501
 
         response = await self.connection.stub.password_change(
             _ChangePasswordRequest(**asdict(request))
@@ -186,7 +188,7 @@ class AuthStub(IAuthStub):
 
     @handle_grpc_response_error
     async def password_reset(self, request: ResetPasswordRequest) -> CodeSentResponse:
-        from auth_pb2 import ResetPasswordRequest as _ResetPasswordRequest
+        from auth_pb2 import ResetPasswordRequest as _ResetPasswordRequest  # noqa: E501
 
         response = await self.connection.stub.password_reset(
             _ResetPasswordRequest(**asdict(request))
@@ -201,7 +203,9 @@ class AuthStub(IAuthStub):
     async def password_reset_confirm(
         self, request: ResetPasswordConfirmRequest
     ) -> Empty:
-        from auth_pb2 import ResetPasswordConfirmRequest as _ResetPasswordConfirmRequest
+        from auth_pb2 import (
+            ResetPasswordConfirmRequest as _ResetPasswordConfirmRequest,
+        )  # noqa: E501
 
         response = await self.connection.stub.password_reset_confirm(
             _ResetPasswordConfirmRequest(**asdict(request))
@@ -210,7 +214,7 @@ class AuthStub(IAuthStub):
 
     @handle_grpc_response_error
     async def register(self, request: RegisterRequest) -> CodeSentResponse:
-        from auth_pb2 import RegisterRequest as _RegisterRequest
+        from auth_pb2 import RegisterRequest as _RegisterRequest  # noqa: E501
 
         response = await self.connection.stub.register(
             _RegisterRequest(**asdict(request))
@@ -223,7 +227,9 @@ class AuthStub(IAuthStub):
 
     @handle_grpc_response_error
     async def register_repeat(self, request: RepeatRegisterRequest) -> CodeSentResponse:
-        from auth_pb2 import RepeatRegisterRequest as _RepeatRegisterRequest
+        from auth_pb2 import (
+            RepeatRegisterRequest as _RepeatRegisterRequest,
+        )  # noqa: E501
 
         response = await self.connection.stub.register_repeat(
             _RepeatRegisterRequest(**asdict(request))
@@ -236,7 +242,9 @@ class AuthStub(IAuthStub):
 
     @handle_grpc_response_error
     async def register_confirm(self, request: ConfirmRegisterRequest) -> JWTTokens:
-        from auth_pb2 import ConfirmRegisterRequest as _ConfirmRegisterRequest
+        from auth_pb2 import (
+            ConfirmRegisterRequest as _ConfirmRegisterRequest,
+        )  # noqa: E501
 
         response = await self.connection.stub.register_confirm(
             _ConfirmRegisterRequest(**asdict(request))
@@ -251,7 +259,9 @@ class AuthStub(IAuthStub):
     async def check_email_confirmed(
         self, request: CheckEmailConfirmedRequest
     ) -> CheckEmailConfirmedResponse:
-        from auth_pb2 import CheckEmailConfirmedRequest as _CheckEmailConfirmedRequest
+        from auth_pb2 import (
+            CheckEmailConfirmedRequest as _CheckEmailConfirmedRequest,
+        )  # noqa: E501
 
         response = await self.connection.stub.check_email_confirmed(
             _CheckEmailConfirmedRequest(**asdict(request))

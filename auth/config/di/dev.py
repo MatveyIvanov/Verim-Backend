@@ -1,4 +1,5 @@
 from dependency_injector import containers, providers
+from celery import Celery
 
 import publisher_pb2_grpc
 from publisher_grpc_typed import PublisherStub
@@ -42,7 +43,7 @@ class Container(containers.DeclarativeContainer):
         modules=["config.celery", "grpc_services.auth"],
     )
 
-    celery_app = providers.Object(_celery_app)
+    celery_app: Celery = providers.Object(_celery_app)
 
     _publisher_grpc = providers.Singleton(
         GRPCConnection,

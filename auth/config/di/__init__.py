@@ -10,5 +10,5 @@ def get_di_container() -> Container:
     return container
 
 
-def get_di_test_container() -> Container:
+def get_di_test_container() -> TestContainer:
     return test_container

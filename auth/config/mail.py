@@ -2,7 +2,7 @@ import logging
 from smtplib import SMTPException
 from dataclasses import dataclass, asdict
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Coroutine, Any, Dict
 
 from celery import Celery
 from fastapi_mail.config import ConnectionConfig
@@ -35,9 +35,6 @@ class SendEmailEntry:
     message: str = ""
 
 
-SendEmailDict = SendEmailEntry
-
-
 class ISendEmail(ABC):
     @abstractmethod
     def __call__(self, entry: SendEmailEntry) -> None: ...
@@ -45,7 +42,7 @@ class ISendEmail(ABC):
 
 class _ISendEmail(ABC):
     @abstractmethod
-    def __call__(self, entry_dict: SendEmailDict) -> None: ...
+    async def __call__(self, entry_dict: Dict) -> None: ...
 
 
 class SendEmail(ISendEmail):
@@ -62,13 +59,13 @@ class SendEmail(ISendEmail):
 
 
 class _SendEmail(_ISendEmail):
-    async def __call__(self, entry_dict: SendEmailDict) -> None:
+    async def __call__(self, entry_dict: Dict) -> None:
         await self._send_email(entry=self._to_entry(entry_dict))
 
-    def _to_entry(self, entry_dict: SendEmailDict) -> SendEmailEntry:
+    def _to_entry(self, entry_dict: Dict) -> SendEmailEntry:
         return SendEmailEntry(**entry_dict)
 
-    async def _send_email(self, entry: SendEmailEntry) -> int:
+    async def _send_email(self, entry: SendEmailEntry) -> None:
         try:
             await FastMail(config).send_message(
                 message=MessageSchema(

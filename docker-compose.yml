@@ -92,22 +92,6 @@ services:
       - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
       - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
       - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
-      # common stuff
-      - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
-      - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
-      - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
-      - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
-      - ./mounts/utils/email.py:${DEFAULT_SERVICE_DIR}/utils/email.py
-      - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
-      - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
-      - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
-      - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
-      - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
-      - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
-      - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
-      - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
-      - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
-      - ./mounts/utils/logging.py:${DEFAULT_SERVICE_DIR}/utils/logging.py
     depends_on:
       db:
         condition: service_healthy
@@ -139,23 +123,6 @@ services:
       - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
       - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
       - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
-      # common stuff
-      - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
-      - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
-      - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
-      - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
-      - ./mounts/utils/email.py:${DEFAULT_SERVICE_DIR}/utils/email.py
-      - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
-      - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
-      - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
-      - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
-      - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
-      - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
-      - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
-      - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
-      - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
-      - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
-      - ./mounts/utils/logging.py:${DEFAULT_SERVICE_DIR}/utils/logging.py
     depends_on:
       db:
         condition: service_healthy
@@ -187,23 +154,6 @@ services:
       - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
       - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
       - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
-      # common stuff
-      - ./mounts/config/db.py:${DEFAULT_SERVICE_DIR}/config/db.py
-      - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
-      - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
-      - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
-      - ./mounts/utils/email.py:${DEFAULT_SERVICE_DIR}/utils/email.py
-      - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
-      - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
-      - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
-      - ./mounts/utils/random.py:${DEFAULT_SERVICE_DIR}/utils/random.py
-      - ./mounts/utils/repo.py:${DEFAULT_SERVICE_DIR}/utils/repo.py
-      - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
-      - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
-      - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
-      - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
-      - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
-      - ./mounts/utils/logging.py:${DEFAULT_SERVICE_DIR}/utils/logging.py
     depends_on:
       db:
         condition: service_healthy
@@ -242,21 +192,6 @@ services:
       - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
       - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
       - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
-      # common stuff
-      - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
-      - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
-      - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
-      - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
-      - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
-      - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
-      - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
-      - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
-      - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
-      - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
-      - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
-      - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
-      - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
-      - ./mounts/utils/logging.py:${DEFAULT_SERVICE_DIR}/utils/logging.py
     networks:
       - verim_network
     restart: always
@@ -295,21 +230,6 @@ services:
       - ./protobufs/compiled/publisher_pb2_grpc.py:${DEFAULT_SERVICE_DIR}/publisher_pb2_grpc.py
       - ./protobufs/compiled/publisher_pb2.py:${DEFAULT_SERVICE_DIR}/publisher_pb2.py
       - ./protobufs/compiled/publisher_grpc_typed.py:${DEFAULT_SERVICE_DIR}/publisher_grpc_typed.py
-      # common stuff
-      - ./mounts/config/grpc.py:${DEFAULT_SERVICE_DIR}/config/grpc.py
-      - ./mounts/config/i18n.py:${DEFAULT_SERVICE_DIR}/config/i18n.py
-      - ./mounts/config/mail.py:${DEFAULT_SERVICE_DIR}/config/mail.py
-      - ./mounts/utils/app.py:${DEFAULT_SERVICE_DIR}/utils/app.py
-      - ./mounts/utils/exceptions.py:${DEFAULT_SERVICE_DIR}/utils/exceptions.py
-      - ./mounts/utils/decorators.py:${DEFAULT_SERVICE_DIR}/utils/decorators.py
-      - ./mounts/utils/pygettext.py:${DEFAULT_SERVICE_DIR}/utils/pygettext.py
-      - ./mounts/utils/routing.py:${DEFAULT_SERVICE_DIR}/utils/routing.py
-      - ./mounts/utils/schemas.py:${DEFAULT_SERVICE_DIR}/utils/schemas.py
-      - ./mounts/utils/shortcuts.py:${DEFAULT_SERVICE_DIR}/utils/shortcuts.py
-      - ./mounts/utils/test.py:${DEFAULT_SERVICE_DIR}/utils/test.py
-      - ./mounts/utils/time.py:${DEFAULT_SERVICE_DIR}/utils/time.py
-      - ./mounts/utils/pagination.py:${DEFAULT_SERVICE_DIR}/utils/pagination.py
-      - ./mounts/utils/logging.py:${DEFAULT_SERVICE_DIR}/utils/logging.py
     networks:
       - verim_network
     restart: always
