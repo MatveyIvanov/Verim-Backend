@@ -6,14 +6,13 @@ from ..entries import CodeTypeEnum
 from config.i18n import _
 from schemas import RepeatRegistrationCodeSchema, CodeSentSchema
 from utils.types import UserType
-from utils.exceptions import Custom400Exception, Custom404Exception
+from utils.exceptions import Custom400Exception
 from utils.shortcuts import get_object_or_404
 
 
 class IRepeatRegistrationCode(ABC):
     @abstractmethod
-    def __call__(self, entry: RepeatRegistrationCodeSchema) -> CodeSentSchema:
-        ...
+    def __call__(self, entry: RepeatRegistrationCodeSchema) -> CodeSentSchema: ...
 
 
 class RepeatRegistrationCode(IRepeatRegistrationCode):

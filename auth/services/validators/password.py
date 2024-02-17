@@ -46,12 +46,13 @@ class PasswordRequiredCharactersValidator(IValidator):
         not_present_in_password = [
             group
             for group, is_present in present_in_password.items()
-            if is_present == False
+            if is_present is False
         ]
         if raise_exception and not_present_in_password:
             raise Custom400Exception(
                 _(
-                    "Password must contain at least one character from each of the following groups:\n"
+                    "Password must contain at least one character from each of the"
+                    " following groups:\n"
                 )
                 + "\n".join([group.description for group in self.groups])
             )
