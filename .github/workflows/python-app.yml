@@ -39,7 +39,7 @@ jobs:
         docker exec dev-verim-publisher python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
     - name: Test with pytest
       run: |
-        docker-compose exec auth pytest
+        docker exec dev-verim-auth pytest --cov
         # docker exec dev-verim-auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html
         # docker exec dev-verim-gateway python -m pytest tests --doctest-modules --junitxml=junit/gateway-test-results.xml --cov=com --cov-report=xml --cov-report=html
         # docker exec dev-verim-publisher python -m pytest tests --doctest-modules --junitxml=junit/publisher-test-results.xml --cov=com --cov-report=xml --cov-report=html
