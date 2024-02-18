@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  build-auth:
+  build:
 
     runs-on: ubuntu-latest
 
@@ -27,30 +27,9 @@ jobs:
     - name: Lint auth-service with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        docker exec ${CONTAINER_PREFIX}-auth python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        docker exec ${{ env.CONTAINER_PREFIX }}-auth python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        docker exec ${CONTAINER_PREFIX}-auth python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+        docker exec ${{ env.CONTAINER_PREFIX }}-auth python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
     - name: Test auth-service with pytest
       run: |
-        docker exec ${CONTAINER_PREFIX}-auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html
-
-  # build-publisher:
-
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - name: Create env file
-  #     run: |
-  #       echo "${{ secrets.ENV_FILE }}" > .env
-  #   - name: Build containers
-  #     run: docker-compose up -d publisher
-  #   - name: Lint publisher-service with flake8
-  #     run: |
-  #       # stop the build if there are Python syntax errors or undefined names
-  #       docker exec ${CONTAINER_PREFIX}-publisher python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-  #       # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-  #       docker exec ${CONTAINER_PREFIX}-publisher python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
-  #   - name: Test publisher-service with pytest
-  #     run: |
-  #       docker exec ${CONTAINER_PREFIX}-publisher python -m pytest tests --doctest-modules --junitxml=junit/publisher-test-results.xml --cov=com --cov-report=xml --cov-report=html
+        docker exec ${{ env.CONTAINER_PREFIX }}-auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html
