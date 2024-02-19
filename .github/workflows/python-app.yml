@@ -39,7 +39,8 @@ jobs:
         # docker exec dev-verim-publisher python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
     - name: Test with pytest
       run: |
-        docker exec dev-verim-auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html | tee auth-test-results.txt
+        docker exec dev-verim-auth python -mpytest --junitxml=junit/auth-test-results.xml --cov-report=term-missing:skip-covered --cov=app tests/ | tee auth-test-results.txt
+        # docker exec dev-verim-auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html | tee auth-test-results.txt
         docker cp dev-verim-auth:/microservice/junit/auth-test-results.xml .
         # docker exec dev-verim-gateway python -m pytest tests --doctest-modules --junitxml=junit/gateway-test-results.xml --cov=com --cov-report=xml --cov-report=html
         # docker exec dev-verim-publisher python -m pytest tests --doctest-modules --junitxml=junit/publisher-test-results.xml --cov=com --cov-report=xml --cov-report=html
@@ -63,3 +64,13 @@ jobs:
         echo "Coverage Tests - ${{ steps.coverageComment.outputs.tests }}"
         echo "Coverage Time - ${{ steps.coverageComment.outputs.time }}"
         echo "Not Success Test Info - ${{ steps.coverageComment.outputs.notSuccessTestInfo }}"
+    - name: Pytest coverage badge
+      uses: schneegans/dynamic-badges-action@v1.6.0
+      with:
+        auth: ${{ secrets.PYTEST_COVERAGE_COMMENT }}
+        gistID: 5e90d640f8c212ab7bbac38f72323f80
+        filename: pytest-coverage-comment__main.json
+        label: Coverage Report
+        message: ${{ steps.coverageComment.outputs.coverage }}
+        color: ${{ steps.coverageComment.outputs.color }}
+        namedLogo: python
