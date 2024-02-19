@@ -120,11 +120,13 @@ jobs:
         color: ${{ steps.publisherCoverageComment.outputs.color }}
         namedLogo: python
     - name: Update Readme with Coverage Html
-      if: ${{ github.ref == 'refs/heads/dev' }}
+      if: ${{ github.ref == 'refs/heads/issue_32' }}
       run: |
-        sed -i '/<!-- Pytest Coverage Comment:Begin -->/,/<!-- Pytest Coverage Comment:End -->/c\<!-- Pytest Coverage Comment:Begin -->\n\${{ steps.coverageComment.outputs.coverageHtml }}\n<!-- Pytest Coverage Comment:End -->' ./README.md
+        sed -i '/<!-- Pytest Auth Coverage Comment:Begin -->/,/<!-- Pytest Auth Coverage Comment:End -->/c\<!-- Pytest Auth Coverage Comment:Begin -->\n\${{ steps.authCoverageComment.outputs.coverageHtml }}\n<!-- Pytest Auth Coverage Comment:End -->' ./README.md
+        sed -i '/<!-- Pytest Gateway Coverage Comment:Begin -->/,/<!-- Pytest Gateway Coverage Comment:End -->/c\<!-- Pytest Gateway Coverage Comment:Begin -->\n\${{ steps.gatewayCoverageComment.outputs.coverageHtml }}\n<!-- Pytest Gateway Coverage Comment:End -->' ./README.md
+        sed -i '/<!-- Pytest Publisher Coverage Comment:Begin -->/,/<!-- Pytest Publisher Coverage Comment:End -->/c\<!-- Pytest Publisher Coverage Comment:Begin -->\n\${{ steps.publisherCoverageComment.outputs.coverageHtml }}\n<!-- Pytest Publisher Coverage Comment:End -->' ./README.md
     - name: Commit & Push changes to Readme
-      if: ${{ github.ref == 'refs/heads/dev' }}
+      if: ${{ github.ref == 'refs/heads/issue_32' }}
       uses: actions-js/push@master
       with:
         message: Update coverage on Readme
