@@ -2,7 +2,7 @@ import logging
 from smtplib import SMTPException
 from dataclasses import dataclass, asdict
 from abc import ABC, abstractmethod
-from typing import List, Coroutine, Any, Dict
+from typing import List, Dict
 
 from celery import Celery
 from fastapi_mail.config import ConnectionConfig
