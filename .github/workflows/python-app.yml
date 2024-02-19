@@ -39,16 +39,16 @@ jobs:
         # docker exec dev-verim-publisher python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
     - name: Test with pytest
       run: |
-        docker exec dev-verim-auth python -mpytest --junitxml=junit/auth-test-results.xml --cov-report=term-missing:skip-covered --cov=app tests/ | tee auth-test-results.txt
-        # docker exec dev-verim-auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html | tee auth-test-results.txt
+        docker exec dev-verim-auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html
+        docker exec dev-verim-auth python -m pytest --cov-report "xml:junit/auth-test-coverage.xml" --cov=src
         docker cp dev-verim-auth:/microservice/junit/auth-test-results.xml .
-        cat auth-test-results.txt
+        docker cp dev-verim-auth:/microservice/junit/auth-test-coverage.xml .
         # docker exec dev-verim-gateway python -m pytest tests --doctest-modules --junitxml=junit/gateway-test-results.xml --cov=com --cov-report=xml --cov-report=html
         # docker exec dev-verim-publisher python -m pytest tests --doctest-modules --junitxml=junit/publisher-test-results.xml --cov=com --cov-report=xml --cov-report=html
     - name: Pytest coverage comment
       uses: MishaKav/pytest-coverage-comment@main
       with:
-        pytest-coverage-path: ./auth-test-results.txt
+        pytest-xml-coverage-path: ./auth-test-coverate.xml
         junitxml-path: ./auth-test-results.xml
     - name: Check the output coverage
       run: |
