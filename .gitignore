@@ -1,61 +1,3 @@
-# Common microservice's files, mounted via docker
-gateway/config/db.py
-gateway/config/grpc.py
-gateway/config/i18n.py
-gateway/config/mail.py
-gateway/utils/app.py
-gateway/utils/email.py
-gateway/utils/exceptions.py
-gateway/utils/decorators.py
-gateway/utils/pygettext.py
-gateway/utils/random.py
-gateway/utils/repo.py
-gateway/utils/routing.py
-gateway/utils/schemas.py
-gateway/utils/shortcuts.py
-gateway/utils/test.py
-gateway/utils/time.py
-gateway/utils/pagination.py
-gateway/utils/logging.py
-
-auth/config/db.py
-auth/config/grpc.py
-auth/config/i18n.py
-auth/config/mail.py
-auth/utils/app.py
-auth/utils/email.py
-auth/utils/exceptions.py
-auth/utils/decorators.py
-auth/utils/pygettext.py
-auth/utils/random.py
-auth/utils/repo.py
-auth/utils/routing.py
-auth/utils/schemas.py
-auth/utils/shortcuts.py
-auth/utils/test.py
-auth/utils/time.py
-auth/utils/pagination.py
-auth/utils/logging.py
-
-publisher/config/db.py
-publisher/config/grpc.py
-publisher/config/i18n.py
-publisher/config/mail.py
-publisher/utils/app.py
-publisher/utils/email.py
-publisher/utils/exceptions.py
-publisher/utils/decorators.py
-publisher/utils/pygettext.py
-publisher/utils/random.py
-publisher/utils/repo.py
-publisher/utils/routing.py
-publisher/utils/schemas.py
-publisher/utils/shortcuts.py
-publisher/utils/test.py
-publisher/utils/time.py
-publisher/utils/pagination.py
-publisher/utils/logging.py
-
 # grpc
 auth/*_pb2.py
 auth/*_pb2_grpc.py
@@ -119,6 +61,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+junit/
 
 # Translations
 *.mo
@@ -189,7 +132,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+.env*
 .venv
 env/
 venv/

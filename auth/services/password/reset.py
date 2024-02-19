@@ -10,8 +10,7 @@ from utils.shortcuts import get_object_or_404
 
 class IResetPassword(ABC):
     @abstractmethod
-    def __call__(self, entry: ResetPasswordSchema) -> CodeSentSchema:
-        ...
+    def __call__(self, entry: ResetPasswordSchema) -> CodeSentSchema | str: ...
 
 
 class ResetPassword(IResetPassword):
@@ -19,7 +18,7 @@ class ResetPassword(IResetPassword):
         self.create_code = create_code
         self.repo = repo
 
-    def __call__(self, entry: ResetPasswordSchema) -> CodeSentSchema:
+    def __call__(self, entry: ResetPasswordSchema) -> CodeSentSchema | str:
         user = self._get_user(entry)
         return self._create_code(user)
 
@@ -28,5 +27,5 @@ class ResetPassword(IResetPassword):
             self.repo.get_by_email(entry.email), msg="User not found."
         )
 
-    def _create_code(self, user: UserType) -> CodeSentSchema:
+    def _create_code(self, user: UserType) -> CodeSentSchema | str:
         return self.create_code(user, CodeTypeEnum.RESET_PASSWORD, send=True)

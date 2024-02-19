@@ -2,10 +2,7 @@ from dependency_injector.wiring import Provide, inject
 
 import publisher_pb2_grpc
 from publisher_pb2 import (
-    CreatePublicationRequest,
     PublicationResponse,
-    VoteRequest,
-    PaginationRequest,
     PublicationsSelectionResponse,
 )
 from auth_pb2 import (
@@ -13,7 +10,6 @@ from auth_pb2 import (
 )
 from schemas import (
     CreatePublicationSchema,
-    PublicationSchema,
     VoteSchema,
 )
 from config.di import Container

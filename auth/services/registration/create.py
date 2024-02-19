@@ -17,7 +17,7 @@ from utils.time import get_current_time_with_delta
 
 class IRegisterUser(ABC):
     @abstractmethod
-    def __call__(self, entry: RegistrationSchema) -> CodeSentSchema: ...
+    def __call__(self, entry: RegistrationSchema) -> CodeSentSchema | str: ...
 
 
 class RegisterUser(IRegisterUser):
@@ -37,7 +37,7 @@ class RegisterUser(IRegisterUser):
         self.repo = repo
         self.celery_app = celery_app
 
-    def __call__(self, entry: RegistrationSchema) -> CodeSentSchema:
+    def __call__(self, entry: RegistrationSchema) -> CodeSentSchema | str:
         self._validate_email(entry)
         self._validate_username(entry)
         self._validate_password(entry)
@@ -63,7 +63,7 @@ class RegisterUser(IRegisterUser):
     def _create_user(self, entry: RegistrationSchema) -> UserType:
         return self.repo.create(entry)
 
-    def _hash_password(self, entry: RegistrationSchema) -> None:
+    def _hash_password(self, entry: RegistrationSchema) -> str:
         return self.hash_password(entry.password)
 
     def _send_registration_check_task(self, user: UserType) -> None:
@@ -73,5 +73,5 @@ class RegisterUser(IRegisterUser):
             eta=get_current_time_with_delta(seconds=CONFIRM_EMAIL_CHECK_DELAY),
         )
 
-    def _create_code(self, user: UserType) -> CodeSentSchema:
+    def _create_code(self, user: UserType) -> CodeSentSchema | str:
         return self.create_code(user, CodeTypeEnum.EMAIL_CONFIRM, send=True)

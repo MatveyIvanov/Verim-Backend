@@ -7,15 +7,6 @@ from auth_pb2 import (
     Empty,
     JWTTokens,
     CodeSentResponse,
-    RefreshTokensRequest,
-    LoginRequest,
-    ChangePasswordRequest,
-    ResetPasswordRequest,
-    ResetPasswordConfirmRequest,
-    RegisterRequest,
-    RepeatRegisterRequest,
-    ConfirmRegisterRequest,
-    CheckEmailConfirmedRequest,
     CheckEmailConfirmedResponse,
 )
 from schemas import (

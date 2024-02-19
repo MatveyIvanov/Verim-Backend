@@ -23,7 +23,7 @@ class UserRepo(IUserRepo):
         with session or self.session_factory() as session:
             qs = session.query(self.model)
             if not include_not_confirmed_email:
-                qs = qs.filter(self.model.email_confirmed == True)
+                qs = qs.filter(self.model.email_confirmed == True)  # noqa: E712
             return qs
 
     @handle_orm_error

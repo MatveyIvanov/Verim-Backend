@@ -8,13 +8,13 @@ from ..repo import IUserRepo
 from schemas import ChangePasswordSchema
 from utils.types import UserType
 from utils.exceptions import Custom400Exception
+from utils.shortcuts import get_object_or_404
 from config.i18n import _
 
 
 class IChangePassword(ABC):
     @abstractmethod
-    def __call__(self, user_id: int, entry: ChangePasswordSchema) -> None:
-        ...
+    def __call__(self, user_id: int, entry: ChangePasswordSchema) -> None: ...
 
 
 class ChangePassword(IChangePassword):
@@ -33,11 +33,14 @@ class ChangePassword(IChangePassword):
         self.repo = repo
 
     def __call__(self, user_id: int, entry: ChangePasswordSchema) -> None:
-        user = self.repo.get_by_id(id=user_id)
+        user = self._get_user(user_id)
         self._chech_current_password(user, entry.current_password)
         self._validate_new_password(entry)
         self._set_password(user, entry.new_password)
         self._revoke_jwt_tokens(user)
+
+    def _get_user(self, user_id: int) -> UserType:
+        return get_object_or_404(self.repo.get_by_id(id=user_id))
 
     def _chech_current_password(self, user: UserType, password: str) -> None:
         if not self.check_password(password, user.password):

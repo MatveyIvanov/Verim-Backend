@@ -1,4 +1,4 @@
-""" Implementation from https://habr.com/ru/articles/575454/ """
+"""Implementation from https://habr.com/ru/articles/575454/"""
 
 import datetime
 import json
@@ -164,7 +164,7 @@ def get_config(log_path: str) -> Dict:
     handlers = {
         "uvicorn": {
             "level": "ERROR",
-            "filename": os.path.join(log_path, f"uvicorn.log"),
+            "filename": os.path.join(log_path, "uvicorn.log"),
             "formatter": "json",
             **default_hanlder_settings,
         }
@@ -176,7 +176,8 @@ def get_config(log_path: str) -> Dict:
                 "level": "ERROR",
                 "propagate": False,
             },
-            # Не даем стандартному логгеру fastapi работать по пустякам и замедлять работу сервиса
+            # Не даем стандартному логгеру fastapi работать
+            # по пустякам и замедлять работу сервиса
             "uvicorn.access": {
                 "handlers": ["uvicorn"],
                 "level": "ERROR",

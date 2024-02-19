@@ -7,14 +7,13 @@ from ..entries import CodeTypeEnum
 from config.i18n import _
 from schemas import ConfirmRegistrationSchema, JWTTokensSchema
 from utils.types import UserType
-from utils.exceptions import Custom400Exception, Custom404Exception
+from utils.exceptions import Custom400Exception
 from utils.shortcuts import get_object_or_404
 
 
 class IConfirmRegistration(ABC):
     @abstractmethod
-    def __call__(self, entry: ConfirmRegistrationSchema) -> JWTTokensSchema:
-        ...
+    def __call__(self, entry: ConfirmRegistrationSchema) -> JWTTokensSchema: ...
 
 
 class ConfirmRegistration(IConfirmRegistration):

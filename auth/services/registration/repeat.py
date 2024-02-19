@@ -6,14 +6,13 @@ from ..entries import CodeTypeEnum
 from config.i18n import _
 from schemas import RepeatRegistrationCodeSchema, CodeSentSchema
 from utils.types import UserType
-from utils.exceptions import Custom400Exception, Custom404Exception
+from utils.exceptions import Custom400Exception
 from utils.shortcuts import get_object_or_404
 
 
 class IRepeatRegistrationCode(ABC):
     @abstractmethod
-    def __call__(self, entry: RepeatRegistrationCodeSchema) -> CodeSentSchema:
-        ...
+    def __call__(self, entry: RepeatRegistrationCodeSchema) -> CodeSentSchema | str: ...
 
 
 class RepeatRegistrationCode(IRepeatRegistrationCode):
@@ -21,7 +20,7 @@ class RepeatRegistrationCode(IRepeatRegistrationCode):
         self.create_code = create_code
         self.repo = repo
 
-    def __call__(self, entry: RepeatRegistrationCodeSchema) -> CodeSentSchema:
+    def __call__(self, entry: RepeatRegistrationCodeSchema) -> CodeSentSchema | str:
         user = self._get_user(entry)
         self._check_email_confirmed(user)
         return self._create_code(user)
@@ -36,5 +35,5 @@ class RepeatRegistrationCode(IRepeatRegistrationCode):
         if user.email_confirmed:
             raise Custom400Exception(_("Email is already confirmed"))
 
-    def _create_code(self, user: UserType) -> CodeSentSchema:
+    def _create_code(self, user: UserType) -> CodeSentSchema | str:
         return self.create_code(user, CodeTypeEnum.EMAIL_CONFIRM, send=True)

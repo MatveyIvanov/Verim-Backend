@@ -1,5 +1,3 @@
-import re
-
 from dependency_injector import containers, providers
 
 import auth_pb2_grpc

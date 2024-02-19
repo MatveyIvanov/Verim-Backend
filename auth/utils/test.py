@@ -3,8 +3,6 @@ from types import SimpleNamespace
 
 import pytest
 
-from config import settings
-
 
 class SchemaTestMixin:
     schema_class = None

@@ -7,7 +7,7 @@ from concurrent import futures
 import auth_pb2_grpc
 from config import settings
 from config.di import Container
-from grpc_services import GRPCAuth
+from grpc_services.auth import GRPCAuth
 from utils.logging import get_config
 
 
@@ -23,7 +23,7 @@ logger.addHandler(handler)
 
 
 class GRPCServer:
-    def run(self):
+    def run(self) -> None:
         logger.info("Auth GRPC Start Up...")
         self._init_di()
         logger.info("DI Container Successfully Initialized...")
@@ -39,10 +39,10 @@ class GRPCServer:
         logger.info(f"Running at {self._get_address()}")
         self._wait_for_termination(server)
 
-    def _init_di(self):
+    def _init_di(self) -> None:
         Container()
 
-    def _init_logging(self):
+    def _init_logging(self) -> None:
         logging.config.dictConfig(get_config(settings.LOG_PATH))
 
     def _create_server(self) -> grpc.aio.Server:

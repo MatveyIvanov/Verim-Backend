@@ -1,4 +1,4 @@
-from dependency_injector import containers, providers
+from dependency_injector import containers
 
 from config.di.dev import Container
 

@@ -5,58 +5,114 @@ name: Python application
 
 on:
   push:
-    branches: [ "mock", ]  # "dev", "main" ]
+    branches: [ "dev" ]
   pull_request:
-    branches: [ "mock", ]  # [ "dev", "main" ]
+    branches: [ "dev" ]
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
-  build-auth:
-
+  build:
     runs-on: ubuntu-latest
-
+    environment: dev
     steps:
     - uses: actions/checkout@v3
     - name: Create env file
       run: |
-        echo "${{ secrets.ENV_FILE }}" > .env
+        echo "${{ vars.ENV_FILE }}" > .env
     - name: Build containers
-      run: docker-compose up -d auth
-    - name: Lint auth-service with flake8
+      run: |
+        docker-compose up -d auth
+        docker-compose up -d gateway
+        docker-compose up -d publisher
+    - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        docker exec local-verim-auth python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        docker exec dev-verim-auth python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        docker exec dev-verim-gateway python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        docker exec dev-verim-publisher python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        docker exec local-verim-auth python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test auth-service with pytest
+        docker exec dev-verim-auth python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+        docker exec dev-verim-gateway python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+        docker exec dev-verim-publisher python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+    - name: Test with pytest
       run: |
-        docker exec local-verim-auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html
-    # - name: Run MyPy checks on auth-service
-    #   run: |
-    #     docker exec local-verim-auth python -m mypy .
+        docker exec dev-verim-auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=. | tee auth-test-results.txt
+        docker exec dev-verim-gateway python -m pytest tests --doctest-modules --junitxml=junit/gateway-test-results.xml --cov=. | tee gateway-test-results.txt
+        docker exec dev-verim-publisher python -m pytest tests --doctest-modules --junitxml=junit/publisher-test-results.xml --cov=. | tee publisher-test-results.txt
+        docker cp dev-verim-auth:/microservice/junit/auth-test-results.xml .
+        docker cp dev-verim-gateway:/microservice/junit/gateway-test-results.xml .
+        docker cp dev-verim-publisher:/microservice/junit/publisher-test-results.xml .
+    - name: Pytest auth coverage comment
+      id: authCoverageComment
+      uses: MishaKav/pytest-coverage-comment@main
+      with:
+        pytest-coverage-path: ./auth-test-results.txt
+        hide-badge: false
+        hide-report: false
+        create-new-comment: false
+        hide-comment: false
+        report-only-changed-files: true
+        remove-link-from-badge: true
+        junitxml-path: ./auth-test-results.xml
+    - name: Pytest gateway coverage comment
+      id: gatewayCoverageComment
+      uses: MishaKav/pytest-coverage-comment@main
+      with:
+        pytest-coverage-path: ./gateway-test-results.txt
+        hide-badge: false
+        hide-report: false
+        create-new-comment: false
+        hide-comment: false
+        report-only-changed-files: true
+        remove-link-from-badge: true
+        junitxml-path: ./gateway-test-results.xml
+    - name: Pytest publisher coverage comment
+      id: publisherCoverageComment
+      uses: MishaKav/pytest-coverage-comment@main
+      with:
+        pytest-coverage-path: ./publisher-test-results.txt
+        hide-badge: false
+        hide-report: false
+        create-new-comment: false
+        hide-comment: false
+        report-only-changed-files: true
+        remove-link-from-badge: true
+        junitxml-path: ./publisher-test-results.xml
 
-  build-publisher:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Create env file
-      run: |
-        echo "${{ secrets.ENV_FILE }}" > .env
-    - name: Build containers
-      run: docker-compose up -d publisher
-    - name: Lint publisher-service with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        docker exec local-verim-publisher python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        docker exec local-verim-publisher python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test publisher-service with pytest
-      run: |
-        docker exec local-verim-publisher python -m pytest tests --doctest-modules --junitxml=junit/publisher-test-results.xml --cov=com --cov-report=xml --cov-report=html
-    # - name: Run MyPy checks on publisher-service
-    #   run: |
-    #     docker exec local-verim-publisher python -m mypy .
+    # Only on dev merge!!!
+    - name: Pytest auth coverage badge
+      if: ${{ github.ref == 'refs/heads/dev' }}
+      uses: schneegans/dynamic-badges-action@v1.6.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 757112fa1eaaf7bee58f771e2238c394
+        filename: VerimDevAuthCoverage.json
+        label: Auth Coverage
+        message: ${{ steps.authCoverageComment.outputs.coverage }}
+        color: ${{ steps.authCoverageComment.outputs.color }}
+        namedLogo: python
+    - name: Pytest gateway coverage badge
+      if: ${{ github.ref == 'refs/heads/dev' }}
+      uses: schneegans/dynamic-badges-action@v1.6.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 757112fa1eaaf7bee58f771e2238c394
+        filename: VerimDevGatewayCoverage.json
+        label: Gateway Coverage
+        message: ${{ steps.gatewayCoverageComment.outputs.coverage }}
+        color: ${{ steps.gatewayCoverageComment.outputs.color }}
+        namedLogo: python
+    - name: Pytest publisher coverage badge
+      if: ${{ github.ref == 'refs/heads/dev' }}
+      uses: schneegans/dynamic-badges-action@v1.6.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 757112fa1eaaf7bee58f771e2238c394
+        filename: VerimDevPublisherCoverage.json
+        label: Publisher Coverage
+        message: ${{ steps.publisherCoverageComment.outputs.coverage }}
+        color: ${{ steps.publisherCoverageComment.outputs.color }}
+        namedLogo: python

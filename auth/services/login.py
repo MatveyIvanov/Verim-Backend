@@ -6,14 +6,13 @@ from .jwt import CreateJWTTokens
 from .repo import IUserRepo
 from .password import ICheckPassword
 from utils.types import UserType
-from utils.exceptions import Custom401Exception, Custom404Exception
+from utils.exceptions import Custom401Exception
 from utils.shortcuts import get_object_or_404
 
 
 class ILoginUser(ABC):
     @abstractmethod
-    def __call__(self, entry: LoginSchema) -> JWTTokensSchema:
-        ...
+    def __call__(self, entry: LoginSchema) -> JWTTokensSchema: ...
 
 
 class LoginUser(ILoginUser):

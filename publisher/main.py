@@ -53,7 +53,7 @@ class GRPCServer:
         publisher_pb2_grpc.add_PublisherServicer_to_server(GRPCPublisher(), server)
 
     def _get_address(self) -> str:
-        return f"{settings.PUBLISHER_GRPC_SERVER_HOST}:{settings.PUBLISHER_GRPC_SERVER_PORT}"
+        return f"{settings.PUBLISHER_GRPC_SERVER_HOST}:{settings.PUBLISHER_GRPC_SERVER_PORT}"  # noqa: E501
 
     def _init_port(self, server: grpc.aio.Server) -> None:
         server.add_insecure_port(self._get_address())

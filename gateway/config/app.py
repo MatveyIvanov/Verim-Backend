@@ -1,7 +1,6 @@
 import logging
 
 from fastapi import Request
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi_versioning import VersionedFastAPI
