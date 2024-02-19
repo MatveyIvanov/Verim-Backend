@@ -39,17 +39,14 @@ jobs:
         # docker exec dev-verim-publisher python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
     - name: Test with pytest
       run: |
-        docker exec dev-verim-auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html | tee auth-test-results.txt
-        echo ********************
-        cat auth-test-results.txt
-        echo ********************
+        docker exec dev-verim-auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=. | tee auth-test-results.txt
         docker cp dev-verim-auth:/microservice/junit/auth-test-results.xml .
         # docker exec dev-verim-gateway python -m pytest tests --doctest-modules --junitxml=junit/gateway-test-results.xml --cov=com --cov-report=xml --cov-report=html
         # docker exec dev-verim-publisher python -m pytest tests --doctest-modules --junitxml=junit/publisher-test-results.xml --cov=com --cov-report=xml --cov-report=html
     - name: Pytest coverage comment
       uses: MishaKav/pytest-coverage-comment@main
       with:
-        # pytest-xml-coverage-path: ./auth-test-coverate.xml
+        pytest-coverage-path: ./auth-test-results.txt
         junitxml-path: ./auth-test-results.xml
     - name: Check the output coverage
       run: |
