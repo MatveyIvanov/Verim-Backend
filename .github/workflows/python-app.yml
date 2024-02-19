@@ -24,8 +24,9 @@ jobs:
         cat .env
     - name: Build containers
       run: |
-        ls
+        ls -alh
         docker-compose up -d auth
+        docker logs dev-verim-db
         # docker-compose up -d gateway
         # docker-compose up -d publisher
     - name: Lint with flake8
