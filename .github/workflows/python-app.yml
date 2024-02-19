@@ -52,7 +52,7 @@ jobs:
         pytest-coverage-path: ./auth-test-results.txt
         hide-badge: false
         hide-report: false
-        create-new-comment: false
+        create-new-comment: true
         hide-comment: false
         report-only-changed-files: true
         remove-link-from-badge: true
@@ -64,7 +64,7 @@ jobs:
         pytest-coverage-path: ./gateway-test-results.txt
         hide-badge: false
         hide-report: false
-        create-new-comment: false
+        create-new-comment: true
         hide-comment: false
         report-only-changed-files: true
         remove-link-from-badge: true
@@ -76,7 +76,7 @@ jobs:
         pytest-coverage-path: ./publisher-test-results.txt
         hide-badge: false
         hide-report: false
-        create-new-comment: false
+        create-new-comment: true
         hide-comment: false
         report-only-changed-files: true
         remove-link-from-badge: true
