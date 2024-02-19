@@ -5,9 +5,9 @@ name: Python application
 
 on:
   push:
-    branches: [ "dev", "main" ]
+    branches: [ "dev" ]
   pull_request:
-    branches: [ "dev", "main" ]
+    branches: [ "dev" ]
 
 permissions:
   contents: read
@@ -19,6 +19,9 @@ jobs:
     environment: dev
     steps:
     - uses: actions/checkout@v3
+      with:
+        persist-credentials: false
+        fetch-depth: 0
     - name: Create env file
       run: |
         echo "${{ vars.ENV_FILE }}" > .env
@@ -55,28 +58,26 @@ jobs:
         report-only-changed-files: true
         remove-link-from-badge: true
         junitxml-path: ./auth-test-results.xml
-    # - name: Check the output coverage
-    #   run: |
-    #     echo "Coverage Percantage - ${{ steps.coverageComment.outputs.coverage }}"
-    #     echo "Coverage Color - ${{ steps.coverageComment.outputs.color }}"
-    #     echo "Coverage Html - ${{ steps.coverageComment.outputs.coverageHtml }}"
-    #     echo "Summary Report - ${{ steps.coverageComment.outputs.summaryReport }}"
-    
-    #     echo "Coverage Warnings - ${{ steps.coverageComment.outputs.warnings }}"
-    
-    #     echo "Coverage Errors - ${{ steps.coverageComment.outputs.errors }}"
-    #     echo "Coverage Failures - ${{ steps.coverageComment.outputs.failures }}"
-    #     echo "Coverage Skipped - ${{ steps.coverageComment.outputs.skipped }}"
-    #     echo "Coverage Tests - ${{ steps.coverageComment.outputs.tests }}"
-    #     echo "Coverage Time - ${{ steps.coverageComment.outputs.time }}"
-    #     echo "Not Success Test Info - ${{ steps.coverageComment.outputs.notSuccessTestInfo }}"
+  
+    # Only on dev merge!!!
     - name: Pytest coverage badge
+      if: ${{ github.ref == 'refs/heads/dev' }}
       uses: schneegans/dynamic-badges-action@v1.6.0
       with:
         auth: ${{ secrets.GIST_SECRET }}
         gistID: 757112fa1eaaf7bee58f771e2238c394
-        filename: test.json
+        filename: VerimDevCoverage.json
         label: Coverage Report
         message: ${{ steps.coverageComment.outputs.coverage }}
         color: ${{ steps.coverageComment.outputs.color }}
         namedLogo: python
+    - name: Update Readme with Coverage Html
+      if: ${{ github.ref == 'refs/heads/dev' }}
+      run: |
+        sed -i '/<!-- Pytest Coverage Comment:Begin -->/,/<!-- Pytest Coverage Comment:End -->/c\<!-- Pytest Coverage Comment:Begin -->\n\${{ steps.coverageComment.outputs.coverageHtml }}\n<!-- Pytest Coverage Comment:End -->' ./README.md
+    - name: Commit & Push changes to Readme
+      if: ${{ github.ref == 'refs/heads/dev' }}
+      uses: actions-js/push@master
+      with:
+        message: Update coverage on Readme
+        github_token: ${{ secrets.GITHUB_TOKEN }}
