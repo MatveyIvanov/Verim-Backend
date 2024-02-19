@@ -9,8 +9,12 @@ on:
   pull_request:
     branches: [ "dev" ]
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
@@ -19,9 +23,9 @@ jobs:
     environment: dev
     steps:
     - uses: actions/checkout@v3
-      with:
-        persist-credentials: false
-        fetch-depth: 0
+      # with:
+      #   persist-credentials: false
+      #   fetch-depth: 0
     - name: Create env file
       run: |
         echo "${{ vars.ENV_FILE }}" > .env
@@ -131,9 +135,17 @@ jobs:
         sed -i '/<!-- Pytest Auth Coverage Comment:Begin -->/,/<!-- Pytest Auth Coverage Comment:End -->/c\<!-- Pytest Auth Coverage Comment:Begin -->\n\${{ steps.authCoverageComment.outputs.coverageHtml }}\n<!-- Pytest Auth Coverage Comment:End -->' ./README.md
         sed -i '/<!-- Pytest Gateway Coverage Comment:Begin -->/,/<!-- Pytest Gateway Coverage Comment:End -->/c\<!-- Pytest Gateway Coverage Comment:Begin -->\n\${{ steps.gatewayCoverageComment.outputs.coverageHtml }}\n<!-- Pytest Gateway Coverage Comment:End -->' ./README.md
         sed -i '/<!-- Pytest Publisher Coverage Comment:Begin -->/,/<!-- Pytest Publisher Coverage Comment:End -->/c\<!-- Pytest Publisher Coverage Comment:Begin -->\n\${{ steps.publisherCoverageComment.outputs.coverageHtml }}\n<!-- Pytest Publisher Coverage Comment:End -->' ./README.md
+    # - name: Commit & Push changes to Readme
+    #   # if: ${{ github.ref == 'refs/heads/dev' }}
+    #   uses: actions-js/push@master
+    #   with:
+    #     message: Update coverage on Readme
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Commit & Push changes to Readme
-      # if: ${{ github.ref == 'refs/heads/dev' }}
-      uses: actions-js/push@master
-      with:
-        message: Update coverage on Readme
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --global user.name ${{ secrets.GIT_USER_NAME }}
+        git config --global user.email ${{ secrets.GIT_USER_EMAIL }}
+        git commit -am "Update coverage on Readme"
+        git remote set-url --push origin https://$GITHUB_TOKEN:$GITHUB_TOKEN@github.com/Verim-Back
+        git push
