@@ -64,6 +64,10 @@ jobs:
         report-only-changed-files: true
         remove-link-from-badge: true
         # junitxml-path: ./auth-test-results.xml
+    
+    - name: DEBUG STEP
+      run: |
+        echo ${{ steps.coverageComment }}
   
     # Only on dev merge!!!
     - name: Pytest coverage badge
