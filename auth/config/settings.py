@@ -31,6 +31,7 @@ TEST_DB_NAME: str = os.environ.get("TEST_AUTH_DB_NAME", "")
 TEST_DB_HOST: str = os.environ.get("TEST_AUTH_DB_HOST", "")
 TEST_DB_PORT: str = os.environ.get("TEST_AUTH_DB_PORT", "")
 TEST_DATABASE_URL: str = os.environ.get("TEST_AUTH_DATABASE_URL", "")
+print(TEST_DATABASE_URL)
 
 USERNAME_MIN_LENGTH: int = int(os.environ.get("USERNAME_MIN_LENGTH", 0))
 USERNAME_MAX_LENGTH: int = int(os.environ.get("USERNAME_MAX_LENGTH", 0))

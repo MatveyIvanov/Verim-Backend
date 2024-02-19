@@ -24,6 +24,7 @@ jobs:
         cat .env
     - name: Build containers
       run: |
+        ls
         docker-compose up -d auth
         # docker-compose up -d gateway
         # docker-compose up -d publisher
