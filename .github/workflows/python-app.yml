@@ -29,6 +29,7 @@ jobs:
         docker-compose up -d auth
         docker logs dev-verim-db
         ls -alh ../
+        pwd
         # docker-compose up -d gateway
         # docker-compose up -d publisher
     - name: Lint with flake8
