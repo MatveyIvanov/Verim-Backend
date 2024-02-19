@@ -39,7 +39,7 @@ jobs:
     - name: Test with pytest
       run: |
         docker exec dev-verim-auth python -m pytest tests --doctest-modules --junitxml=junit/auth-test-results.xml --cov=com --cov-report=xml --cov-report=html
-        docker cp dev-verim-auth:./junit/auth-test-results.xml .
+        docker cp dev-verim-auth:/microservice/junit/auth-test-results.xml .
         docker exec dev-verim-gateway python -m pytest tests --doctest-modules --junitxml=junit/gateway-test-results.xml --cov=com --cov-report=xml --cov-report=html
         docker exec dev-verim-publisher python -m pytest tests --doctest-modules --junitxml=junit/publisher-test-results.xml --cov=com --cov-report=xml --cov-report=html
     - name: Pytest coverage comment
