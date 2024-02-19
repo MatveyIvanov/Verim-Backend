@@ -48,38 +48,76 @@ jobs:
         docker cp dev-verim-auth:/microservice/junit/auth-test-results.xml .
         docker cp dev-verim-gateway:/microservice/junit/gateway-test-results.xml .
         docker cp dev-verim-publisher:/microservice/junit/publisher-test-results.xml .
-    - name: Pytest coverage comment
-      id: coverageComment
+    - name: Pytest auth coverage comment
+      id: authCoverageComment
       uses: MishaKav/pytest-coverage-comment@main
       with:
-        multiple-files: |
-          Auth Coverage, ./auth-test-results.txt, ./auth-test-results.xml
-          Gateway Coverage, ./gateway-test-results.txt, ./gateway-test-results.xml
-          Publisher Coverage, ./publisher-test-results.txt, ./publisher-test-results.xml
-        # pytest-coverage-path: ./auth-test-results.txt
+        pytest-coverage-path: ./auth-test-results.txt
         hide-badge: false
         hide-report: false
-        create-new-comment: true
+        create-new-comment: false
         hide-comment: false
         report-only-changed-files: true
         remove-link-from-badge: true
-        # junitxml-path: ./auth-test-results.xml
-    
-    - name: DEBUG STEP
-      run: |
-        echo ${{join(steps.coverageComment.outputs.*, '\n')}}
-  
+        junitxml-path: ./auth-test-results.xml
+    - name: Pytest gateway coverage comment
+      id: gatewayCoverageComment
+      uses: MishaKav/pytest-coverage-comment@main
+      with:
+        pytest-coverage-path: ./gateway-test-results.txt
+        hide-badge: false
+        hide-report: false
+        create-new-comment: false
+        hide-comment: false
+        report-only-changed-files: true
+        remove-link-from-badge: true
+        junitxml-path: ./gateway-test-results.xml
+    - name: Pytest publisher coverage comment
+      id: publisherCoverageComment
+      uses: MishaKav/pytest-coverage-comment@main
+      with:
+        pytest-coverage-path: ./publisher-test-results.txt
+        hide-badge: false
+        hide-report: false
+        create-new-comment: false
+        hide-comment: false
+        report-only-changed-files: true
+        remove-link-from-badge: true
+        junitxml-path: ./publisher-test-results.xml
+
     # Only on dev merge!!!
-    - name: Pytest coverage badge
+    - name: Pytest auth coverage badge
       # if: ${{ github.ref == 'refs/heads/dev' }}
       uses: schneegans/dynamic-badges-action@v1.6.0
       with:
         auth: ${{ secrets.GIST_SECRET }}
         gistID: 757112fa1eaaf7bee58f771e2238c394
-        filename: VerimDevCoverage.json
-        label: Coverage Report
-        message: ${{ steps.coverageComment.outputs.coverage }}
-        color: ${{ steps.coverageComment.outputs.color }}
+        filename: VerimDevAuthCoverage.json
+        label: Auth Coverage
+        message: ${{ steps.authCoverageComment.outputs.coverage }}
+        color: ${{ steps.authCoverageComment.outputs.color }}
+        namedLogo: python
+    - name: Pytest gateway coverage badge
+      # if: ${{ github.ref == 'refs/heads/dev' }}
+      uses: schneegans/dynamic-badges-action@v1.6.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 757112fa1eaaf7bee58f771e2238c394
+        filename: VerimDevGatewayCoverage.json
+        label: Gateway Coverage
+        message: ${{ steps.gatewayCoverageComment.outputs.coverage }}
+        color: ${{ steps.gatewayCoverageComment.outputs.color }}
+        namedLogo: python
+    - name: Pytest publisher coverage badge
+      # if: ${{ github.ref == 'refs/heads/dev' }}
+      uses: schneegans/dynamic-badges-action@v1.6.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 757112fa1eaaf7bee58f771e2238c394
+        filename: VerimDevPublisherCoverage.json
+        label: Publisher Coverage
+        message: ${{ steps.publisherCoverageComment.outputs.coverage }}
+        color: ${{ steps.publisherCoverageComment.outputs.color }}
         namedLogo: python
     - name: Update Readme with Coverage Html
       if: ${{ github.ref == 'refs/heads/dev' }}
