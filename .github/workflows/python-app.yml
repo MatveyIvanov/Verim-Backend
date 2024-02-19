@@ -122,6 +122,12 @@ jobs:
     - name: Update Readme with Coverage Html
       # if: ${{ github.ref == 'refs/heads/dev' }}
       run: |
+        rm auth-test-results.xml
+        rm auth-test-results.txt
+        rm gateway-test-results.xml
+        rm gateway-test-results.txt
+        rm publisher-test-results.xml
+        rm publisher-test-results.txt
         sed -i '/<!-- Pytest Auth Coverage Comment:Begin -->/,/<!-- Pytest Auth Coverage Comment:End -->/c\<!-- Pytest Auth Coverage Comment:Begin -->\n\${{ steps.authCoverageComment.outputs.coverageHtml }}\n<!-- Pytest Auth Coverage Comment:End -->' ./README.md
         sed -i '/<!-- Pytest Gateway Coverage Comment:Begin -->/,/<!-- Pytest Gateway Coverage Comment:End -->/c\<!-- Pytest Gateway Coverage Comment:Begin -->\n\${{ steps.gatewayCoverageComment.outputs.coverageHtml }}\n<!-- Pytest Gateway Coverage Comment:End -->' ./README.md
         sed -i '/<!-- Pytest Publisher Coverage Comment:Begin -->/,/<!-- Pytest Publisher Coverage Comment:End -->/c\<!-- Pytest Publisher Coverage Comment:Begin -->\n\${{ steps.publisherCoverageComment.outputs.coverageHtml }}\n<!-- Pytest Publisher Coverage Comment:End -->' ./README.md
