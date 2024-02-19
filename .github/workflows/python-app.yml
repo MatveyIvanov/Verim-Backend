@@ -37,7 +37,7 @@ jobs:
         docker exec dev-verim-gateway python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         docker exec dev-verim-publisher python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        # docker exec dev-verim-auth python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+        docker exec dev-verim-auth python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
         docker exec dev-verim-gateway python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
         docker exec dev-verim-publisher python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
     - name: Test with pytest
@@ -46,8 +46,8 @@ jobs:
         docker exec dev-verim-gateway python -m pytest tests --doctest-modules --junitxml=junit/gateway-test-results.xml --cov=. | tee gateway-test-results.txt
         docker exec dev-verim-publisher python -m pytest tests --doctest-modules --junitxml=junit/publisher-test-results.xml --cov=. | tee publisher-test-results.txt
         docker cp dev-verim-auth:/microservice/junit/auth-test-results.xml .
-        docker cp dev-verim-auth:/microservice/junit/gateway-test-results.xml .
-        docker cp dev-verim-auth:/microservice/junit/publisher-test-results.xml .
+        docker cp dev-verim-gateway:/microservice/junit/gateway-test-results.xml .
+        docker cp dev-verim-publisher:/microservice/junit/publisher-test-results.xml .
     - name: Pytest coverage comment
       id: coverageComment
       uses: MishaKav/pytest-coverage-comment@main
