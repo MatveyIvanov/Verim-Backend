@@ -151,5 +151,5 @@ jobs:
         git config --global user.name ${{ secrets.GIT_USER_NAME }}
         git config --global user.email ${{ secrets.GIT_USER_EMAIL }}
         git commit -am "Update coverage on Readme"
-        git remote set-url --push origin https://$GITHUB_TOKEN:$GITHUB_TOKEN@github.com/Verim-Back
+        git remote set-url --push origin https://$GIT_USER_NAME:$GITHUB_TOKEN@github.com/$GIT_USER_NAME/Verim-Back
         git push origin HEAD:issue_32
