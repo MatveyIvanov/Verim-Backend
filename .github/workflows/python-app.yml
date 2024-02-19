@@ -22,6 +22,7 @@ jobs:
       run: |
         echo "${{ vars.ENV_FILE }}" > .env
         cat .env
+        ls -alh ../derim-data
     - name: Build containers
       run: |
         ls -alh
