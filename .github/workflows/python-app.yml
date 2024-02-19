@@ -9,12 +9,8 @@ on:
   pull_request:
     branches: [ "dev" ]
 
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
-
 permissions:
-  contents: write
+  contents: read
   pull-requests: write
 
 jobs:
@@ -23,9 +19,6 @@ jobs:
     environment: dev
     steps:
     - uses: actions/checkout@v3
-      # with:
-      #   persist-credentials: false
-      #   fetch-depth: 0
     - name: Create env file
       run: |
         echo "${{ vars.ENV_FILE }}" > .env
@@ -91,7 +84,7 @@ jobs:
 
     # Only on dev merge!!!
     - name: Pytest auth coverage badge
-      # if: ${{ github.ref == 'refs/heads/dev' }}
+      if: ${{ github.ref == 'refs/heads/dev' }}
       uses: schneegans/dynamic-badges-action@v1.6.0
       with:
         auth: ${{ secrets.GIST_SECRET }}
@@ -102,7 +95,7 @@ jobs:
         color: ${{ steps.authCoverageComment.outputs.color }}
         namedLogo: python
     - name: Pytest gateway coverage badge
-      # if: ${{ github.ref == 'refs/heads/dev' }}
+      if: ${{ github.ref == 'refs/heads/dev' }}
       uses: schneegans/dynamic-badges-action@v1.6.0
       with:
         auth: ${{ secrets.GIST_SECRET }}
@@ -113,7 +106,7 @@ jobs:
         color: ${{ steps.gatewayCoverageComment.outputs.color }}
         namedLogo: python
     - name: Pytest publisher coverage badge
-      # if: ${{ github.ref == 'refs/heads/dev' }}
+      if: ${{ github.ref == 'refs/heads/dev' }}
       uses: schneegans/dynamic-badges-action@v1.6.0
       with:
         auth: ${{ secrets.GIST_SECRET }}
@@ -123,35 +116,3 @@ jobs:
         message: ${{ steps.publisherCoverageComment.outputs.coverage }}
         color: ${{ steps.publisherCoverageComment.outputs.color }}
         namedLogo: python
-    - name: Update Readme with Coverage Html
-      # if: ${{ github.ref == 'refs/heads/dev' }}
-      run: |
-        rm auth-test-results.xml
-        rm auth-test-results.txt
-        rm gateway-test-results.xml
-        rm gateway-test-results.txt
-        rm publisher-test-results.xml
-        rm publisher-test-results.txt
-        sed -i '/<!-- Pytest Auth Coverage Comment:Begin -->/,/<!-- Pytest Auth Coverage Comment:End -->/c\<!-- Pytest Auth Coverage Comment:Begin -->\n\${{ steps.authCoverageComment.outputs.coverageHtml }}\n<!-- Pytest Auth Coverage Comment:End -->' ./README.md
-        sed -i '/<!-- Pytest Gateway Coverage Comment:Begin -->/,/<!-- Pytest Gateway Coverage Comment:End -->/c\<!-- Pytest Gateway Coverage Comment:Begin -->\n\${{ steps.gatewayCoverageComment.outputs.coverageHtml }}\n<!-- Pytest Gateway Coverage Comment:End -->' ./README.md
-        sed -i '/<!-- Pytest Publisher Coverage Comment:Begin -->/,/<!-- Pytest Publisher Coverage Comment:End -->/c\<!-- Pytest Publisher Coverage Comment:Begin -->\n\${{ steps.publisherCoverageComment.outputs.coverageHtml }}\n<!-- Pytest Publisher Coverage Comment:End -->' ./README.md
-    # - name: Commit & Push changes to Readme
-    #   # if: ${{ github.ref == 'refs/heads/dev' }}
-    #   uses: actions-js/push@master
-    #   with:
-    #     message: Update coverage on Readme
-    #     github_token: ${{ secrets.GITHUB_TOKEN }}
-
-    # - name: Extract branch name
-    #   shell: bash
-    #   run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-    #   id: extract_branch
-    - name: Commit & Push changes to Readme
-      run: |
-        git config --global user.name ${{ secrets.GIT_USER_NAME }}
-        git config --global user.email ${{ secrets.GIT_USER_EMAIL }}
-        git commit -am "Update coverage on Readme"
-        git remote set-url --push origin https://$GIT_USER_NAME:$GITHUB_TOKEN@github.com/$GIT_USER_NAME/Verim-Back
-        git config pull.rebase false
-        git pull origin issue_32
-        git push origin HEAD:issue_32
