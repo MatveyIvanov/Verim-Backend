@@ -61,6 +61,22 @@ exclude_also = [
     # Don't complain about abstract methods, they aren't run:
     "@(abc\\.)?abstractmethod",
 ]
+omit = [
+    "migrations/*",
+    "grpc_services/*",
+    "tests/*",
+    "config/*",
+    "*pb2*",
+    "*grpc_typed.py",
+    "main.py",
+    "utils/exceptions.py",
+    "utils/logging.py",
+    "utils/pygettext.py",
+    "utils/repo.py",
+    "utils/schemas.py",
+    "utils/test.py",
+    "utils/types.py",
+]
 ignore_errors = true
 
 [build-system]
