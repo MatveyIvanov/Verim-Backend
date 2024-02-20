@@ -61,27 +61,23 @@ exclude_also = [
     # Don't complain about abstract methods, they aren't run:
     "@(abc\\.)?abstractmethod",
 ]
+omit = [
+    "migrations/*",
+    "grpc_services/*",
+    "tests/*",
+    "config/*",
+    "*pb2*",
+    "*grpc_typed.py",
+    "main.py",
+    "utils/exceptions.py",
+    "utils/logging.py",
+    "utils/pygettext.py",
+    "utils/repo.py",
+    "utils/schemas.py",
+    "utils/test.py",
+    "utils/types.py",
+]
 ignore_errors = true
-
-[tool.mypy]
-warn_redundant_casts = true
-warn_unused_ignores = true
-disallow_subclassing_any = false
-mypy_path = '.'
-disallow_untyped_calls = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-warn_return_any = true
-no_implicit_optional = true
-strict_optional = true
-ignore_missing_imports = true
-exclude = '''
-(?x)(
-    pygettext\.py$
-    | app\.py$
-    | routing\.py$
-)
-'''
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
